@@ -117,6 +117,8 @@ public:
 
 	CLIENT_DATA clients[MAX_CLIENTS];
 	
+	int tick_to_screenshot;
+	
 	void on_reset();
 
 	// hooks

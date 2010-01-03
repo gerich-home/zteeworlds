@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 #include "ec_font.h"
 
@@ -664,7 +665,13 @@ void gfx_swap()
 		for(; index < 1000; index++)
 		{
 			IOHANDLE io;
-			str_format(filename, sizeof(filename), "screenshots/screenshot%04d.png", index);
+			char datestr[128];
+			time_t currtime = time(0);
+			struct tm * currtime_tm = localtime(&currtime);
+			strftime(datestr, sizeof(datestr), "%Y-%m-%d %H-%M-%S", currtime_tm);
+			SERVER_INFO current_server_info;
+			client_serverinfo(&current_server_info);
+			str_format(filename, sizeof(filename), "screenshots/%s %03d (%s).png", datestr, ((int)time(0))%1000, current_server_info.map);
 			io = engine_openfile(filename, IOFLAG_READ);
 			if(io)
 				io_close(io);

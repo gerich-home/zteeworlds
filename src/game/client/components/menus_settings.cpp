@@ -162,6 +162,18 @@ void MENUS::render_settings_player(RECT main_view)
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		if (ui_do_button(&config.zpack2_compatible_cyrillic, "Z-Team Pack 2 compatible cyrillic", config.zpack2_compatible_cyrillic, &button, ui_draw_checkbox, 0))
 			config.zpack2_compatible_cyrillic ^= 1;
+			
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_autorecord, "Auto demo recording", config.cl_autorecord, &button, ui_draw_checkbox, 0))
+		{
+			config.cl_autorecord = config.cl_autorecord?0:1;
+		}
+
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_gameover_screenshot, "Make screenshot after game over", config.cl_gameover_screenshot, &button, ui_draw_checkbox, 0))
+		{
+			config.cl_gameover_screenshot = config.cl_gameover_screenshot?0:1;
+		}
 	}
 		
 	// draw header

@@ -438,6 +438,8 @@ void GAMECLIENT::on_connected()
 	
 	// send the inital info
 	send_info(true);
+	
+	tick_to_screenshot = -1;
 }
 
 void GAMECLIENT::on_reset()
@@ -462,6 +464,8 @@ void GAMECLIENT::on_reset()
 	
 	for(int i = 0; i < all.num; i++)
 		all.components[i]->on_reset();
+		
+	tick_to_screenshot = -1;
 }
 
 
@@ -507,6 +511,56 @@ static void evolve(NETOBJ_CHARACTER *character, int tick)
 
 void GAMECLIENT::on_render()
 {
+	{
+		static bool old_game_over;
+		static bool restarted_game_record = false;
+		static int autorecord_start_time = 0;
+		if (client_tick() > tick_to_screenshot && tick_to_screenshot >= 0 && client_state() != CLIENTSTATE_DEMOPLAYBACK)
+		{
+			gfx_screenshot();
+			tick_to_screenshot = -1;
+		}
+		if (snap.gameobj && snap.gameobj->game_over && !old_game_over && client_state() != CLIENTSTATE_DEMOPLAYBACK)
+		{
+			if (config.cl_gameover_screenshot) tick_to_screenshot = client_tick() + client_tickspeed() * 7; //7 secs
+		}
+		static void * old_gameobj = NULL;
+		if (snap.gameobj && ((client_tick() - snap.gameobj->round_start_tick) < client_tickspeed() * 0.1f))
+		{
+			if (!restarted_game_record)
+				old_game_over = true;
+			restarted_game_record = true;
+		} else restarted_game_record = false;
+
+		if (!old_gameobj && snap.gameobj) old_game_over = true;
+		old_gameobj = (void *)snap.gameobj;
+
+		if (config.cl_autorecord && autorecord_start_time != 0 && !demorec_isrecording() && demorec_last_filename() != NULL &&
+			abs(client_tick() - autorecord_start_time) / client_tickspeed() < config.cl_autorecord_time &&
+			client_state() != CLIENTSTATE_DEMOPLAYBACK)
+		{
+			dbg_msg("autodemo", "%s", demorec_last_filename());
+			fs_remove(demorec_last_filename());
+			autorecord_start_time = 0;
+		}
+
+		if (snap.gameobj && !snap.gameobj->game_over && old_game_over && client_state() != CLIENTSTATE_DEMOPLAYBACK)
+		{
+			if (config.cl_autorecord)
+			{
+				if (abs(client_tick() - autorecord_start_time) / client_tickspeed() < config.cl_autorecord_time)
+					console_execute_line("purgerecord");
+				else
+					console_execute_line("stoprecord");
+				autorecord_start_time = 0;
+				console_execute_line("record");
+				autorecord_start_time = client_tick();
+			}
+		}
+
+		old_game_over = snap.gameobj ? snap.gameobj->game_over : true;
+	}
+	
 	// update the local character position
 	update_local_character_pos();
 	

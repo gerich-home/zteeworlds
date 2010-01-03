@@ -66,6 +66,7 @@ const DEMOREC_PLAYBACKINFO *demorec_playback_info();
 int demorec_isplaying();
 int demorec_playback_stop();
 
+const char * demorec_last_filename();
 void demorec_make_first();
 void demorec_make_last();
 int demorec_rewrite(const char * filename);

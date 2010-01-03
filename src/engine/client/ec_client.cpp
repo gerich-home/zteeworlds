@@ -1996,7 +1996,7 @@ static void client_register_commands()
 	MACRO_REGISTER_COMMAND("rcon_auth", "s", CFGFLAG_CLIENT, con_rcon_auth, 0x0, "Authenticate to rcon");
 
 	MACRO_REGISTER_COMMAND("play", "r", CFGFLAG_CLIENT, con_play, 0x0, "Play the file specified");
-	MACRO_REGISTER_COMMAND("record", "s", CFGFLAG_CLIENT, con_record, 0, "Record to the file");
+	MACRO_REGISTER_COMMAND("record", "?s", CFGFLAG_CLIENT, con_record, 0, "Record to the file");
 	MACRO_REGISTER_COMMAND("stoprecord", "", CFGFLAG_CLIENT, con_stoprecord, 0, "Stop recording");
 	MACRO_REGISTER_COMMAND("purgerecord", "", CFGFLAG_CLIENT, con_purgerecord, 0, "Purge record");
 
