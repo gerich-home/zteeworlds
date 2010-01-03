@@ -36,6 +36,7 @@
 #include "components/sounds.hpp"
 #include "components/voting.hpp"
 #include "components/record_state.hpp"
+#include "components/infopan.hpp"
 
 GAMECLIENT gameclient;
 
@@ -61,6 +62,7 @@ static EMOTICON emoticon;
 static DAMAGEIND damageind;
 static VOTING voting;
 static RECORD_STATE record_state;
+static INFOPAN infopan;
 
 static PLAYERS players;
 static NAMEPLATES nameplates;
@@ -117,6 +119,7 @@ void GAMECLIENT::on_console_init()
 	damageind = &::damageind;
 	mapimages = &::mapimages;
 	voting = &::voting;
+	infopan = &::infopan;
 	
 	// make a list of all the systems, make sure to add them in the corrent render order
 	all.add(skins);
@@ -143,6 +146,7 @@ void GAMECLIENT::on_console_init()
 	all.add(&record_state);
 	all.add(&emoticon);
 	all.add(&killmessages);
+	all.add(infopan);
 	all.add(chat);
 	all.add(&broadcast);
 	all.add(&debughud);

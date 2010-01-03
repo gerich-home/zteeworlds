@@ -153,6 +153,7 @@ public:
 	class MOTD *motd;
 	class MAPIMAGES *mapimages;
 	class VOTING *voting;
+	class INFOPAN *infopan;
 };
 
 extern GAMECLIENT gameclient;
