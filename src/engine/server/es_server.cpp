@@ -1370,6 +1370,8 @@ int main(int argc, char **argv)
 	
 	/* run the server */
 	server_run();
+	
+	engine_finish();
 	return 0;
 }
 

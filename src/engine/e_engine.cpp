@@ -11,6 +11,7 @@
 #include <engine/e_engine.h>
 #include <engine/e_network.h>
 #include "e_linereader.h"
+#include "e_lua.h"
 
 /* compiled-in data-dir path */
 #define DATA_DIR "data"
@@ -76,6 +77,8 @@ void engine_init(const char *appname)
 			fs_makedir(path);
 		}
 	}
+	
+	InitLua();
 
 	/* init console and add the console logger */
 	console_init();
@@ -88,6 +91,11 @@ void engine_init(const char *appname)
 	
 	/* reset the config */
 	config_reset();
+}
+
+void engine_finish()
+{
+	CloseLua();
 }
 
 

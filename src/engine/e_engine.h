@@ -4,6 +4,7 @@
 
 const char *engine_savepath(const char *filename, char *buffer, int max);
 void engine_init(const char *appname);
+void engine_finish();
 void engine_parse_arguments(int argc, char **argv);
 
 int engine_config_write_start();

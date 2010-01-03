@@ -2041,5 +2041,7 @@ int main(int argc, char **argv)
 		engine_config_write_stop();
 	}
 	
+	engine_finish();
+	
 	return 0;
 }

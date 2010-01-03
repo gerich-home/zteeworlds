@@ -154,6 +154,10 @@ function build(settings)
 	wavpack = Compile(settings, Collect("src/engine/external/wavpack/*.c"))
 	pnglite = Compile(settings, Collect("src/engine/external/pnglite/*.c"))
 	
+	-- build lua
+	lua = Compile(settings, Collect("src/engine/external/lua/*.c"))
+	settings.cc.includes:Add("src/engine/external/lua")
+	
 	-- add freetype2
 	settings.link.libpath:Add("freetype2/objs/")
 	settings.link.libs:Add("freetype")
@@ -216,10 +220,10 @@ function build(settings)
 	-- build client, server, version server and master server
 	client_exe = Link(client_settings, "teeworlds", game_shared, game_client,
 		engine, client, game_editor, zlib, pnglite, wavpack,
-		client_link_other, client_osxlaunch)
+		client_link_other, client_osxlaunch, lua)
 
 	server_exe = Link(server_settings, "teeworlds_srv", engine, server,
-		game_shared, game_server, zlib)
+		game_shared, game_server, zlib, lua)
 
 	serverlaunch = {}
 	if platform == "macosx" then
