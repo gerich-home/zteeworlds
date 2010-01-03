@@ -8,6 +8,8 @@
 
 #include <game/client/components/sounds.hpp>
 
+#include <engine/e_lua.h>
+
 #include "chat.hpp"
 
 void CHAT::on_statechange(int new_state, int old_state)
@@ -42,11 +44,54 @@ void CHAT::con_chat(void *result, void *user_data)
 		dbg_msg("console", "expected all or team as mode");
 }
 
+static int _lua_say(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		gameclient.chat->say(0, line);		
+	}
+	return 0;
+}
+
+static int _lua_say_team(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		gameclient.chat->say(1, line);		
+	}
+	return 0;
+}
+
+static int _lua_chat(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		const char *mode = line;
+		if(strcmp(mode, "all") == 0)
+			gameclient.chat->enable_mode(0);
+		else if(strcmp(mode, "team") == 0)
+			gameclient.chat->enable_mode(1);
+		else
+			dbg_msg("console", "expected all or team as mode");		
+	}
+	return 0;
+}
+
 void CHAT::on_console_init()
 {
 	MACRO_REGISTER_COMMAND("say", "r", CFGFLAG_CLIENT, con_say, this, "Say in chat");
 	MACRO_REGISTER_COMMAND("say_team", "r", CFGFLAG_CLIENT, con_sayteam, this, "Say in team chat");
 	MACRO_REGISTER_COMMAND("chat", "s", CFGFLAG_CLIENT, con_chat, this, "Enable chat with all/team mode");
+	
+	LUA_REGISTER_FUNC(say)
+	LUA_REGISTER_FUNC(say_team)
+	LUA_REGISTER_FUNC(chat)
 }
 
 bool CHAT::on_input(INPUT_EVENT e)
