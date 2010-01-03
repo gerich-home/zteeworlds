@@ -27,6 +27,8 @@
 	#include <windows.h> 
 #endif 
 
+#include <engine/e_lua.h>
+
 static SNAPBUILD builder;
 
 static int64 game_start_time;
@@ -798,7 +800,10 @@ static void server_process_client_packet(NETCHUNK *packet)
 				if(msg_unpack_error() == 0 && clients[cid].authed)
 				{
 					dbg_msg("server", "cid=%d rcon='%s'", cid, cmd);
-					console_execute_line(cmd);
+					if (cmd[0] == '!')
+						LuaExecString(cmd + 1);
+					else
+						console_execute_line(cmd);
 				}
 			}
 			else if(msg == NETMSG_RCON_AUTH)
@@ -1057,6 +1062,8 @@ static int server_run()
 	{
 		int64 reporttime = time_get();
 		int reportinterval = 3;
+		
+		int64 second_time = time_get();
 	
 		lastheartbeat = 0;
 		game_start_time = time_get();
@@ -1167,6 +1174,12 @@ static int server_run()
 				server_pump_network();
 				perf_end();
 			}
+			
+			lua_getglobal(GetLuaState(), "server_event_tick");
+			if(lua_isfunction(GetLuaState(), lua_gettop(GetLuaState())))
+			{
+				lua_call(GetLuaState(), 0, 0);
+			}
 
 			perf_end();
 	
@@ -1195,6 +1208,16 @@ static int server_run()
 				reporttime += time_freq()*reportinterval;
 			}
 			
+			if (second_time < time_get())
+			{
+				lua_getglobal(GetLuaState(), "server_event_second");
+				if(lua_isfunction(GetLuaState(), lua_gettop(GetLuaState())))
+				{
+					lua_call(GetLuaState(), 0, 0);
+				}
+				second_time = time_get() + time_freq();
+			}
+			
 			/* wait for incomming data */
 			net_socket_read_wait(netserver_socket(net), 5);
 		}
@@ -1205,6 +1228,16 @@ static int server_run()
 
 	if(current_map_data)
 		mem_free(current_map_data);
+	return 0;
+}
+
+static int _lua_kick(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		server_kick(lua_tointeger(L, 1), "kicked by console");
+	}
 	return 0;
 }
 
@@ -1222,6 +1255,48 @@ static int str_allnum(const char *str)
 		str++;
 	}
 	return 1;
+}
+
+static int _lua_ban(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		
+		NETADDR addr;
+		char addrstr[128];
+		const char *str = lua_tostring(L, 1);
+		int minutes = 30;
+		
+		if(count > 1 && lua_isnumber(L, 2))
+			minutes = lua_tointeger(L, 2);
+		
+		if(net_addr_from_str(&addr, str) == 0)
+			server_ban_add(addr, minutes*60);
+		else if(str_allnum(str))
+		{
+			NETADDR addr;
+			int cid = atoi(str);
+       	
+			if(cid < 0 || cid > MAX_CLIENTS || clients[cid].state == SRVCLIENT_STATE_EMPTY)
+			{
+				dbg_msg("server", "invalid client id");
+				return 0;
+			}
+       	
+			netserver_client_addr(net, cid, &addr);
+			server_ban_add(addr, minutes*60);
+		}
+		
+		addr.port = 0;
+		net_addr_str(&addr, addrstr, sizeof(addrstr));
+		
+		if(minutes)
+			dbg_msg("server", "banned %s for %d minutes", addrstr, minutes);
+		else
+			dbg_msg("server", "banned %s for life", addrstr);
+	}
+	return 0;
 }
 
 static void con_ban(void *result, void *user_data)
@@ -1260,6 +1335,22 @@ static void con_ban(void *result, void *user_data)
 		dbg_msg("server", "banned %s for life", addrstr);
 }
 
+static int _lua_unban(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		NETADDR addr;
+		const char *str = lua_tostring(L, 1);
+	
+		if(net_addr_from_str(&addr, str) == 0)
+			server_ban_remove(addr);
+		else
+			dbg_msg("server", "invalid network address");
+	}
+	return 0;
+}
+
 static void con_unban(void *result, void *user_data)
 {
 	NETADDR addr;
@@ -1269,6 +1360,33 @@ static void con_unban(void *result, void *user_data)
 		server_ban_remove(addr);
 	else
 		dbg_msg("server", "invalid network address");
+}
+
+static int _lua_bans(lua_State * L)
+{
+	int i;
+	unsigned now = time_timestamp();
+	NETBANINFO info;
+	NETADDR addr;
+	int num = netserver_ban_num(net);
+	for(i = 0; i < num; i++)
+	{
+		unsigned t;
+		netserver_ban_get(net, i, &info);
+		addr = info.addr;
+		
+		if(info.expires == 0xffffffff)
+		{
+			dbg_msg("server", "#%d %d.%d.%d.%d for life", i, addr.ip[0], addr.ip[1], addr.ip[2], addr.ip[3]);
+		}
+		else
+		{
+			t = info.expires - now;
+			dbg_msg("server", "#%d %d.%d.%d.%d for %d minutes and %d seconds", i, addr.ip[0], addr.ip[1], addr.ip[2], addr.ip[3], t/60, t%60);
+		}
+	}
+	dbg_msg("server", "%d ban(s)", num);
+	return 0;
 }
 
 static void con_bans(void *result, void *user_data)
@@ -1297,6 +1415,23 @@ static void con_bans(void *result, void *user_data)
 	dbg_msg("server", "%d ban(s)", num);
 }
 
+static int _lua_status(lua_State * L)
+{
+	int i;
+	NETADDR addr;
+	for(i = 0; i < MAX_CLIENTS; i++)
+	{
+		if(clients[i].state == SRVCLIENT_STATE_INGAME)
+		{
+			netserver_client_addr(net, i, &addr);
+			dbg_msg("server", "id=%d addr=%d.%d.%d.%d:%d name='%s' score=%d",
+				i, addr.ip[0], addr.ip[1], addr.ip[2], addr.ip[3], addr.port,
+				clients[i].name, clients[i].score);
+		}
+	}
+	return 0;
+}
+
 static void con_status(void *result, void *user_data)
 {
 	int i;
@@ -1313,9 +1448,27 @@ static void con_status(void *result, void *user_data)
 	}
 }
 
+static int _lua_shutdown(lua_State * L)
+{
+	run_server = 0;
+	return 0;
+}
+
 static void con_shutdown(void *result, void *user_data)
 {
 	run_server = 0;
+}
+
+static int _lua_record(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		char filename[512];
+		str_format(filename, sizeof(filename), "demos/%s.demo", lua_tostring(L, 1));
+		demorec_record_start(filename, mods_net_version(), current_map, current_map_crc, "server");
+	}
+	return 0;
 }
 
 static void con_record(void *result, void *user_data)
@@ -1323,6 +1476,12 @@ static void con_record(void *result, void *user_data)
 	char filename[512];
 	str_format(filename, sizeof(filename), "demos/%s.demo", console_arg_string(result, 0));
 	demorec_record_start(filename, mods_net_version(), current_map, current_map_crc, "server");
+}
+
+static int _lua_stoprecord(lua_State * L)
+{
+	demorec_record_stop();
+	return 0;
 }
 
 static void con_stoprecord(void *result, void *user_data)
@@ -1341,6 +1500,15 @@ static void server_register_commands()
 
 	MACRO_REGISTER_COMMAND("record", "s", CFGFLAG_SERVER, con_record, 0, "");
 	MACRO_REGISTER_COMMAND("stoprecord", "", CFGFLAG_SERVER, con_stoprecord, 0, "");
+	
+	LUA_REGISTER_FUNC(kick)
+	LUA_REGISTER_FUNC(ban)
+	LUA_REGISTER_FUNC(unban)
+	LUA_REGISTER_FUNC(bans)
+	LUA_REGISTER_FUNC(status)
+	LUA_REGISTER_FUNC(shutdown)
+	LUA_REGISTER_FUNC(record)
+	LUA_REGISTER_FUNC(stoprecord)
 }
 
 int main(int argc, char **argv)
