@@ -6,7 +6,10 @@
 
 #include "SDL.h"
 
-#include <engine/external/wavpack/wavpack.h>
+extern "C"
+{
+	#include <engine/external/wavpack/wavpack.h>
+}
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -180,7 +183,7 @@ static void mix(short *final_out, unsigned frames)
 				const int range = 1500; /* magic value, remove */
 				int dx = v->x - center_x;
 				int dy = v->y - center_y;
-				int dist = sqrt(dx*dx+dy*dy); /* double here. nasty */
+				int dist = (int)sqrt(1.0*dx*dx+dy*dy); /* double here. nasty */
 				int p = iabs(dx);
 				if(dist < range)
 				{
@@ -332,7 +335,7 @@ static void rate_convert(int sid)
 
 	/* allocate new data */
 	num_frames = (int)((snd->num_frames/(float)snd->rate)*mixing_rate);
-	new_data = mem_alloc(num_frames*snd->channels*sizeof(short), 1);
+	new_data = (short *)mem_alloc(num_frames*snd->channels*sizeof(short), 1);
 	
 	for(i = 0; i < num_frames; i++)
 	{

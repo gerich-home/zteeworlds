@@ -9,10 +9,6 @@
 
 #include "detect.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* Group: Debug */
 /*
 	Function: dbg_assert
@@ -1023,9 +1019,5 @@ int str_utf8_char_length(int ch);
 		message - text to display
 */
 void gui_messagebox(const char *title, const char *message);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

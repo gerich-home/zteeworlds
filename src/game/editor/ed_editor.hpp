@@ -9,11 +9,9 @@
 #include "../mapitems.hpp"
 #include "../client/render.hpp"
 
-extern "C" {
-	#include <engine/e_client_interface.h>
-	#include <engine/e_datafile.h>
-	#include <engine/e_config.h>
-}
+#include <engine/e_client_interface.h>
+#include <engine/e_datafile.h>
+#include <engine/e_config.h>
 
 #include <game/client/ui.hpp>
 
@@ -520,3 +518,6 @@ int popup_point(RECT view);
 
 void popup_select_image_invoke(int current, float x, float y);
 int popup_select_image_result();
+
+void editor_update_and_render();
+void editor_init();

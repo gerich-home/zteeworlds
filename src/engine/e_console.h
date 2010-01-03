@@ -1,10 +1,6 @@
 #ifndef _CONSOLE_H
 #define _CONSOLE_H
 
-#ifdef __cplusplus
-extern "C"{
-#endif
-
 typedef void (*CONSOLE_CALLBACK)(void *result, void *user_data);
 
 typedef struct COMMAND_t
@@ -38,9 +34,5 @@ float console_arg_float(void *result, int index);
 int console_arg_num(void *result);
 
 #define MACRO_REGISTER_COMMAND(name, params, flags, func, ptr, help) { static COMMAND cmd = { name, params, flags, func, ptr, help, 0x0}; console_register(&cmd); }
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

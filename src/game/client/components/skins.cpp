@@ -8,10 +8,7 @@
 
 #include <engine/e_client_interface.h>
 
-extern "C"
-{
-	#include <engine/e_engine.h>
-}
+#include <engine/e_engine.h>
 
 #include <game/client/gameclient.hpp>
 

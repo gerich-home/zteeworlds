@@ -944,9 +944,6 @@ static void server_send_serverinfo(NETADDR *addr, int token)
 	netserver_send(net, &packet);
 }
 
-extern int register_process_packet(NETCHUNK *packet);
-extern int register_update();
-
 static void server_pump_network()
 {
 	NETCHUNK packet;

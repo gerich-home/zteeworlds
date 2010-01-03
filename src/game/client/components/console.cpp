@@ -7,10 +7,8 @@
 
 #include <engine/e_client_interface.h>
 
-extern "C" {
-	#include <engine/e_ringbuffer.h>
-	#include <engine/client/ec_font.h>
-}
+#include <engine/e_ringbuffer.h>
+#include <engine/client/ec_font.h>
 
 #include <cstring>
 #include <cstdio>

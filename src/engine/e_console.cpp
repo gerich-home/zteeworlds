@@ -354,7 +354,7 @@ struct EXECFILE
 void console_execute_file(const char *filename)
 {
 	static struct EXECFILE *first = 0;
-	struct EXECFILE this;
+	struct EXECFILE _this;
 	struct EXECFILE *cur;
 	struct EXECFILE *prev;
 
@@ -365,9 +365,9 @@ void console_execute_file(const char *filename)
 	
 	/* push this one to the stack */
 	prev = first;
-	this.filename = filename;
-	this.next = first;
-	first = &this;
+	_this.filename = filename;
+	_this.next = first;
+	first = &_this;
 	
 	/* execute file */
 	console_execute_file_real(filename);

@@ -316,7 +316,7 @@ static void scan_file()
 				KEYFRAME_SEARCH *key;
 				
 				/* save the position */
-				key = memheap_allocate(heap, sizeof(KEYFRAME_SEARCH));
+				key = (KEYFRAME_SEARCH *)memheap_allocate(heap, sizeof(KEYFRAME_SEARCH));
 				key->frame.filepos = current_pos;
 				key->frame.tick = chunk_tick;
 				key->next = 0;
@@ -625,7 +625,7 @@ int demorec_playback_update()
 	return 0;
 }
 
-int demorec_playback_stop(const char *filename)
+int demorec_playback_stop()
 {
 	if(!play_file)
 		return -1;

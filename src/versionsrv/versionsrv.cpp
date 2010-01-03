@@ -2,9 +2,7 @@
 #include <string.h>
 #include <base/system.h>
 
-extern "C" {
-	#include <engine/e_network.h>
-}
+#include <engine/e_network.h>
 
 #include "versionsrv.h"
 

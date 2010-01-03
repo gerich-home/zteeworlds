@@ -159,7 +159,7 @@ static void conn_resend(NETCONNECTION *conn)
 	
 	while(item)
 	{
-		NETCHUNKDATA *resend = item;
+		NETCHUNKDATA *resend = (NETCHUNKDATA *)item;
 		
 		if(resend_count == 0)
 			first = resend->sequence;

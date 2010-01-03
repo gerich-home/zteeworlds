@@ -47,10 +47,6 @@
 	#error NOT IMPLEMENTED
 #endif
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 IOHANDLE io_stdin() { return (IOHANDLE)stdin; }
 IOHANDLE io_stdout() { return (IOHANDLE)stdout; }
 IOHANDLE io_stderr() { return (IOHANDLE)stderr; }
@@ -1340,6 +1336,3 @@ unsigned str_quickhash(const char *str)
 	return hash;
 }
 
-#if defined(__cplusplus)
-}
-#endif

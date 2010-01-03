@@ -28,6 +28,8 @@
 #include <mastersrv/mastersrv.h>
 #include <versionsrv/versionsrv.h>
 
+#include <game/editor/ed_editor.hpp>
+
 const int prediction_margin = 1000/50/2; /* magic network prediction value */
 
 /*
@@ -1617,9 +1619,6 @@ static void client_versionupdate()
 		}
 	}
 }
-
-extern int editor_update_and_render();
-extern void editor_init();
 
 static void client_run()
 {

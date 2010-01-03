@@ -150,7 +150,7 @@ static void client_serverbrowse_filter()
 		if(sorted_serverlist)
 			mem_free(sorted_serverlist);
 		num_sorted_servers_capacity = num_servers;
-		sorted_serverlist = mem_alloc(num_sorted_servers_capacity*sizeof(int), 1);
+		sorted_serverlist = (int *)mem_alloc(num_sorted_servers_capacity*sizeof(int), 1);
 	}
 	
 	/* filter the servers */
@@ -401,7 +401,7 @@ SERVERENTRY *client_serverbrowse_add(NETADDR *addr)
 	{
 		SERVERENTRY **newlist;
 		num_server_capacity += 100;
-		newlist = mem_alloc(num_server_capacity*sizeof(SERVERENTRY*), 1);
+		newlist = (SERVERENTRY **)mem_alloc(num_server_capacity*sizeof(SERVERENTRY*), 1);
 		mem_copy(newlist, serverlist, num_servers*sizeof(SERVERENTRY*));
 		mem_free(serverlist);
 		serverlist = newlist;

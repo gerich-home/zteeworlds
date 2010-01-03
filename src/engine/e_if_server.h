@@ -2,6 +2,8 @@
 #ifndef ENGINE_IF_SERVER_H
 #define ENGINE_IF_SERVER_H
 
+#include "e_network.h"
+
 /*
 	Section: Server Interface
 */
@@ -137,4 +139,7 @@ int server_tickspeed();
 
 int server_ban_add(NETADDR addr, int seconds);
 int server_ban_remove(NETADDR addr);
+
+void register_update();
+int register_process_packet(NETCHUNK *packet);
 #endif

@@ -22,7 +22,7 @@ typedef struct NETBAN
 
 #define MACRO_LIST_LINK_FIRST(object, first, prev, next) \
 	{ if(first) first->prev = object; \
-	object->prev = (void*)0; \
+	object->prev = (NETBAN*)0; \
 	object->next = first; \
 	first = object; }
 	

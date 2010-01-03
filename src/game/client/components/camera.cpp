@@ -1,7 +1,5 @@
-extern "C" {
-	#include <engine/e_config.h>
-	#include <engine/e_client_interface.h>
-}
+#include <engine/e_config.h>
+#include <engine/e_client_interface.h>
 
 #include <base/math.hpp>
 #include <game/collision.hpp>

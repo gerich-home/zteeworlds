@@ -2,6 +2,8 @@
 #ifndef ENGINE_IF_GFX_H
 #define ENGINE_IF_GFX_H
 
+#include "client/ec_font.h"
+
 /*
 	Title: Graphics
 */
@@ -654,7 +656,7 @@ typedef struct
 	float start_y;
 	float line_width;
 	float x, y;
-	void *font_set;
+	FONT_SET *font_set;
 	float font_size;
 } TEXT_CURSOR;
 

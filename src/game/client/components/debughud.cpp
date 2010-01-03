@@ -1,8 +1,6 @@
 #include <memory.h> // memcmp
 
-extern "C" {
-	#include <engine/e_config.h>
-}
+#include <engine/e_config.h>
 
 #include <engine/e_client_interface.h>
 #include <game/generated/g_protocol.hpp>

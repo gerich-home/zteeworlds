@@ -13,9 +13,7 @@
 
 #include <engine/e_client_interface.h>
 
-extern "C" {
-	#include <engine/client/ec_font.h>
-}
+#include <engine/client/ec_font.h>
 
 #include <game/version.hpp>
 #include <game/generated/g_protocol.hpp>

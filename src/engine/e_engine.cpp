@@ -246,7 +246,7 @@ static IOHANDLE config_file = 0;
 
 int engine_config_write_start()
 {
-	config_save("settings.cfg");
+	config_save();
 	config_file = engine_openfile("settings.cfg", IOFLAG_WRITE);
 	if(config_file == 0)
 		return -1;

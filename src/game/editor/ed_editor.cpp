@@ -6,12 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern "C" {
-	#include <engine/e_common_interface.h>
-	#include <engine/e_datafile.h>
-	#include <engine/e_config.h>
-	#include <engine/e_engine.h>
-}
+#include <engine/e_common_interface.h>
+#include <engine/e_datafile.h>
+#include <engine/e_config.h>
+#include <engine/e_engine.h>
 
 #include <game/client/ui.hpp>
 #include <game/gamecore.hpp>
@@ -2672,7 +2670,7 @@ void MAP::create_default(int entities_texture)
 	game_group->add_layer(game_layer);
 }
 
-extern "C" void editor_init()
+void editor_init()
 {
 	checker_texture = gfx_load_texture("editor/checker.png", IMG_AUTO, 0);
 	background_texture = gfx_load_texture("editor/background.png", IMG_AUTO, 0);
@@ -2685,7 +2683,7 @@ extern "C" void editor_init()
 	editor.reset();
 }
 
-extern "C" void editor_update_and_render()
+void editor_update_and_render()
 {
 	static int mouse_x = 0;
 	static int mouse_y = 0;

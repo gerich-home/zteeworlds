@@ -1,10 +1,7 @@
 #include <game/client/component.hpp>
 #include <game/client/ui.hpp>
 
-extern "C"
-{
-	#include <engine/e_memheap.h>
-}
+#include <engine/e_memheap.h>
 
 class VOTING : public COMPONENT
 {
