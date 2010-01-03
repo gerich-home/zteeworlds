@@ -154,6 +154,7 @@ public:
 	class MAPIMAGES *mapimages;
 	class VOTING *voting;
 	class INFOPAN *infopan;
+	class FASTMENU *fastmenu;
 };
 
 extern GAMECLIENT gameclient;

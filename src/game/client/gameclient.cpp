@@ -40,6 +40,7 @@
 #include "components/voting.hpp"
 #include "components/record_state.hpp"
 #include "components/infopan.hpp"
+#include "components/fastmenu.hpp"
 
 GAMECLIENT gameclient;
 
@@ -66,6 +67,7 @@ static DAMAGEIND damageind;
 static VOTING voting;
 static RECORD_STATE record_state;
 static INFOPAN infopan;
+static FASTMENU fastmenu;
 
 static PLAYERS players;
 static NAMEPLATES nameplates;
@@ -231,6 +233,7 @@ void GAMECLIENT::on_console_init()
 	mapimages = &::mapimages;
 	voting = &::voting;
 	infopan = &::infopan;
+	fastmenu = &::fastmenu;	
 	
 	// make a list of all the systems, make sure to add them in the corrent render order
 	all.add(skins);
@@ -256,6 +259,7 @@ void GAMECLIENT::on_console_init()
 	all.add(&hud);
 	all.add(&record_state);
 	all.add(&emoticon);
+	all.add(fastmenu);
 	all.add(&killmessages);
 	all.add(infopan);
 	all.add(chat);
@@ -274,6 +278,7 @@ void GAMECLIENT::on_console_init()
 	input.add(motd); // for pressing esc to remove it
 	input.add(menus);
 	input.add(&emoticon);
+	input.add(fastmenu);
 	input.add(controls);
 	input.add(binds);
 		

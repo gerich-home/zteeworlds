@@ -290,6 +290,7 @@ KEYINFO keys[] =
 	{ "Remote Console:", "toggle_remote_console", 0 },
 	{ "Screenshot:", "screenshot", 0 },
 	{ "Scoreboard:", "+scoreboard", 0 },
+	{ "Fast menu:", "+fastmenu", 0 },
 };
 
 const int key_count = sizeof(keys) / sizeof(KEYINFO);
@@ -366,6 +367,7 @@ void MENUS::render_settings_controls(RECT main_view)
 	/* weapon settings */
 	{
 		ui_hsplit_t(&weapon_settings, 10.0f, 0, &weapon_settings);
+		ui_hsplit_t(&weapon_settings, main_view.h/2-5.0f-45.0f, &weapon_settings, &reset_button);
 		ui_draw_rect(&weapon_settings, vec4(1,1,1,0.25f), CORNER_ALL, 10.0f);
 		ui_margin(&weapon_settings, 10.0f, &weapon_settings);
 
@@ -404,14 +406,14 @@ void MENUS::render_settings_controls(RECT main_view)
 	/* misc settings */
 	{
 		ui_hsplit_t(&misc_settings, 10.0f, 0, &misc_settings);
-		ui_hsplit_t(&misc_settings, main_view.h/2-5.0f-45.0f, &misc_settings, &reset_button);
+		//ui_hsplit_t(&misc_settings, main_view.h/2-5.0f-45.0f, &misc_settings, &reset_button);
 		ui_draw_rect(&misc_settings, vec4(1,1,1,0.25f), CORNER_ALL, 10.0f);
 		ui_margin(&misc_settings, 10.0f, &misc_settings);
 	
 		gfx_text(0, misc_settings.x, misc_settings.y, 14, "Miscellaneous", -1);
 		
 		ui_hsplit_t(&misc_settings, 14.0f+5.0f+10.0f, 0, &misc_settings);
-		ui_do_getbuttons(16, 21, misc_settings);
+		ui_do_getbuttons(16, 22, misc_settings);
 	}
 	
 	// defaults

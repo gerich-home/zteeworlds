@@ -109,6 +109,8 @@ void BINDS::set_defaults()
 
 	bind(KEY_F3, "vote yes");
 	bind(KEY_F4, "vote no");	
+	
+	bind(KEY_MOUSE_3, "+fastmenu");
 }
 
 void BINDS::on_console_init()
