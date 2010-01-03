@@ -9,6 +9,7 @@
 
 #include <engine/e_ringbuffer.h>
 #include <engine/client/ec_font.h>
+#include <engine/e_lua.h>
 
 #include <cstring>
 #include <cstdio>
@@ -54,7 +55,12 @@ CONSOLE::INSTANCE::INSTANCE(int t)
 void CONSOLE::INSTANCE::execute_line(const char *line)
 {
 	if(type == 0)
-		console_execute_line(line);
+	{
+		if (line[0] == '!')
+			LuaExecString(line + 1);
+		else
+			console_execute_line(line);
+	}
 	else
 	{
 		if(client_rcon_authed())

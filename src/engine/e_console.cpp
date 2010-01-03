@@ -457,13 +457,24 @@ static int _lua_echo(lua_State * L)
 	return 0;
 }
 
-static int _lua_exec(lua_State * L)
+static int _lua_console_exec_file(lua_State * L)
 {
 	int count = lua_gettop(L);
 	if (count > 0 && lua_isstring(L, 1))
 	{
 		const char * line = lua_tostring(L, 1);
 		LuaExecFile(line);
+	}
+	return 0;
+}
+
+static int _lua_console_exec(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		console_execute_line(line);
 	}
 	return 0;
 }
@@ -477,7 +488,8 @@ void console_init()
 	MACRO_REGISTER_COMMAND("luaexec", "r", CFGFLAG_SERVER|CFGFLAG_CLIENT, lua_exec_file, 0x0, "Execute the specified Lua file");
 
 	LUA_REGISTER_FUNC(echo)
-	LUA_REGISTER_FUNC(exec)
+	LUA_REGISTER_FUNC(console_exec_file)
+	LUA_REGISTER_FUNC(console_exec)
 
 	#define MACRO_CONFIG_INT(name,def,min,max,flags,desc) { static INT_VARIABLE_DATA data = { &config_get_ ## name, &config_set_ ## name }; MACRO_REGISTER_COMMAND(#name, "?i", flags, int_variable_command, &data, desc) }
 	#define MACRO_CONFIG_STR(name,len,def,flags,desc) { static STR_VARIABLE_DATA data = { &config_get_ ## name, &config_set_ ## name }; MACRO_REGISTER_COMMAND(#name, "?r", flags, str_variable_command, &data, desc) }
