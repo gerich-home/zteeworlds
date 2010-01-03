@@ -887,30 +887,11 @@ int fs_listdir(const char *dir, FS_LISTDIR_CALLBACK cb, void *user)
 int fs_storage_path(const char *appname, char *path, int max)
 {
 #if defined(CONF_FAMILY_WINDOWS)
-	HRESULT r;
-	char *home = getenv("APPDATA");
-	if(!home)
-		return -1;
-	_snprintf(path, max, "%s/%s", home, appname);
-	return 0;
+	_snprintf(path, max, "%s/profile", ".");
 #else
-	char *home = getenv("HOME");
-#if !defined(CONF_PLATFORM_MACOSX)
-	int i;
+	snprintf(path, max, "%s/profile", ".");
 #endif
-	if(!home)
-		return -1;
-
-#if defined(CONF_PLATFORM_MACOSX)
-	snprintf(path, max, "%s/Library/Application Support/%s", home, appname);
-#else
-	snprintf(path, max, "%s/.%s", home, appname);
-	for(i = strlen(home)+2; path[i]; i++)
-		path[i] = tolower(path[i]);
-#endif
-	
 	return 0;
-#endif
 }
 
 int fs_makedir(const char *path)
