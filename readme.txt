@@ -1,4 +1,11 @@
-n дr Copyright (c) 2007 Magnus Auvinen
+Teeworlds Z-Team Pack
+
+Это программное обеспечение поставляется "как есть", безо всяких гарантий, на ваш страх и риск. Авторы не отвечают за любой ущерб от данного программного обеспечения.
+
+Пожалуйста, посетите http://z-team.org.ru, чтобы быть в курсе всех последних измений в сборке игры Teeworlds от Z-Team.
+
+
+Original Teeworlds Copyright (c) 2007 Magnus Auvinen
 
 
 This software is provided 'as-is', without any express or implied
