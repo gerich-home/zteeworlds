@@ -148,6 +148,16 @@ void MENUS::render_settings_player(RECT main_view)
 				ui_hsplit_t(&main_view, 5.0f, 0, &main_view);
 			}
 		}
+		
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_default_skin_only, "Default skin only", config.cl_default_skin_only, &button, ui_draw_checkbox, 0))
+		{
+			config.cl_default_skin_only = config.cl_default_skin_only?0:1;
+			if (!config.cl_default_skin_only)
+				gameclient.skins->load_all();
+		}
 	}
 		
 	// draw header
@@ -186,6 +196,11 @@ void MENUS::render_settings_player(RECT main_view)
 		
 		// no special skins
 		if(s->name[0] == 'x' && s->name[1] == '_')
+		{
+			num++;
+			continue;
+		}
+		if(config.cl_default_skin_only && strcmp(s->name, "default") != 0)
 		{
 			num++;
 			continue;

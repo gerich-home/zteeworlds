@@ -596,7 +596,18 @@ void GAMECLIENT::on_snapshot()
 				clients[cid].skin_info.size = 64;
 				
 				// find new skin
-				clients[cid].skin_id = gameclient.skins->find(clients[cid].skin_name);
+				if (!config.cl_default_skin_only)
+				{
+					clients[cid].skin_id = gameclient.skins->find(clients[cid].skin_name);
+					if(clients[cid].skin_id < 0)
+					{
+						if (gameclient.skins->load_skin(clients[cid].skin_name))
+							clients[cid].skin_id = gameclient.skins->find(clients[cid].skin_name);
+					}
+				}
+				else
+					clients[cid].skin_id = -1;
+					
 				if(clients[cid].skin_id < 0)
 				{
 					clients[cid].skin_id = gameclient.skins->find("default");

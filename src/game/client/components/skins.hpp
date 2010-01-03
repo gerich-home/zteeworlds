@@ -1,11 +1,12 @@
 #include <base/vmath.hpp>
 #include <game/client/component.hpp>
+#include <vector>
 
 class SKINS : public COMPONENT
 {
 public:
 	// do this better and nicer
-	typedef struct 
+	typedef struct
 	{
 		int org_texture;
 		int color_texture;
@@ -15,22 +16,24 @@ public:
 	} SKIN;
 
 	SKINS();
-	
+	~SKINS();
+
 	void init();
-	
+
 	vec4 get_color(int v);
 	int num();
 	const SKIN *get(int index);
 	int find(const char *name);
-	
-private:
-	enum
-	{
-		MAX_SKINS=256,
-	};
 
-	SKIN skins[MAX_SKINS];
-	int num_skins;
+	bool copy_skin(const char * from, const char * to);
+
+	bool load_skin(const char * name);
+	void load_all();
+	
+	virtual void on_render();
+private:
+
+	std::vector<SKIN *>skins;
 
 	static void skinscan(const char *name, int is_dir, void *user);
 };
