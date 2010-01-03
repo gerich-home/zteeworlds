@@ -1,5 +1,5 @@
-import md5, sys, re
-m = md5.new()
+import hashlib, sys, re
+m = hashlib.md5()
 
 alphanum = "0123456789abcdefghijklmnopqrstuvwzyxABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 
@@ -28,5 +28,7 @@ def cstrip(lines):
 f = ""
 for filename in sys.argv[1:]:
 	f += cstrip([l.strip() for l in file(filename)])
+	
+m.update(f)
 
-print '#define GAME_NETVERSION_HASH "%s"' % md5.new(f).hexdigest().lower()[16:]
+print '#define GAME_NETVERSION_HASH "%s"' % m.hexdigest().lower()[16:]
