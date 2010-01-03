@@ -35,6 +35,7 @@
 #include "components/skins.hpp"
 #include "components/sounds.hpp"
 #include "components/voting.hpp"
+#include "components/record_state.hpp"
 
 GAMECLIENT gameclient;
 
@@ -59,6 +60,7 @@ static SOUNDS sounds;
 static EMOTICON emoticon;
 static DAMAGEIND damageind;
 static VOTING voting;
+static RECORD_STATE record_state;
 
 static PLAYERS players;
 static NAMEPLATES nameplates;
@@ -138,6 +140,7 @@ void GAMECLIENT::on_console_init()
 	all.add(&particles->render_general);
 	all.add(damageind);
 	all.add(&hud);
+	all.add(&record_state);
 	all.add(&emoticon);
 	all.add(&killmessages);
 	all.add(chat);
