@@ -90,6 +90,7 @@ void engine_init(const char *appname)
 	MACRO_REGISTER_COMMAND("dbg_lognetwork", "", CFGFLAG_SERVER|CFGFLAG_CLIENT, con_dbg_lognetwork, 0x0, "Log the network");
 	
 	/* reset the config */
+	config_init();
 	config_reset();
 }
 

@@ -12,6 +12,11 @@
 
 CONFIGURATION config;
 
+void config_init()
+{
+	LUA_REGISTER_FUNC(config)
+}
+
 void config_reset()
 {
     #define MACRO_CONFIG_INT(name,def,min,max,flags,desc) config.name = def;
