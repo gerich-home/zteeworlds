@@ -944,6 +944,11 @@ int fs_chdir(const char *path)
 		return 1;
 }
 
+int fs_remove(const char *filename)
+{
+	return remove(filename) == 0 ? 0 : 1;
+}
+
 void swap_endian(void *data, unsigned elem_size, unsigned num)
 {
 	char *src = (char*) data;

@@ -16,6 +16,8 @@ static int record_lasttickmarker = -1;
 static int record_lastkeyframe;
 static unsigned char record_lastsnapshotdata[MAX_SNAPSHOT_SIZE];
 
+static char old_record_filename[1024] = {0};
+
 int demorec_isrecording() { return record_file != 0; }
 
 int demorec_record_start(const char *filename, const char *netversion, const char *map, int crc, const char *type)
@@ -23,6 +25,8 @@ int demorec_record_start(const char *filename, const char *netversion, const cha
 	DEMOREC_HEADER header;
 	if(record_file)
 		return -1;
+		
+	old_record_filename[0] = 0;
 
 	record_file = engine_openfile(filename, IOFLAG_WRITE);
 	
@@ -46,6 +50,8 @@ int demorec_record_start(const char *filename, const char *netversion, const cha
 	
 	record_lastkeyframe = -1;
 	record_lasttickmarker = -1;
+	
+	mem_copy(old_record_filename, filename, str_length(filename) + 1);
 	
 	dbg_msg("demorec/record", "Recording to '%s'", filename);
 	return 0;
@@ -196,6 +202,23 @@ int demorec_record_stop()
 	io_close(record_file);
 	record_file = 0;
 	return 0;
+}
+
+int demorec_record_purge()
+{
+	int r;
+	char buf[1024];
+	r = demorec_record_stop();
+	if (r != 0) return r;
+	engine_savepath(old_record_filename, buf, sizeof(buf));
+	return fs_remove(buf);
+}
+
+const char * demorec_last_filename()
+{
+	char buf[1024];
+	engine_savepath(old_record_filename, buf, sizeof(buf));
+	return buf;
 }
 
 /* Playback */
@@ -635,5 +658,280 @@ int demorec_playback_stop()
 	play_file = 0;
 	mem_free(keyframes);
 	keyframes = 0;
+	return 0;
+}
+
+void demorec_make_first()
+{
+	playbackinfo.first_tick = playbackinfo.current_tick;
+}
+
+void demorec_make_last()
+{
+	playbackinfo.last_tick = playbackinfo.current_tick;
+}
+
+static DEMOREC_PLAYCALLBACK old_play_callback_snapshot = 0;
+static DEMOREC_PLAYCALLBACK old_play_callback_message = 0;
+
+static void demorec_rewrite_onsnapshot(void *data, int size)
+{
+	demorec_record_snapshot(playbackinfo.current_tick, data, size);
+	old_play_callback_snapshot(data, size);
+}
+
+static void demorec_rewrite_onmessage(void *data, int size)
+{
+	demorec_record_message(data, size);
+	old_play_callback_message(data, size);
+}
+
+int demorec_rewrite(const char * filename)
+{
+	if (!play_file || record_file)
+	{
+		dbg_msg("demorec/record", "Load demo or stop recording", filename);
+		return -1;
+	}
+
+	record_file = engine_openfile(filename, IOFLAG_WRITE);
+
+	if(!record_file)
+	{
+		dbg_msg("demorec/record", "Unable to open '%s' for recording", filename);
+		return -1;
+	}
+
+	io_write(record_file, &playbackinfo.header, sizeof(playbackinfo.header));
+
+	record_lastkeyframe = -1;
+	record_lasttickmarker = -1;
+
+	dbg_msg("demorec/record", "Re-recording to '%s'", filename);
+
+	{
+		int keyframe = playbackinfo.seekable_points - 1;
+
+		while (keyframe > 0 && keyframes[keyframe].tick > playbackinfo.first_tick)
+			keyframe--;
+
+		io_seek(play_file, keyframes[keyframe].filepos, IOSEEK_START);
+
+		playbackinfo.next_tick = -1;
+		playbackinfo.current_tick = -1;
+		playbackinfo.previous_tick = -1;
+	}
+
+	{
+		while(demorec_isplaying())
+		{
+			static char compresseddata[MAX_SNAPSHOT_SIZE];
+			static char decompressed[MAX_SNAPSHOT_SIZE];
+			static char data[MAX_SNAPSHOT_SIZE];
+			int chunk_size, chunk_type, chunk_tick;
+			int data_size;
+			int got_snapshot = 0;
+
+			/* update ticks */
+			playbackinfo.previous_tick = playbackinfo.current_tick;
+			playbackinfo.current_tick = playbackinfo.next_tick;
+			chunk_tick = playbackinfo.current_tick;
+
+			while(1)
+			{
+				int read_chunk_header_result = 0;
+				{
+					int * type = &chunk_type;
+					int * size = &chunk_size;
+					int * tick = &chunk_tick;
+
+					unsigned char chunk = 0;
+
+					*size = 0;
+					*type = 0;
+
+					if(io_read(play_file, &chunk, sizeof(chunk)) != sizeof(chunk))
+						read_chunk_header_result = -1;
+					else {
+
+						io_write(record_file, &chunk, sizeof(chunk));
+
+						if(chunk&CHUNKTYPEFLAG_TICKMARKER)
+						{
+							/* decode tick marker */
+							int tickdelta = chunk&(CHUNKMASK_TICK);
+							*type = chunk&(CHUNKTYPEFLAG_TICKMARKER|CHUNKTICKFLAG_KEYFRAME);
+
+							if(tickdelta == 0)
+							{
+								unsigned char tickdata[4];
+								if(io_read(play_file, tickdata, sizeof(tickdata)) != sizeof(tickdata))
+									read_chunk_header_result = -1;
+								else
+								{
+									io_write(record_file, tickdata, sizeof(tickdata));
+
+									*tick = (tickdata[0]<<24) | (tickdata[1]<<16) | (tickdata[2]<<8) | tickdata[3];
+								}
+							}
+							else
+							{
+								*tick += tickdelta;
+							}
+
+						}
+						else
+						{
+							/* decode normal chunk */
+							*type = (chunk&CHUNKMASK_TYPE)>>5;
+							*size = chunk&CHUNKMASK_SIZE;
+
+							if(*size == 30)
+							{
+								unsigned char sizedata[1];
+								if(io_read(play_file, sizedata, sizeof(sizedata)) != sizeof(sizedata))
+									read_chunk_header_result = -1;
+								else
+								{
+									io_write(record_file, sizedata, sizeof(sizedata));
+
+									*size = sizedata[0];
+								}
+
+							}
+							else if(*size == 31)
+							{
+								unsigned char sizedata[2];
+								if(io_read(play_file, sizedata, sizeof(sizedata)) != sizeof(sizedata))
+									read_chunk_header_result = -1;
+								else
+								{
+									io_write(record_file, sizedata, sizeof(sizedata));
+
+									*size = (sizedata[1]<<8) | sizedata[0];
+								}
+							}
+						}
+					}
+				}
+
+				if(read_chunk_header_result < 0)
+				{
+					/* stop on error or eof */
+					dbg_msg("demorec", "end of file");
+					io_close(play_file);
+					play_file = 0;
+					mem_free(keyframes);
+					keyframes = 0;
+					break;
+				}
+
+				/* read the chunk */
+				if(chunk_size)
+				{
+					if(io_read(play_file, compresseddata, chunk_size) != chunk_size)
+					{
+						/* stop on error or eof */
+						dbg_msg("demorec", "error reading chunk");
+						dbg_msg("demorec/playback", "Stopped playback");
+						io_close(play_file);
+						play_file = 0;
+						mem_free(keyframes);
+						keyframes = 0;
+
+						break;
+					}
+
+					io_write(record_file, compresseddata, chunk_size);
+
+					data_size = netcommon_decompress(compresseddata, chunk_size, decompressed, sizeof(decompressed));
+					if(data_size < 0)
+					{
+						/* stop on error or eof */
+						dbg_msg("demorec", "error during network decompression");
+						dbg_msg("demorec/playback", "Stopped playback");
+						io_close(play_file);
+						play_file = 0;
+						mem_free(keyframes);
+						keyframes = 0;
+
+						break;
+					}
+
+					data_size = intpack_decompress(decompressed, data_size, data);
+
+					if(data_size < 0)
+					{
+						dbg_msg("demorec", "error during intpack decompression");
+						dbg_msg("demorec/playback", "Stopped playback");
+						io_close(play_file);
+						play_file = 0;
+						mem_free(keyframes);
+						keyframes = 0;
+						break;
+					}
+				}
+
+				if(chunk_type == CHUNKTYPE_DELTA)
+				{
+					/* process delta snapshot */
+					static char newsnap[MAX_SNAPSHOT_SIZE];
+
+					got_snapshot = 1;
+
+					data_size = snapshot_unpack_delta((SNAPSHOT*)playback_lastsnapshotdata, (SNAPSHOT*)newsnap, data, data_size);
+
+					if(data_size >= 0)
+					{
+						playback_lastsnapshotdata_size = data_size;
+						mem_copy(playback_lastsnapshotdata, newsnap, data_size);
+					}
+					else
+						dbg_msg("demorec", "error duing unpacking of delta, err=%d", data_size);
+				}
+				else if(chunk_type == CHUNKTYPE_SNAPSHOT)
+				{
+					/* process full snapshot */
+					got_snapshot = 1;
+
+					playback_lastsnapshotdata_size = data_size;
+					mem_copy(playback_lastsnapshotdata, data, data_size);
+				}
+				else
+				{
+					/* if there were no snapshots in this tick, replay the last one */
+					if(!got_snapshot && play_callback_snapshot && playback_lastsnapshotdata_size != -1)
+					{
+						got_snapshot = 1;
+					}
+
+					/* check the remaining types */
+					if(chunk_type&CHUNKTYPEFLAG_TICKMARKER)
+					{
+						playbackinfo.next_tick = chunk_tick;
+						break;
+					}
+					else if(chunk_type == CHUNKTYPE_MESSAGE)
+					{
+					}
+				}
+			}
+
+			if (playbackinfo.current_tick >= playbackinfo.last_tick)
+				break;
+		}
+
+		playbackinfo.current_time = playbackinfo.previous_tick*time_freq()/SERVER_TICK_SPEED;
+		playbackinfo.last_update = time_get();
+	}
+
+	dbg_msg("demorec/record", "Stopped recording");
+	io_close(record_file);
+	record_file = 0;
+	io_close(play_file);
+	play_file = 0;
+	mem_free(keyframes);
+	keyframes = 0;
+
 	return 0;
 }

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 #include <base/system.h>
 #include <engine/e_engine.h>
@@ -1954,7 +1955,16 @@ static void con_record(void *result, void *user_data)
 	else
 	{
 		char filename[512];
-		str_format(filename, sizeof(filename), "demos/%s.demo", console_arg_string(result, 0));
+		if (console_arg_num(result))
+		{
+			str_format(filename, sizeof(filename), "demos/%s.demo", console_arg_string(result, 0));
+		} else {
+			char datestr[128];
+			time_t currtime = time(0);
+			struct tm * currtime_tm = localtime(&currtime);
+			strftime(datestr, sizeof(datestr), "%Y-%m-%d %H-%M-%S", currtime_tm);
+			str_format(filename, sizeof(filename), "demos/%s %03d (%s).demo", datestr, ((int)time(0))%1000, current_map);
+		}
 		demorec_record_start(filename, modc_net_version(), current_map, current_map_crc, "client");
 	}
 }
@@ -1962,6 +1972,11 @@ static void con_record(void *result, void *user_data)
 static void con_stoprecord(void *result, void *user_data)
 {
 	demorec_record_stop();
+}
+
+static void con_purgerecord(void *result, void *user_data)
+{
+	demorec_record_purge();
 }
 
 static void con_serverdummy(void *result, void *user_data)
@@ -1983,6 +1998,7 @@ static void client_register_commands()
 	MACRO_REGISTER_COMMAND("play", "r", CFGFLAG_CLIENT, con_play, 0x0, "Play the file specified");
 	MACRO_REGISTER_COMMAND("record", "s", CFGFLAG_CLIENT, con_record, 0, "Record to the file");
 	MACRO_REGISTER_COMMAND("stoprecord", "", CFGFLAG_CLIENT, con_stoprecord, 0, "Stop recording");
+	MACRO_REGISTER_COMMAND("purgerecord", "", CFGFLAG_CLIENT, con_purgerecord, 0, "Purge record");
 
 	MACRO_REGISTER_COMMAND("add_favorite", "s", CFGFLAG_CLIENT, con_addfavorite, 0x0, "Add a server as a favorite");
 	

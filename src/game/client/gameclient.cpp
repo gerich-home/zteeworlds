@@ -1,4 +1,5 @@
 #include <string.h>
+#include <time.h>
 #include <engine/e_client_interface.h>
 #include <engine/e_demorec.h>
 
@@ -103,6 +104,96 @@ static void con_serverdummy(void *result, void *user_data)
 	dbg_msg("client", "this command is not available on the client");
 }
 
+static void con_demo_makefirst(void *result, void *user_data)
+{
+	demorec_make_first();
+}
+
+static int _lua_demo_makefirst(lua_State * L)
+{
+	demorec_make_first();
+	return 0;
+}
+
+static void con_demo_makelast(void *result, void *user_data)
+{
+	demorec_make_last();
+}
+
+static int _lua_demo_makelast(lua_State * L)
+{
+	demorec_make_last();
+	return 0;
+}
+
+static void con_demo_rewrite(void *result, void *user_data)
+{
+	char filename[512];
+	if(console_arg_num(result) != 0)
+	{
+		str_format(filename, sizeof(filename), "demos/%s.demo", console_arg_string(result, 0));
+	} else {
+		const DEMOREC_PLAYBACKINFO * pbi = demorec_playback_info();
+		if (!pbi || !demorec_isplaying())
+		{
+			dbg_msg("demorec/record", "Load demo first");
+			return;
+		}
+		
+		char datestr[128];
+		time_t currtime = time(0);
+		struct tm * currtime_tm = localtime(&currtime);
+		strftime(datestr, sizeof(datestr), "%Y-%m-%d %H-%M-%S", currtime_tm);
+		
+		SERVER_INFO current_server_info;
+		client_serverinfo(&current_server_info);
+		
+		str_format(filename, sizeof(filename), "demos/%s %03d (%s).demo", datestr, ((int)time(0))%1000, current_server_info.map);
+	}
+	demorec_rewrite(filename);
+}
+
+static int _lua_demo_rewrite(lua_State * L)
+{
+	char filename[512];
+	int count = lua_gettop(L);
+	if(count > 0 && lua_isstring(L, 1))
+	{
+		str_format(filename, sizeof(filename), "demos/%s.demo", lua_tostring(L, 1));
+	} else {
+		const DEMOREC_PLAYBACKINFO * pbi = demorec_playback_info();
+		if (!pbi || !demorec_isplaying())
+		{
+			dbg_msg("demorec/record", "Load demo first");
+			return 0;
+		}
+		
+		char datestr[128];
+		time_t currtime = time(0);
+		struct tm * currtime_tm = localtime(&currtime);
+		strftime(datestr, sizeof(datestr), "%Y-%m-%d %H-%M-%S", currtime_tm);
+		
+		SERVER_INFO current_server_info;
+		client_serverinfo(&current_server_info);
+		
+		str_format(filename, sizeof(filename), "demos/%s %03d (%s).demo", datestr, ((int)time(0))%1000, current_server_info.map);
+	}
+	demorec_rewrite(filename);
+	
+	return 0;
+}
+
+static void con_resend_info(void *result, void *user_data)
+{
+	gameclient.send_info(false);
+}
+
+static int _lua_resend_info(lua_State * L)
+{
+	gameclient.send_info(false);
+	return 0;
+}
+
 static int _lua_team(lua_State * L)
 {
 	int count = lua_gettop(L);
@@ -190,8 +281,19 @@ void GAMECLIENT::on_console_init()
 	MACRO_REGISTER_COMMAND("team", "i", CFGFLAG_CLIENT, con_team, this, "Switch team");
 	MACRO_REGISTER_COMMAND("kill", "", CFGFLAG_CLIENT, con_kill, this, "Kill yourself");
 	
+	MACRO_REGISTER_COMMAND("resend_info", "", CFGFLAG_CLIENT, con_resend_info, this, "Resend information about player name, skin etc.");
+
+	MACRO_REGISTER_COMMAND("demo_makefirst", "", CFGFLAG_CLIENT, con_demo_makefirst, this, "");
+	MACRO_REGISTER_COMMAND("demo_makelast", "", CFGFLAG_CLIENT, con_demo_makelast, this, "");
+	MACRO_REGISTER_COMMAND("demo_rewrite", "?s", CFGFLAG_CLIENT, con_demo_rewrite, this, "");
+	
 	LUA_REGISTER_FUNC(team)
 	LUA_REGISTER_FUNC(kill)
+	
+	LUA_REGISTER_FUNC(resend_info)
+	LUA_REGISTER_FUNC(demo_makefirst)
+	LUA_REGISTER_FUNC(demo_makelast)
+	LUA_REGISTER_FUNC(demo_rewrite)
 	
 	_lua_gameclient_package_register();
 	

@@ -859,6 +859,15 @@ int fs_is_dir(const char *path);
 int fs_chdir(const char *path);
 
 /*
+	Function: fs_remove
+		Deletes file
+
+	Returns:
+		Returns 0 on success, 1 on failure.
+*/
+int fs_remove(const char *filename);
+
+/*
 	Group: Undocumented
 */
 
