@@ -234,6 +234,8 @@ void GAMECLIENT::on_console_init()
 	voting = &::voting;
 	infopan = &::infopan;
 	fastmenu = &::fastmenu;	
+	emoticon = &::emoticon;
+	scoreboard = &::scoreboard;
 	
 	// make a list of all the systems, make sure to add them in the corrent render order
 	all.add(skins);
@@ -258,14 +260,14 @@ void GAMECLIENT::on_console_init()
 	all.add(damageind);
 	all.add(&hud);
 	all.add(&record_state);
-	all.add(&emoticon);
+	all.add(emoticon);
 	all.add(fastmenu);
 	all.add(&killmessages);
 	all.add(infopan);
 	all.add(chat);
 	all.add(&broadcast);
 	all.add(&debughud);
-	all.add(&scoreboard);
+	all.add(scoreboard);
 	all.add(motd);
 	all.add(menus);
 	all.add(console);
@@ -277,7 +279,7 @@ void GAMECLIENT::on_console_init()
 	input.add(chat); // chat has higher prio due to tha you can quit it by pressing esc
 	input.add(motd); // for pressing esc to remove it
 	input.add(menus);
-	input.add(&emoticon);
+	input.add(emoticon);
 	input.add(fastmenu);
 	input.add(controls);
 	input.add(binds);

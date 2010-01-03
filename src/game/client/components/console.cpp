@@ -20,6 +20,7 @@
 
 #include <game/client/lineinput.hpp>
 #include <game/client/render.hpp>
+#include <game/client/gameclient.hpp>
 
 #include "console.hpp"
 
@@ -500,6 +501,18 @@ void CONSOLE::print_line(int type, const char *line)
 		remote_console.print_line(line);
 }
 
+static int _lua_toggle_local_console(lua_State * L)
+{
+	gameclient.console->toggle(0);
+	return 0;
+}
+
+static int _lua_toggle_remote_console(lua_State * L)
+{
+	gameclient.console->toggle(1);
+	return 0;
+}
+
 void CONSOLE::on_console_init()
 {
 	//
@@ -507,36 +520,7 @@ void CONSOLE::on_console_init()
 	
 	MACRO_REGISTER_COMMAND("toggle_local_console", "", CFGFLAG_CLIENT, con_toggle_local_console, this, "Toggle local console");
 	MACRO_REGISTER_COMMAND("toggle_remote_console", "", CFGFLAG_CLIENT, con_toggle_remote_console, this, "Toggle remote console");
+	
+	LUA_REGISTER_FUNC(toggle_local_console)
+	LUA_REGISTER_FUNC(toggle_remote_console)
 }
-
-/*
-static void con_team(void *result, void *user_data)
-{
-	send_switch_team(console_arg_int(result, 0));
-}
-
-static void con_kill(void *result, void *user_data)
-{
-	send_kill(-1);
-}
-
-void send_kill(int client_id);
-
-static void con_emote(void *result, void *user_data)
-{
-	send_emoticon(console_arg_int(result, 0));
-}
-
-extern void con_chat(void *result, void *user_data);
-
-void client_console_init()
-{
-	//
-	MACRO_REGISTER_COMMAND("team", "i", con_team, 0x0);
-	MACRO_REGISTER_COMMAND("kill", "", con_kill, 0x0);
-
-	// chatting
-	MACRO_REGISTER_COMMAND("emote", "i", con_emote, 0);
-	MACRO_REGISTER_COMMAND("+emote", "", con_key_input_state, &emoticon_selector_active);
-}
-*/

@@ -1,6 +1,8 @@
 #include <stdlib.h> // atoi
 #include <string.h> // strcmp
 #include <engine/e_client_interface.h>
+#include <engine/e_lua.h>
+#include <game/client/gameclient.hpp>
 #include "binds.hpp"
 
 bool BINDS::BINDS_SPECIAL::on_input(INPUT_EVENT e)
@@ -113,6 +115,69 @@ void BINDS::set_defaults()
 	bind(KEY_MOUSE_3, "+fastmenu");
 }
 
+static int _lua_bind(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 1 && lua_isstring(L, 1) && lua_isstring(L, 2))
+	{
+		const char * line = lua_tostring(L, 1);
+		const char * line2 = lua_tostring(L, 2);
+		
+		BINDS *binds = (BINDS *)gameclient.binds;
+		const char *key_name = line;
+		int id = binds->get_key_id(key_name);
+	
+		if(!id)
+		{
+			dbg_msg("binds", "key %s not found", key_name);
+			return 0;
+		}
+	
+		binds->bind(id, line2);
+	}
+	return 0;
+}
+
+static int _lua_unbind(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		BINDS *binds = (BINDS *)gameclient.binds;
+		const char *key_name = line;
+		int id = binds->get_key_id(key_name);
+	
+		if(!id)
+		{
+			dbg_msg("binds", "key %s not found", key_name);
+			return 0;
+		}
+	
+		binds->bind(id, "");		
+	}
+	return 0;
+}
+
+static int _lua_unbindall(lua_State * L)
+{
+	BINDS *binds = (BINDS *)gameclient.binds;
+	binds->unbindall();
+	return 0;
+}
+
+static int _lua_dump_binds(lua_State * L)
+{
+	BINDS *binds = (BINDS *)gameclient.binds;
+	for(int i = 0; i < KEY_LAST; i++)
+	{
+		if(binds->get(i)[0] == 0)
+			continue;
+		dbg_msg("binds", "%s (%d) = %s", inp_key_name(i), i, binds->get(i));
+	}
+	return 0;
+}
+
 void BINDS::on_console_init()
 {
 	// bindings
@@ -120,6 +185,11 @@ void BINDS::on_console_init()
 	MACRO_REGISTER_COMMAND("unbind", "s", CFGFLAG_CLIENT, con_unbind, this, "Unbind key");
 	MACRO_REGISTER_COMMAND("unbindall", "", CFGFLAG_CLIENT, con_unbindall, this, "Unbind all keys");
 	MACRO_REGISTER_COMMAND("dump_binds", "", CFGFLAG_CLIENT, con_dump_binds, this, "Dump binds");
+	
+	LUA_REGISTER_FUNC(bind)
+	LUA_REGISTER_FUNC(unbind)
+	LUA_REGISTER_FUNC(unbindall)
+	LUA_REGISTER_FUNC(dump_binds)
 	
 	// default bindings
 	set_defaults();

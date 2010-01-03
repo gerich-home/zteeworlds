@@ -6,6 +6,8 @@
 #include <game/client/components/chat.hpp>
 #include <game/client/components/menus.hpp>
 
+#include <engine/e_lua.h>
+
 #include "controls.hpp"
 
 CONTROLS::CONTROLS()
@@ -45,6 +47,105 @@ static void con_key_input_nextprev_weapon(void *result, void *user_data)
 	set->controls->input_data.wanted_weapon = 0;
 }
 
+static int _lua_move_left(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.controls->input_direction_left = value;
+	return 0;
+}
+
+static int _lua_move_right(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.controls->input_direction_right = value;
+	return 0;
+}
+
+static int _lua_jump(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.controls->input_data.jump = value;
+	return 0;
+}
+
+static int _lua_hook(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.controls->input_data.hook = value;
+	return 0;
+}
+
+static int _lua_fire(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.controls->input_data.fire = value;
+	return 0;
+}
+
+static int _lua_next_weapon(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.controls->input_data.next_weapon = value;
+	return 0;
+}
+
+static int _lua_prev_weapon(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.controls->input_data.prev_weapon = value;
+	return 0;
+}
+
+static int _lua_weapon(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		int value = 1;
+		value = lua_tointeger(L, 1);
+		if (value > 0 && value < NUM_WEAPONS)
+		{
+			gameclient.controls->input_data.wanted_weapon = value;
+		}
+	}
+	return 0;
+}
+
 void CONTROLS::on_console_init()
 {
 	// game commands
@@ -62,6 +163,15 @@ void CONTROLS::on_console_init()
 
 	{ static INPUTSET set = {this, &input_data.next_weapon, 0};  MACRO_REGISTER_COMMAND("+nextweapon", "", CFGFLAG_CLIENT, con_key_input_nextprev_weapon, (void *)&set, "Switch to next weapon"); }
 	{ static INPUTSET set = {this, &input_data.prev_weapon, 0};  MACRO_REGISTER_COMMAND("+prevweapon", "", CFGFLAG_CLIENT, con_key_input_nextprev_weapon, (void *)&set, "Switch to previous weapon"); }
+	
+	LUA_REGISTER_FUNC(move_left)
+	LUA_REGISTER_FUNC(move_right)
+	LUA_REGISTER_FUNC(jump)
+	LUA_REGISTER_FUNC(hook)
+	LUA_REGISTER_FUNC(fire)
+	LUA_REGISTER_FUNC(prev_weapon)
+	LUA_REGISTER_FUNC(next_weapon)
+	LUA_REGISTER_FUNC(weapon)
 }
 
 void CONTROLS::on_message(int msg, void *rawmsg)

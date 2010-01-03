@@ -50,8 +50,6 @@ class CONSOLE : public COMPONENT
 	float state_change_duration;
 
 
-	void toggle(int type);
-
 	static void possible_commands_render_callback(const char *str, void *user);
 	static void client_console_print_callback(const char *str, void *user_data);
 	static void con_toggle_local_console(void *result, void *user_data);
@@ -59,6 +57,8 @@ class CONSOLE : public COMPONENT
 	
 public:
 	CONSOLE();
+	
+	void toggle(int type);
 
 	void print_line(int type, const char *line);
 

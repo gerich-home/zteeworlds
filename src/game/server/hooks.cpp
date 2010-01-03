@@ -8,6 +8,7 @@
 #include <engine/e_config.h>
 #include <engine/e_server_interface.h>
 #include <engine/e_memheap.h>
+#include <engine/e_lua.h>
 
 #include <game/version.hpp>
 #include <game/collision.hpp>
@@ -398,6 +399,25 @@ void mods_message(int msgtype, int client_id)
 	}
 }
 
+static int _lua_tune(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 1 && lua_isstring(L, 1) && lua_isnumber(L, 2))
+	{
+		const char *param_name = lua_tostring(L, 1);
+		float new_value = lua_tonumber(L, 2);
+
+		if(tuning.set(param_name, new_value))
+		{
+			dbg_msg("tuning", "%s changed to %.2f", param_name, new_value);
+			send_tuning_params(-1);
+		}
+		else
+			console_print("No such tuning parameter");
+	}
+	return 0;
+}
+
 static void con_tune_param(void *result, void *user_data)
 {
 	const char *param_name = console_arg_string(result, 0);
@@ -412,12 +432,32 @@ static void con_tune_param(void *result, void *user_data)
 		console_print("No such tuning parameter");
 }
 
+static int _lua_tune_reset(lua_State * L)
+{
+	TUNING_PARAMS p;
+	tuning = p;
+	send_tuning_params(-1);
+	console_print("tuning reset");	
+	return 0;
+}
+
 static void con_tune_reset(void *result, void *user_data)
 {
 	TUNING_PARAMS p;
 	tuning = p;
 	send_tuning_params(-1);
 	console_print("tuning reset");
+}
+
+static int _lua_tune_dump(lua_State * L)
+{
+	for(int i = 0; i < tuning.num(); i++)
+	{
+		float v;
+		tuning.get(i, &v);
+		dbg_msg("tuning", "%s %.2f", tuning.names[i], v);
+	}	
+	return 0;
 }
 
 static void con_tune_dump(void *result, void *user_data)
@@ -430,10 +470,31 @@ static void con_tune_dump(void *result, void *user_data)
 	}
 }
 
+static int _lua_change_map(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		game.controller->change_map(lua_tostring(L, 1));
+	}
+	return 0;
+}
 
 static void con_change_map(void *result, void *user_data)
 {
 	game.controller->change_map(console_arg_string(result, 0));
+}
+
+static int _lua_restart(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		game.controller->do_warmup(lua_tointeger(L, 1));
+	} else {
+		game.controller->startround();
+	}
+	return 0;
 }
 
 static void con_restart(void *result, void *user_data)
@@ -444,14 +505,53 @@ static void con_restart(void *result, void *user_data)
 		game.controller->startround();
 }
 
+static int _lua_broadcast(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		game.send_broadcast(lua_tostring(L, 1), -1);
+	}
+	return 0;
+}
+
 static void con_broadcast(void *result, void *user_data)
 {
 	game.send_broadcast(console_arg_string(result, 0), -1);
 }
 
+static int _lua_say(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		game.send_chat(-1, GAMECONTEXT::CHAT_ALL, lua_tostring(L, 1));
+	}
+	return 0;
+}
+
 static void con_say(void *result, void *user_data)
 {
 	game.send_chat(-1, GAMECONTEXT::CHAT_ALL, console_arg_string(result, 0));
+}
+
+static int _lua_set_team(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 1 && lua_isnumber(L, 1) && lua_isnumber(L, 2))
+	{
+		int client_id = clamp(lua_tointeger(L, 1), 0, (int)MAX_CLIENTS);
+		int team = clamp(lua_tointeger(L, 2), -1, 1);
+	
+		dbg_msg("", "%d %d", client_id, team);
+	
+		if(!game.players[client_id])
+			return 0;
+	
+		game.players[client_id]->set_team(team);
+		(void) game.controller->check_team_balance();
+	}
+	return 0;
 }
 
 static void con_set_team(void *result, void *user_data)
@@ -466,6 +566,31 @@ static void con_set_team(void *result, void *user_data)
 	
 	game.players[client_id]->set_team(team);
 	(void) game.controller->check_team_balance();
+}
+
+static int _lua_addvote(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		int len = strlen(lua_tostring(L, 1));
+	
+		if(!voteoption_heap)
+			voteoption_heap = memheap_create();
+	
+		VOTEOPTION *option = (VOTEOPTION *)memheap_allocate(voteoption_heap, sizeof(VOTEOPTION) + len);
+		option->next = 0;
+		option->prev = voteoption_last;
+		if(option->prev)
+			option->prev->next = option;
+		voteoption_last = option;
+		if(!voteoption_first)
+			voteoption_first = option;
+	
+		mem_copy(option->command, lua_tostring(L, 1), len+1);
+		dbg_msg("server", "added option '%s'", option->command);
+	}
+	return 0;
 }
 
 static void con_addvote(void *result, void *user_data)
@@ -486,6 +611,39 @@ static void con_addvote(void *result, void *user_data)
 	
 	mem_copy(option->command, console_arg_string(result, 0), len+1);
 	dbg_msg("server", "added option '%s'", option->command);
+}
+
+static int _lua_vote(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0)
+	{
+		if (lua_isstring(L, 1))
+		{
+			if(str_comp_nocase(lua_tostring(L, 1), "yes") == 0)
+				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_YES;
+			else if(str_comp_nocase(lua_tostring(L, 1), "no") == 0)
+				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_NO;
+			dbg_msg("server", "forcing vote %s", lua_tostring(L, 1));
+		} else
+		if (lua_isnumber(L, 1))
+		{
+			if(lua_tointeger(L, 1) != 0)
+				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_YES;
+			if(lua_tointeger(L, 1) == 0)
+				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_NO;
+			dbg_msg("server", "forcing vote %s", lua_tointeger(L, 1) != 0 ? "yes" : "no");
+		} else
+		if (lua_isboolean(L, 1))
+		{
+			if(lua_toboolean(L, 1) != 0)
+				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_YES;
+			if(lua_toboolean(L, 1) == 0)
+				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_NO;
+			dbg_msg("server", "forcing vote %s", lua_toboolean(L, 1) != 0 ? "yes" : "no");
+		}
+	}
+	return 0;
 }
 
 static void con_vote(void *result, void *user_data)
@@ -511,6 +669,17 @@ void mods_console_init()
 
 	MACRO_REGISTER_COMMAND("addvote", "r", CFGFLAG_SERVER, con_addvote, 0, "");
 	MACRO_REGISTER_COMMAND("vote", "r", CFGFLAG_SERVER, con_vote, 0, "");
+	
+	LUA_REGISTER_FUNC(tune)
+	LUA_REGISTER_FUNC(tune_reset)
+	LUA_REGISTER_FUNC(tune_dump)
+	LUA_REGISTER_FUNC(change_map)
+	LUA_REGISTER_FUNC(restart)
+	LUA_REGISTER_FUNC(broadcast)
+	LUA_REGISTER_FUNC(say)
+	LUA_REGISTER_FUNC(set_team)
+	LUA_REGISTER_FUNC(addvote)
+	LUA_REGISTER_FUNC(vote)
 }
 
 void mods_init()

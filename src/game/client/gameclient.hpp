@@ -169,6 +169,8 @@ public:
 	class VOTING *voting;
 	class INFOPAN *infopan;
 	class FASTMENU *fastmenu;
+	class EMOTICON *emoticon;
+	class SCOREBOARD *scoreboard;
 };
 
 extern GAMECLIENT gameclient;

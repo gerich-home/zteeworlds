@@ -2,8 +2,49 @@
 #include <game/generated/g_protocol.hpp>
 #include <base/vmath.hpp>
 #include <game/client/render.hpp>
-//#include <game/client/gameclient.hpp>
+#include <engine/e_lua.h>
+#include <game/client/gameclient.hpp>
 #include "voting.hpp"
+
+static int _lua_callvote(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 1 && lua_isstring(L, 1) && lua_isstring(L, 2))
+	{
+		gameclient.voting->callvote(lua_tostring(L, 1), lua_tostring(L, 2));
+	}
+	return 0;
+}
+
+static int _lua_vote(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0)
+	{
+		if (lua_isstring(L, 1))
+		{
+			if(str_comp_nocase(lua_tostring(L, 1), "yes") == 0)
+				gameclient.voting->vote(1);
+			else if(str_comp_nocase(lua_tostring(L, 1), "no") == 0)
+				gameclient.voting->vote(-1);                     
+		} else
+		if (lua_isnumber(L, 1))
+		{
+			if(lua_tointeger(L, 1) != 0)
+				gameclient.voting->vote(1);
+			if(lua_tointeger(L, 1) == 0)
+				gameclient.voting->vote(-1);                       
+		} else
+		if (lua_isboolean(L, 1))
+		{
+			if(lua_toboolean(L, 1) != 0)
+				gameclient.voting->vote(1);
+			if(lua_toboolean(L, 1) == 0)
+				gameclient.voting->vote(-1);                     
+		}
+	}
+	return 0;
+}
 
 void VOTING::con_callvote(void *result, void *user_data)
 {
@@ -90,6 +131,9 @@ void VOTING::on_console_init()
 {
 	MACRO_REGISTER_COMMAND("callvote", "sr", CFGFLAG_CLIENT, con_callvote, this, "Call vote");
 	MACRO_REGISTER_COMMAND("vote", "r", CFGFLAG_CLIENT, con_vote, this, "Vote yes/no");
+	
+	LUA_REGISTER_FUNC(callvote)
+	LUA_REGISTER_FUNC(vote)
 }
 
 void VOTING::on_message(int msgtype, void *rawmsg)

@@ -10,12 +10,12 @@ class SCOREBOARD : public COMPONENT
 	
 	void render_new();
 	
-	bool active;
-	
 public:
 	SCOREBOARD();
 	virtual void on_reset();
 	virtual void on_console_init();
 	virtual void on_render();
+	
+	bool active;
 };
 

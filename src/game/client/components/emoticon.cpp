@@ -23,10 +23,37 @@ void EMOTICON::con_emote(void *result, void *user_data)
 	((EMOTICON *)user_data)->emote(console_arg_int(result, 0));
 }
 
+static int _lua_emote(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		gameclient.emoticon->emote(lua_tointeger(L, 1));
+	} else {
+		gameclient.emoticon->active = 1;
+	}
+	return 0;
+}
+
+static int _lua_select_emote(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.emoticon->active = value;
+	return 0;
+}
+
 void EMOTICON::on_console_init()
 {
 	MACRO_REGISTER_COMMAND("+emote", "", CFGFLAG_CLIENT, con_key_emoticon, this, "Open emote selector");
 	MACRO_REGISTER_COMMAND("emote", "i", CFGFLAG_CLIENT, con_emote, this, "Use emote");
+	
+	LUA_REGISTER_FUNC(emote)
+	LUA_REGISTER_FUNC(select_emote)
 }
 
 void EMOTICON::on_reset()

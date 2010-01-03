@@ -8,6 +8,8 @@
 #include <game/client/components/motd.hpp>
 #include "scoreboard.hpp"
 
+#include <engine/e_lua.h>
+
 
 SCOREBOARD::SCOREBOARD()
 {
@@ -24,9 +26,23 @@ void SCOREBOARD::on_reset()
 	active = false;
 }
 
+static int _lua_scoreboard(lua_State * L)
+{
+	int count = lua_gettop(L);
+	int value = 1;
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		value = lua_tointeger(L, 1);
+	}
+	gameclient.scoreboard->active = value;
+	return 0;
+}
+
 void SCOREBOARD::on_console_init()
 {
 	MACRO_REGISTER_COMMAND("+scoreboard", "", CFGFLAG_CLIENT, con_key_scoreboard, this, "Show scoreboard");
+	
+	LUA_REGISTER_FUNC(scoreboard)
 }
 
 void SCOREBOARD::render_goals(float x, float y, float w)

@@ -6,7 +6,6 @@ class EMOTICON : public COMPONENT
 	void draw_circle(float x, float y, float r, int segments);
 	
 	bool was_active;
-	bool active;
 	
 	vec2 selector_mouse;
 	int selected_emote;
@@ -15,6 +14,8 @@ class EMOTICON : public COMPONENT
 	static void con_emote(void *result, void *user_data);
 	
 public:
+	bool active;
+
 	EMOTICON();
 	
 	virtual void on_reset();

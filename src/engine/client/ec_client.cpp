@@ -1900,6 +1900,85 @@ static void con_addfavorite(void *result, void *user_data)
 		client_serverbrowse_addfavorite(addr);
 }
 
+static int _lua_connect(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * server = lua_tostring(L, 1);
+		str_copy(cmd_connect, server, strlen(server) + 1);
+	}
+	return 0;
+}
+
+static int _lua_disconnect(lua_State * L)
+{
+	client_disconnect();
+	return 0;
+}
+
+static int _lua_quit(lua_State * L)
+{
+	client_quit();
+	return 0;
+}
+
+static int _lua_exit(lua_State * L)
+{
+	client_quit();
+	return 0;
+}
+
+static int _lua_ping(lua_State * L)
+{
+	msg_pack_start_system(NETMSG_PING, 0);
+	msg_pack_end();
+	client_send_msg();
+	ping_start_time = time_get();
+	return 0;
+}
+
+static int _lua_screenshot(lua_State * L)
+{
+	gfx_screenshot();
+	return 0;
+}
+
+static int _lua_rcon(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		client_rcon(line);
+	}
+	return 0;
+}
+
+static int _lua_rcon_auth(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		client_rcon_auth("", line);
+	}
+	return 0;
+}
+
+static int _lua_add_favorite(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * server = lua_tostring(L, 1);
+		NETADDR addr;
+		if(net_addr_from_str(&addr, server) == 0)
+			client_serverbrowse_addfavorite(addr);		
+	}
+	return 0;
+}
+
 void client_demoplayer_play(const char *filename)
 {
 	int crc;
@@ -1941,6 +2020,42 @@ void client_demoplayer_play(const char *filename)
 	
 	demorec_playback_play();
 	modc_entergame();
+}
+
+static int _lua_play(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		client_demoplayer_play(line);		
+	}
+	return 0;
+}
+
+static int _lua_record(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		char filename[512];
+		str_format(filename, sizeof(filename), "demos/%s.demo", line);
+		demorec_record_start(filename, modc_net_version(), current_map, current_map_crc, "client");		
+	}
+	return 0;
+}
+
+static int _lua_stoprecord(lua_State * L)
+{
+	demorec_record_stop();
+	return 0;
+}
+
+static int _lua_purgerecord(lua_State * L)
+{
+	demorec_record_purge();
+	return 0;
 }
 
 static void con_play(void *result, void *user_data)
@@ -1986,6 +2101,20 @@ static void con_serverdummy(void *result, void *user_data)
 
 static void client_register_commands()
 {
+	LUA_REGISTER_FUNC(connect)
+	LUA_REGISTER_FUNC(disconnect)
+	LUA_REGISTER_FUNC(quit)
+	LUA_REGISTER_FUNC(exit)
+	LUA_REGISTER_FUNC(ping)
+	LUA_REGISTER_FUNC(screenshot)
+	LUA_REGISTER_FUNC(rcon)
+	LUA_REGISTER_FUNC(rcon_auth)
+	LUA_REGISTER_FUNC(add_favorite)
+	LUA_REGISTER_FUNC(play)
+	LUA_REGISTER_FUNC(record)
+	LUA_REGISTER_FUNC(stoprecord)
+	LUA_REGISTER_FUNC(purgerecord)
+	
 	MACRO_REGISTER_COMMAND("quit", "", CFGFLAG_CLIENT, con_quit, 0x0, "Quit Teeworlds");
 	MACRO_REGISTER_COMMAND("exit", "", CFGFLAG_CLIENT, con_quit, 0x0, "Quit Teeworlds");
 	MACRO_REGISTER_COMMAND("connect", "s", CFGFLAG_CLIENT, con_connect, 0x0, "Connect to the specified host/ip");

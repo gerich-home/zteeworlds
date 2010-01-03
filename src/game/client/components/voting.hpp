@@ -16,7 +16,6 @@ class VOTING : public COMPONENT
 	int voted;
 	
 	void clearoptions();
-	void callvote(const char *type, const char *value);
 	
 public:
 
@@ -34,6 +33,8 @@ public:
 	virtual void on_console_init();
 	virtual void on_message(int msgtype, void *rawmsg);
 	virtual void on_render();
+	
+	void callvote(const char *type, const char *value);
 	
 	void render_bars(RECT bars, bool text);
 	

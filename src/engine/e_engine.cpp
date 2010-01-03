@@ -29,6 +29,17 @@ static void con_dbg_lognetwork(void *result, void *user_data)
 	netcommon_openlog("network_sent.dat", "network_recv.dat");
 }
 
+static int _lua_dbg_dumpmem(lua_State * L)
+{
+	mem_debug_dump();
+	return 0;
+}
+
+static int _lua_dbg_lognetwork(lua_State * L)
+{
+	netcommon_openlog("network_sent.dat", "network_recv.dat");
+	return 0;
+}
 
 static char application_save_path[512] = {0};
 static char datadir[512] = {0};
@@ -88,6 +99,9 @@ void engine_init(const char *appname)
 
 	MACRO_REGISTER_COMMAND("dbg_dumpmem", "", CFGFLAG_SERVER|CFGFLAG_CLIENT, con_dbg_dumpmem, 0x0, "Dump the memory");
 	MACRO_REGISTER_COMMAND("dbg_lognetwork", "", CFGFLAG_SERVER|CFGFLAG_CLIENT, con_dbg_lognetwork, 0x0, "Log the network");
+	
+	LUA_REGISTER_FUNC(dbg_dumpmem)
+	LUA_REGISTER_FUNC(dbg_lognetwork)
 	
 	/* reset the config */
 	config_init();
