@@ -52,15 +52,58 @@ void CHAT::on_console_init()
 bool CHAT::on_input(INPUT_EVENT e)
 {
 	if(mode == MODE_NONE)
+	{
+		curr_history_line = -1;
 		return false;
+	}
 
 	if(e.flags&INPFLAG_PRESS && e.key == KEY_ESCAPE)
 		mode = MODE_NONE;
 	else if(e.flags&INPFLAG_PRESS && (e.key == KEY_RETURN || e.key == KEY_KP_ENTER))
 	{
 		if(input.get_string()[0])
+		{
 			gameclient.chat->say(mode == MODE_ALL ? 0 : 1, input.get_string());
+			if (history_count == 0 || str_comp_nocase(input.get_string(), history[history_count - 1].text) != 0)
+			{
+				if (history_count == MAX_HISTORY_LINES)
+				{
+					for (int i = 1; i < MAX_HISTORY_LINES; i++)
+						str_copy(history[i - 1].text, history[i].text, sizeof(history[0].text));
+					str_copy(history[history_count - 1].text, input.get_string(), sizeof(history[0].text));
+				} else {
+					str_copy(history[history_count].text, input.get_string(), sizeof(history[0].text));
+					history_count++;
+				}
+			}
+		}
 		mode = MODE_NONE;
+	}
+	else if (e.flags&INPFLAG_PRESS && e.key == KEY_UP)
+	{
+		if (curr_history_line < 0) curr_history_line = history_count;
+		curr_history_line--;
+
+		if (curr_history_line < 0) curr_history_line = 0;
+		if (curr_history_line >= history_count || history_count == 0)
+			input.set("");
+		else
+		{
+			input.set(history[curr_history_line].text);
+		}
+	}
+	else if (e.flags&INPFLAG_PRESS && e.key == KEY_DOWN)
+	{
+		if (curr_history_line <= history_count)
+		{
+			curr_history_line++;
+			input.set(history[curr_history_line].text);
+		}
+		else
+		{
+			curr_history_line = -1;
+			input.set("");
+		}
 	}
 	else
 		input.process_input(e);
@@ -134,7 +177,7 @@ void CHAT::on_render()
 {
 	gfx_mapscreen(0,0,300*gfx_screenaspect(),300);
 	float x = 10.0f;
-	float y = 300.0f-20.0f;
+	float y = 300.0f-28.0f;
 	if(mode != MODE_NONE)
 	{
 		// render chat input
@@ -176,7 +219,7 @@ void CHAT::on_render()
 		y -= cursor.y + cursor.font_size;
 
 		// cut off if msgs waste too much space
-		if(y < 200.0f)
+		if(y < 208.0f)
 			break;
 		
 		// reset the cursor
