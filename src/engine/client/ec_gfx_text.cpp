@@ -268,7 +268,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 							gfx_quads_setsubset(0.0f, 0.0f, chr->tex_w, chr->tex_h);
 						}
 						
-						gfx_quads_drawTL(draw_x + chr->x_offset * size, draw_y + chr->y_offset * size, chr->w * size, chr->h * size);
+						gfx_quads_drawTL(draw_x + chr->x_offset * size, draw_y + chr->y_offset * size * 0.9f, chr->w * size, chr->h * size);
 						
 						prev_utf8 = true;
 					}
