@@ -5,6 +5,8 @@
 #include <game/generated/g_protocol.hpp>
 #include <game/generated/gc_data.hpp>
 
+#include <engine/e_lua.h>
+
 #include <game/layers.hpp>
 #include "render.hpp"
 
@@ -101,6 +103,24 @@ static void con_serverdummy(void *result, void *user_data)
 	dbg_msg("client", "this command is not available on the client");
 }
 
+static int _lua_team(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isnumber(L, 1))
+	{
+		gameclient.send_switch_team(lua_tointeger(L, 1));
+	}
+	return 0;
+}
+
+static int _lua_kill(lua_State * L)
+{
+	gameclient.send_kill(-1);
+	return 0;
+}
+
+void _lua_gameclient_package_register();
+
 void GAMECLIENT::on_console_init()
 {
 	// setup pointers
@@ -169,6 +189,11 @@ void GAMECLIENT::on_console_init()
 	// add the some console commands
 	MACRO_REGISTER_COMMAND("team", "i", CFGFLAG_CLIENT, con_team, this, "Switch team");
 	MACRO_REGISTER_COMMAND("kill", "", CFGFLAG_CLIENT, con_kill, this, "Kill yourself");
+	
+	LUA_REGISTER_FUNC(team)
+	LUA_REGISTER_FUNC(kill)
+	
+	_lua_gameclient_package_register();
 	
 	// register server dummy commands for tab completion
 	MACRO_REGISTER_COMMAND("tune", "si", CFGFLAG_SERVER, con_serverdummy, 0, "Tune variable to value");
@@ -900,4 +925,140 @@ void GAMECLIENT::con_team(void *result, void *user_data)
 void GAMECLIENT::con_kill(void *result, void *user_data)
 {
 	((GAMECLIENT*)user_data)->send_kill(-1);
+}
+
+static int _lua_gameclient_connected(lua_State * L)
+{
+	lua_pushboolean(L, gameclient.snap.gameobj != NULL);
+	return 1;
+}
+
+static int _lua_gameclient_local_cid(lua_State * L)
+{
+	lua_pushinteger(L, gameclient.snap.local_cid);
+	return 1;
+}
+
+static int _lua_gameclient_num_players(lua_State * L)
+{
+	lua_pushinteger(L, gameclient.snap.num_players);
+	return 1;
+}
+
+static int _lua_gameclient_player_info(lua_State * L)
+{
+	if (!gameclient.snap.gameobj)
+		return 0;   
+
+	int count = lua_gettop(L);
+	if (count < 2 || !lua_isnumber(L, 1) || !lua_isstring(L, 2)) return 0;
+                          
+	int cid = lua_tointeger(L, 1);
+	if (cid < -1 || cid >= MAX_CLIENTS) return 0;
+                        
+	if (cid == -1)
+		cid = gameclient.snap.local_cid;
+
+	const char * action = lua_tostring(L, 2);
+
+	if (str_comp_nocase(action, "ingame") == 0)
+	{
+		bool ingame = false;
+		for(int i = 0; i < snap_num_items(SNAP_CURRENT); i++)
+		{
+			SNAP_ITEM item;
+			const void *data = snap_get_item(SNAP_CURRENT, i, &item);
+
+			if(item.type == NETOBJTYPE_PLAYER_INFO)
+			{
+				const NETOBJ_PLAYER_INFO *info = (const NETOBJ_PLAYER_INFO *)data;
+				if(info->cid == cid)
+				{
+					ingame = true;
+					break;
+				}
+			}
+		}
+		lua_pushboolean(L, ingame);
+		return 1;
+	}
+
+	if (str_comp_nocase(action, "active") == 0)
+	{
+		lua_pushboolean(L, gameclient.snap.characters[cid].active);
+		return 1;
+	}
+
+	if (str_comp_nocase(action, "name") == 0)
+	{
+		lua_pushstring(L, gameclient.clients[cid].name);
+		return 1;
+	}
+
+	if (str_comp_nocase(action, "skin_name") == 0)
+	{
+		lua_pushstring(L, gameclient.clients[cid].skin_name);
+		return 1;
+	}
+
+	if (str_comp_nocase(action, "team") == 0)
+	{
+		lua_pushinteger(L, gameclient.clients[cid].team);
+		return 1;
+	}
+
+#define CHARACTER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
+	{ \
+		lua_pushinteger(L, gameclient.snap.characters[cid].cur.##name); \
+		return 1; \
+	} \
+	if (str_comp_nocase(action, "prev_"#name ) == 0) \
+	{ \
+		lua_pushinteger(L, gameclient.snap.characters[cid].prev.##name); \
+		return 1; \
+	}
+
+CHARACTER_VAR(tick)
+CHARACTER_VAR(x)
+CHARACTER_VAR(y)
+CHARACTER_VAR(vx)
+CHARACTER_VAR(vy)
+CHARACTER_VAR(angle)
+CHARACTER_VAR(direction)
+CHARACTER_VAR(jumped)
+CHARACTER_VAR(hooked_player)
+CHARACTER_VAR(hook_state)
+CHARACTER_VAR(hook_tick)
+CHARACTER_VAR(hook_x)
+CHARACTER_VAR(hook_y)
+CHARACTER_VAR(hook_dx)
+CHARACTER_VAR(hook_dy)
+CHARACTER_VAR(player_state)
+CHARACTER_VAR(health)
+CHARACTER_VAR(armor)
+CHARACTER_VAR(ammocount)
+CHARACTER_VAR(weapon)
+CHARACTER_VAR(emote)
+CHARACTER_VAR(attacktick)
+
+#undef CHARACTER_VAR
+
+	return 0;
+}
+
+static const luaL_reg gameclient_lib[] = {
+#define LUA_LIB_FUNC(name) { #name , _lua_gameclient_##name },
+
+LUA_LIB_FUNC(connected)
+LUA_LIB_FUNC(local_cid)
+LUA_LIB_FUNC(num_players)
+LUA_LIB_FUNC(player_info)
+
+#undef LUA_LIB_FUNC
+	{NULL, NULL}
+};
+
+void _lua_gameclient_package_register()
+{
+	luaL_register(GetLuaState(), "gameclient", gameclient_lib);
 }
