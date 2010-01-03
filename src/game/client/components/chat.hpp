@@ -46,7 +46,6 @@ class CHAT : public COMPONENT
 	static void con_say(void *result, void *user_data);
 	static void con_sayteam(void *result, void *user_data);
 	static void con_chat(void *result, void *user_data);
-	
 public:
 	bool is_active() const { return mode != MODE_NONE; }
 	

@@ -602,6 +602,10 @@ void MENUS::render_settings_graphics(RECT main_view)
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 	if (ui_do_button(&config.gfx_freetype_font, "Use FreeType for displaying text", config.gfx_freetype_font, &button, ui_draw_checkbox, 0))
 		config.gfx_freetype_font ^= 1;
+		
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.gfx_smileys, "Smileys", config.gfx_smileys, &button, ui_draw_checkbox, 0))
+		config.gfx_smileys ^= 1;
 }
 
 void MENUS::render_settings_sound(RECT main_view)

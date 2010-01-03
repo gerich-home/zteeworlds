@@ -1,4 +1,5 @@
 #include <string.h> // strcmp
+#include <ctype.h>
 
 #include <engine/e_client_interface.h>
 #include <game/generated/g_protocol.hpp>
@@ -11,6 +12,29 @@
 #include <engine/e_lua.h>
 
 #include "chat.hpp"
+
+static const int smileys_count = 16;
+static const int smileys_texts_per_smile = 4;
+static const int smileys_texts_count = smileys_count * smileys_texts_per_smile;
+
+static const char * smileys_texts[16][4] = {
+	{":D",			"=D",			":-D",		""},
+	{"8)",			"8-)",			":cool:",	"*cool*"},
+	{":/",			":-/",			":\\",		":-\\"},
+	{":lol:",		"*lol*",		":rofl:",	"*rofl*"},
+	{":mad:",		"*mad*",		":evil:",	"*evil*"},
+	{":|",			":-|",			"=|",		""},
+	{":rolleyes:",	"*rolleyes*",	"",			""},
+	{":(",			":-(",			"=(",		""},
+	{":)",			":-)",			"=)",		""},
+	{":P",			":-P",			"=P",		""},
+	{";)",			";-)",			"",			""},
+	{":O",			":-O",			"=O",		""},
+	{"",			"",				"",			""},
+	{"",			"",				"",			""},
+	{"",			"",				"",			""},
+	{"",			"",				"",			""}
+};
 
 void CHAT::on_statechange(int new_state, int old_state)
 {
@@ -294,7 +318,69 @@ void CHAT::on_render()
 		else if(lines[r].team)
 			gfx_text_color(0.65f,1,0.65f,1); // team message
 
-		gfx_text_ex(&cursor, lines[r].text, -1);
+		if (config.gfx_smileys)
+		{
+			char buf[1024];
+			memset(buf, 0, sizeof(buf));
+			
+			int tlen = str_length(lines[r].text);
+			
+			char * c = lines[r].text;
+			char * end = c + tlen;
+			char * d = buf;
+			while (*c)
+			{
+				if (str_utf8_isstart(*c) && (c == lines[r].text || *(c - 1) < 'A'))
+				{
+					char buf0[64];
+					char buf1[64];
+					bool SmileFound = false;
+					for (int i = 0; i < smileys_count; i++)
+					{
+						for (int j = 0; j < smileys_texts_per_smile; j++)
+						{
+							int len = str_length(smileys_texts[i][j]);
+							if (len == 0) continue;
+							if (end - c < len || *(c + len) >= 'A') continue;
+							
+							memset(buf0, 0, sizeof(buf0));
+							memset(buf1, 0, sizeof(buf1));
+							mem_copy(buf0, smileys_texts[i][j], len + 1);
+							mem_copy(buf1, c, len);
+							
+							if (str_comp_nocase(buf0, buf1) == 0)
+							{
+								int SmileCode = 0xFFF00 + i;
+								
+								str_utf8_encode(d, SmileCode);
+								c += len;
+								d += str_utf8_char_length(SmileCode);
+								
+								SmileFound = true;
+								break;
+							}
+						}
+						if (SmileFound) break;
+					}
+					if (!SmileFound)
+					{
+						*d = *c;
+						c++;
+						d++;
+					}
+				} else {
+					*d = *c;
+					c++;
+					d++;
+				}
+			}
+			
+			cursor.flags |= TEXTFLAG_SMILEYS;
+			gfx_text_ex(&cursor, buf, -1);
+		} else
+		{
+			gfx_text_ex(&cursor, lines[r].text, -1);
+		}
 	}
 
 	gfx_text_color(1,1,1,1);

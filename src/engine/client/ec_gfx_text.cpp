@@ -56,6 +56,11 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 	float draw_x, draw_y;
 	float cursor_x, cursor_y;
 	const char *end;
+	
+	static int smileys_texture = -1;
+	
+	if (cursor->flags&TEXTFLAG_SMILEYS && smileys_texture < 0)
+		smileys_texture = gfx_load_texture("smileys.png", IMG_AUTO, 0);
 
 	float size = cursor->font_size;
 	
@@ -213,7 +218,30 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					{
 						prev_utf8 = false;
 					}
-				} else if (font_set->ft_font) {
+				} else
+				if (character >= 0xFFF00 && character <= 0xFFF10 && cursor->flags&TEXTFLAG_SMILEYS)	// Using reserved for private using unicode area for smiles
+				{
+					int smile_index = character - 0xFFF00;
+					
+					if (cursor->flags&TEXTFLAG_RENDER)
+					{
+						if (has_gfx_begin)
+						{
+							gfx_quads_end();
+							has_gfx_begin = false;
+						}
+					
+						gfx_texture_set(smileys_texture);
+						gfx_quads_begin();
+							gfx_quads_setsubset((float)(smile_index%4) / 4.0f, (float)(smile_index/4) / 4.0f, (float)(smile_index%4 + 1) / 4.0f, (float)((smile_index/4) + 1) / 4.0f);
+							gfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+							gfx_quads_drawTL(draw_x + 0 * actual_size, draw_y - 0.1 * actual_size, 1 * actual_size, 1 * actual_size);
+						gfx_quads_end();
+					}
+					
+					advance = 2;
+				} else
+				if (font_set->ft_font) {
 					ft_FONTCHAR * chr;
 					if (prev_char == character && prev_utf8)
 						chr = prev_fontchar;
