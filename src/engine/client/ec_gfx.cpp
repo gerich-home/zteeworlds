@@ -614,13 +614,13 @@ int gfx_load_png(IMAGE_INFO *img, const char *filename)
 	
 	if(png_open_file(&png, completefilename) != PNG_NO_ERROR)
 	{
-		dbg_msg("game/png", "failed to open file. filename='%s'", completefilename);
+		//dbg_msg("game/png", "failed to open file. filename='%s'", completefilename);
 		return 0;
 	}
 	
 	if(png.depth != 8 || (png.color_type != PNG_TRUECOLOR && png.color_type != PNG_TRUECOLOR_ALPHA))
 	{
-		dbg_msg("game/png", "invalid format. filename='%s'", completefilename);
+		//dbg_msg("game/png", "invalid format. filename='%s'", completefilename);
 		png_close_file(&png);
         return 0;
 	}

@@ -81,7 +81,7 @@ DATAFILE *datafile_load(const char *filename)
 	(void)j;
 	
 	
-	dbg_msg("datafile", "datafile loading. filename='%s'", filename);
+	//dbg_msg("datafile", "datafile loading. filename='%s'", filename);
 
 	file = engine_openfile(filename, IOFLAG_READ);
 	if(!file)
@@ -231,7 +231,7 @@ static void *datafile_get_data_impl(DATAFILE *df, int index, int swap)
 			unsigned long uncompressed_size = df->info.data_sizes[index];
 			unsigned long s;
 
-			dbg_msg("datafile", "loading data index=%d size=%d uncompressed=%d", index, datasize, uncompressed_size);
+			//dbg_msg("datafile", "loading data index=%d size=%d uncompressed=%d", index, datasize, uncompressed_size);
 			df->data_ptrs[index] = (char *)mem_alloc(uncompressed_size, 1);
 			
 			/* read the compressed data */
@@ -249,7 +249,7 @@ static void *datafile_get_data_impl(DATAFILE *df, int index, int swap)
 		else
 		{
 			/* load the data */
-			dbg_msg("datafile", "loading data index=%d size=%d", index, datasize);
+			//dbg_msg("datafile", "loading data index=%d size=%d", index, datasize);
 			df->data_ptrs[index] = (char *)mem_alloc(datasize, 1);
 			io_seek(df->file, df->data_start_offset+df->info.data_offsets[index], IOSEEK_START);
 			io_read(df->file, df->data_ptrs[index], datasize);
