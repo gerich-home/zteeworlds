@@ -126,6 +126,7 @@ static int console_parse_args(PARSE_RESULT *result, const char *format)
 				}
 				
 				/* write null termination */
+				if (*dst) str++;
 				*dst = 0;
 			}
 			else
@@ -257,6 +258,12 @@ void console_execute_line_stroked(int stroke, const char *str)
 		
 		if(console_parse_start(&result, str, (end-str) + 1) != 0)
 			return;
+			
+		if (str_length(result.command) == 0 || str_length(str_skipblanks((char *)result.command)) == 0)
+		{
+			str = next_part;
+			continue;
+		}
 
 		command = console_find_command(result.command);
 
@@ -386,7 +393,11 @@ static void con_echo(void *result, void *user_data)
 static void con_exec(void *result, void *user_data)
 {
 	console_execute_file(console_arg_string(result, 0));
+}
 
+static void con_exec_line(void *result, void *user_data)
+{
+	console_execute_line(console_arg_string(result, 0));
 }
 
 
@@ -483,6 +494,7 @@ void console_init()
 {
 	MACRO_REGISTER_COMMAND("echo", "r", CFGFLAG_SERVER|CFGFLAG_CLIENT, con_echo, 0x0, "Echo the text");
 	MACRO_REGISTER_COMMAND("exec", "r", CFGFLAG_SERVER|CFGFLAG_CLIENT, con_exec, 0x0, "Execute the specified file");
+	MACRO_REGISTER_COMMAND("exec_line", "r", CFGFLAG_SERVER|CFGFLAG_CLIENT, con_exec_line, 0x0, "Execute the specified line");
 	
 	MACRO_REGISTER_COMMAND("lua", "r", CFGFLAG_SERVER|CFGFLAG_CLIENT, lua_exec_line, 0x0, "Execute the Lua string");
 	MACRO_REGISTER_COMMAND("luaexec", "r", CFGFLAG_SERVER|CFGFLAG_CLIENT, lua_exec_file, 0x0, "Execute the specified Lua file");

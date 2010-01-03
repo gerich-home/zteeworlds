@@ -177,7 +177,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 
 				if (!isUtf8Char && !config.gfx_freetype_font)
 				{
-					if(cursor->flags&TEXTFLAG_RENDER && (prev_utf8 || prev_ptr == text))
+					if(cursor->flags&TEXTFLAG_RENDER)
 					{
 						if (has_gfx_begin)
 						{
@@ -222,7 +222,6 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					prev_fontchar = chr;
 					if (cursor->flags&TEXTFLAG_RENDER && chr)
 					{
-						if (!prev_utf8 || prev_char != character || prev_ptr == text)
 						{
 							if (has_gfx_begin)
 							{
