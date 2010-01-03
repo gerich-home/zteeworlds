@@ -108,7 +108,7 @@ function build(settings)
 	settings.cc.Output = Intermediate_Output
 
 	if config.compiler.value == "cl" then
-		settings.cc.flags:Add("/wd4244")
+		settings.cc.flags:Add("/wd4244", "/EHsc")
 	else
 		settings.cc.flags:Add("-Wall", "-fno-exceptions")
 		if platform == "macosx" then
@@ -214,7 +214,7 @@ function build(settings)
 	tools = {}
 	for i,v in ipairs(tools_src) do
 		toolname = PathFilename(PathBase(v))
-		tools[i] = Link(settings, toolname, Compile(settings, v), engine, zlib)
+		tools[i] = Link(settings, toolname, Compile(settings, v), engine, zlib, lua)
 	end
 	
 	-- build client, server, version server and master server
@@ -231,10 +231,10 @@ function build(settings)
 	end
 		
 	versionserver_exe = Link(server_settings, "versionsrv", versionserver,
-		engine, zlib)
+		engine, zlib, lua)
 
 	masterserver_exe = Link(server_settings, "mastersrv", masterserver,
-		engine, zlib)
+		engine, zlib, lua)
 
 	-- make targets
 	c = PseudoTarget("client".."_"..settings.config_name, client_exe, client_depends)
