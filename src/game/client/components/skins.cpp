@@ -70,7 +70,6 @@ bool SKINS::load_skin(const char * name)
 	IMAGE_INFO info;
 	if(!gfx_load_png(&info, buf))
 	{
-		dbg_msg("game", "failed to load skin from %s", name);
 		return false;
 	}
 
@@ -157,8 +156,6 @@ bool SKINS::load_skin(const char * name)
 		strncpy(new_skin.name, name, min((int)sizeof(new_skin.name),l-4));
 	}
 	new_skin.term[0] = 0;
-
-	dbg_msg("game", "load skin %s", new_skin.name);
 
 	SKIN * pnew_skin = (SKIN *)mem_alloc(sizeof(SKIN), 1);
 	if (pnew_skin)
