@@ -17,6 +17,7 @@
 SKINS::SKINS()
 {
 	skins.clear();
+	all_skins_loaded = false;
 }
 
 SKINS::~SKINS()
@@ -33,6 +34,7 @@ SKINS::~SKINS()
 		}
 	}
 	skins.clear();
+	all_skins_loaded = false;
 }
 
 bool SKINS::load_skin(const char * name)
@@ -186,6 +188,8 @@ void SKINS::skinscan(const char *name, int is_dir, void *user)
 void SKINS::load_all()
 {
 	engine_listdir(LISTDIRTYPE_ALL, "skins", skinscan, this);
+	if (!config.cl_default_skin_only)
+		all_skins_loaded = true;
 }
 
 void SKINS::init()
@@ -203,8 +207,9 @@ void SKINS::init()
 		}
 	}
 	skins.clear();
+	all_skins_loaded = false;
 
-	engine_listdir(LISTDIRTYPE_ALL, "skins", skinscan, this);
+	load_all();
 }
 
 int SKINS::num()

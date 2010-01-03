@@ -14,6 +14,8 @@ public:
 		char term[1];
 		vec3 blood_color;
 	} SKIN;
+	
+	bool all_skins_loaded;
 
 	SKINS();
 	~SKINS();

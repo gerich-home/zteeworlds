@@ -155,7 +155,7 @@ void MENUS::render_settings_player(RECT main_view)
 		if (ui_do_button(&config.cl_default_skin_only, "Default skin only", config.cl_default_skin_only, &button, ui_draw_checkbox, 0))
 		{
 			config.cl_default_skin_only = config.cl_default_skin_only?0:1;
-			if (!config.cl_default_skin_only)
+			if (!gameclient.skins->all_skins_loaded)
 				gameclient.skins->load_all();
 		}
 		
