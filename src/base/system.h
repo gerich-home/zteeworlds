@@ -935,7 +935,84 @@ typedef struct
 void net_stats(NETSTATS *stats);
 
 int str_isspace(char c);
+char str_uppercase(char c);
+unsigned str_quickhash(const char *str);
 
+/*
+	Function: gui_messagebox
+		Display plain OS-dependent message box
+	
+	Parameters:
+		title - title of the message box
+		message - text to display
+*/
+void gui_messagebox(const char *title, const char *message);
+
+
+/*
+	Function: str_utf8_rewind
+		Moves a cursor backwards in an utf8 string
+	
+	Parameters:
+		str - utf8 string
+		cursor - position in the string
+
+	Returns:
+		New cursor position.
+
+	Remarks:
+		- Won't move the cursor less then 0
+*/
+int str_utf8_rewind(const char *str, int cursor);
+
+/*
+	Function: str_utf8_forward
+		Moves a cursor forwards in an utf8 string
+	
+	Parameters:
+		str - utf8 string
+		cursor - position in the string
+		
+	Returns:
+		New cursor position.
+
+	Remarks:
+		- Won't move the cursor beyond the zero termination marker
+*/
+int str_utf8_forward(const char *str, int cursor);
+
+/*
+	Function: str_utf8_decode
+		Decodes an utf8 character
+	
+	Parameters:
+		ptr - pointer to an utf8 string. this pointer will be moved forward
+		
+	Returns:
+		Unicode value for the character. -1 for invalid characters and 0 for end of string.
+
+	Remarks:
+		- This function will also move the pointer forward.
+*/
+int str_utf8_decode(const char **ptr);
+
+/*
+	Function: str_utf8_encode
+		Encode an utf8 character
+	
+	Parameters:
+		ptr - Pointer to a buffer that should recive the data. Should be able to hold at least 4 bytes.
+		
+	Returns:
+		Number of bytes put into the buffer.
+
+	Remarks:
+		- Does not do zero termination of the string.
+*/
+int str_utf8_encode(char *ptr, int chr);
+int str_utf8_isstart(char c);
+
+int str_utf8_char_length(int ch);
 
 /*
 	Function: gui_messagebox

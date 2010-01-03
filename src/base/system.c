@@ -1168,6 +1168,177 @@ void gui_messagebox(const char *title, const char *message)
 
 int str_isspace(char c) { return c == ' ' || c == '\n' || c == '\t'; }
 
+char str_uppercase(char c)
+{
+	if(c >= 'a' && c <= 'z')
+		return 'A' + (c-'a');
+	return c;
+}
+
+
+
+int str_utf8_isstart(char c)
+{
+	if((c&0xC0) == 0x80)  /* 10xxxxxx */
+		return 0;
+	return 1;
+}
+
+int str_utf8_rewind(const char *str, int cursor)
+{
+	while(cursor)
+	{
+		cursor--;
+		if(str_utf8_isstart(*(str + cursor)))
+			break;
+	}
+	return cursor;
+}
+
+int str_utf8_forward(const char *str, int cursor)
+{
+	const char *buf = str + cursor;
+	if(!buf[0])
+		return cursor;
+	
+	if((*buf&0x80) == 0x0)  /* 0xxxxxxx */
+		return cursor+1;
+	else if((*buf&0xE0) == 0xC0) /* 110xxxxx */
+	{
+		if(!buf[1]) return cursor+1;
+		return cursor+2;
+	}
+	else  if((*buf & 0xF0) == 0xE0)	/* 1110xxxx */
+	{
+		if(!buf[1]) return cursor+1;
+		if(!buf[2]) return cursor+2;
+		return cursor+2;
+	}
+	else if((*buf & 0xF8) == 0xF0)	/* 11110xxx */
+	{
+		if(!buf[1]) return cursor+1;
+		if(!buf[2]) return cursor+2;
+		if(!buf[3]) return cursor+3;
+		return cursor+3;
+	}
+	
+	/* invalid */
+	return cursor+1;
+}
+
+int str_utf8_encode(char *ptr, int chr)
+{
+	/* encode */
+	if(chr <= 0x7F)
+	{
+		ptr[0] = (char)chr;
+		return 1;
+	}
+	else if(chr <= 0x7FF)
+	{
+		ptr[0] = 0xC0|((chr>>6)&0x1F);
+		ptr[1] = 0x80|(chr&0x3F);
+		return 2;
+	}
+	else if(chr <= 0xFFFF)
+	{
+		ptr[0] = 0xE0|((chr>>12)&0x0F);
+		ptr[1] = 0xC0|((chr>>6)&0x3F);
+		ptr[2] = 0xC0|(chr&0x3F);
+		return 3;
+	}
+	else if(chr <= 0x10FFFF)
+	{
+		ptr[0] = 0xF0|((chr>>18)&0x07);
+		ptr[1] = 0xC0|((chr>>12)&0x3F);
+		ptr[2] = 0xC0|((chr>>6)&0x3F);
+		ptr[3] = 0xC0|(chr&0x3F);
+		return 4;
+	}
+	
+	return 0;
+}
+
+int str_utf8_decode(const char **ptr)
+{
+	const char *buf = *ptr;
+	int ch = 0;
+	
+	do
+	{
+		if((*buf&0x80) == 0x0)  /* 0xxxxxxx */
+		{
+			ch = *buf;
+			buf++;
+		}
+		else if((*buf&0xE0) == 0xC0) /* 110xxxxx */
+		{
+			ch  = (*buf++ & 0x3F) << 6; if(!(*buf)) break;
+			ch += (*buf++ & 0x3F);
+			if(ch == 0) ch = -1;
+		}
+		else  if((*buf & 0xF0) == 0xE0)	/* 1110xxxx */
+		{
+			ch  = (*buf++ & 0x1F) << 12; if(!(*buf)) break;
+			ch += (*buf++ & 0x3F) <<  6; if(!(*buf)) break;
+			ch += (*buf++ & 0x3F);
+			if(ch == 0) ch = -1;
+		}
+		else if((*buf & 0xF8) == 0xF0)	/* 11110xxx */
+		{
+			ch  = (*buf++ & 0x0F) << 18; if(!(*buf)) break;
+			ch += (*buf++ & 0x3F) << 12; if(!(*buf)) break;
+			ch += (*buf++ & 0x3F) <<  6; if(!(*buf)) break;
+			ch += (*buf++ & 0x3F);
+			if(ch == 0) ch = -1;
+		}
+		else
+		{
+			/* invalid */
+			buf++;
+			break;
+		}
+		
+		*ptr = buf;
+		return ch;
+	} while(0);
+
+	/* out of bounds */
+	*ptr = buf;
+	return -1;
+	
+}
+
+int str_utf8_char_length(int ch)
+{	
+	if(ch <= 0x7F)
+	{
+		return 1;
+	}
+	else if(ch <= 0x7FF)
+	{
+		return 2;
+	}
+	else if(ch <= 0xFFFF)
+	{
+		return 3;
+	}
+	else if(ch <= 0x10FFFF)
+	{
+		return 4;
+	}
+
+	return 0;
+}
+
+
+unsigned str_quickhash(const char *str)
+{
+	unsigned hash = 5381;
+	for(; *str; str++)
+		hash = ((hash << 5) + hash) + (*str); /* hash * 33 + c */
+	return hash;
+}
 
 #if defined(__cplusplus)
 }
