@@ -42,6 +42,9 @@ MACRO_CONFIG_INT(ui_color_sat, 70, 0, 255, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interfa
 MACRO_CONFIG_INT(ui_color_lht, 175, 0, 255, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface color lightness")
 MACRO_CONFIG_INT(ui_color_alpha, 228, 0, 255, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface alpha")
 
+MACRO_CONFIG_INT(ui_new_background, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "New animated background")
+MACRO_CONFIG_INT(ui_new_background_type, 0, 0, 3, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Type of new background (grass, jungle, desert, winter)")
+
 MACRO_CONFIG_INT(gfx_noclip, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Disable clipping")
 
 /* server */

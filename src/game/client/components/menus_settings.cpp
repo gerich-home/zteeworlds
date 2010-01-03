@@ -552,6 +552,19 @@ void MENUS::render_settings_graphics(RECT main_view)
 		*color_slider[s] = (int)(k*255.0f);
 		ui_do_label(&text, labels[s], 15.0f, -1);
 	}		
+	
+	ui_hsplit_t(&main_view, 40.0f, &button, &main_view);
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.ui_new_background, "New background", config.ui_new_background, &button, ui_draw_checkbox, 0))
+		config.ui_new_background ^= 1;
+	if (config.ui_new_background)
+	{
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.ui_new_background_type, "New background type", config.ui_new_background_type + 1, &button, ui_draw_checkbox_number, 0))
+		{
+			config.ui_new_background_type = (config.ui_new_background_type + 1)%4;
+		}
+	}
 }
 
 void MENUS::render_settings_sound(RECT main_view)

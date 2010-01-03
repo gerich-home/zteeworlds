@@ -24,6 +24,9 @@ extern "C" {
 #include <game/client/gameclient.hpp>
 #include <mastersrv/mastersrv.h>
 
+#include <game/client/animstate.hpp>
+#include <time.h>
+
 vec4 MENUS::gui_color;
 vec4 MENUS::color_tabbar_inactive_outgame;
 vec4 MENUS::color_tabbar_active_outgame;
@@ -1083,12 +1086,373 @@ void MENUS::on_render()
 	num_inputevents = 0;
 }
 
+void draw_tiles(float x, float y, int tx, int ty, int tw, int th, float frac, float nudge)
+{
+	if (tw == 0 || th == 0) return;
+
+	float texsize = 1024.0f;
+	float scale = 32.0f;
+
+	float px0 = tx*(1024/16);
+	float py0 = ty*(1024/16);
+	float px1 = (tx+tw)*(1024/16)-1;
+	float py1 = (ty+th)*(1024/16)-1;
+
+	float u0 = nudge + px0/texsize+frac;
+	float v0 = nudge + py0/texsize+frac;
+	float u1 = nudge + px1/texsize-frac;
+	float v1 = nudge + py1/texsize-frac;
+
+	gfx_quads_setsubset(u0,v0,u1,v1);
+
+	gfx_quads_drawTL(x, y - (th - 1) * scale, scale * tw + 1, scale * th + 1);
+}
+
 static int texture_blob = -1;
 
 void MENUS::render_background()
 {
-	//gfx_clear(1,1,1);
-	//render_sunrays(0,0);
+	static int texture_sun = -1;
+	static int texture_tiles = -1;
+	static int texture_doodads = -1;
+	static int texture_tee = -1;
+	static int texture_game = -1;
+
+	if(texture_sun == -1)
+		texture_sun = gfx_load_texture("mapres/sun.png", IMG_AUTO, 0);
+
+	const char * tiles_textures[4] = {"mapres/grass_main.png", "mapres/jungle_main.png", "mapres/desert_main.png", "mapres/winter_main.png"};
+	const char * doodads_textures[4] = {"mapres/grass_doodads.png", "mapres/jungle_doodads.png", "mapres/desert_main.png", "mapres/winter_doodads.png"};
+	const vec2 solid_tile[4] = { vec2(1, 0), vec2(1, 0), vec2(1, 0), vec2(1, 0) };
+	const vec2 land_tiles[4][2] = { {vec2(0, 1), vec2(1, 1)}, {vec2(0, 1), vec2(1, 1)}, {vec2(3, 2), vec2(1, 1)}, {vec2(1, 1), vec2(3, 1)} };
+	const vec2 grass_tiles[4][2] = { {vec2(10, 2), vec2(1, 1)}, {vec2(10, 2), vec2(1, 1)}, {vec2(12, 4), vec2(1, 1)}, {vec2(0, 0), vec2(0, 0)} };
+
+
+	const vec2 doodads_tiles[4][11][2] =
+		{
+			{
+				{vec2(5, 1),	vec2(3, 1)},
+				{vec2(7, 2),	vec2(2, 1)},
+				{vec2(10, 0),	vec2(3, 2)},
+				{vec2(8, 3),	vec2(3, 2)},
+				{vec2(11, 3),	vec2(3, 2)},
+				{vec2(0, 3),	vec2(8, 3)},
+				{vec2(1, 0),	vec2(3, 3)},
+				{vec2(0, 6),	vec2(5, 5)},
+				{vec2(5, 6),	vec2(5, 5)},
+				{vec2(9, 5),	vec2(7, 6)},
+				{vec2(0, 11),	vec2(5, 5)}
+			},
+			{
+				{vec2(4, 0),	vec2(4, 2)},
+				{vec2(7, 2),	vec2(2, 1)},
+				{vec2(10, 0),	vec2(2, 2)},
+				{vec2(8, 3),	vec2(3, 1)},
+				{vec2(11, 3),	vec2(3, 2)},
+				{vec2(0, 3),	vec2(8, 3)},
+				{vec2(0, 0),	vec2(4, 3)},
+				{vec2(0, 6),	vec2(5, 3)},
+				{vec2(0, 9),	vec2(5, 2)},
+				{vec2(10, 11),	vec2(2, 5)},
+				{vec2(0, 11),	vec2(5, 5)}
+			},
+			{
+				{vec2(13, 0),	vec2(3, 1)},
+				{vec2(14, 2),	vec2(1, 3)},
+				{vec2(13, 5),	vec2(3, 3)},
+				{vec2(11, 6),	vec2(2, 2)},
+				{vec2(11, 5),	vec2(2, 1)},
+				{vec2(12, 4),	vec2(1, 1)},
+				{vec2(11, 8),	vec2(2, 4)},
+				{vec2(13, 8),	vec2(3, 4)},
+				{vec2(10, 10),	vec2(1, 2)},
+				{vec2(9, 11),	vec2(1, 1)},
+				{vec2(8, 6),	vec2(3, 1)},
+			},
+			{
+				{vec2(6, 6),	vec2(1, 1)},
+				{vec2(0, 1),	vec2(3, 5)},
+				{vec2(6, 0),	vec2(3, 5)},
+				{vec2(9, 0),	vec2(3, 4)},
+				{vec2(12, 0),	vec2(4, 1)},
+				{vec2(12, 1),	vec2(2, 3)},
+				{vec2(14, 1),	vec2(1, 2)},
+				{vec2(15, 1),	vec2(1, 2)},
+				{vec2(14, 3),	vec2(2, 6)},
+				{vec2(8, 4),	vec2(3, 6)},
+				{vec2(11, 4),	vec2(3, 6)}
+			}
+		};
+
+	int used_texture = config.ui_new_background_type;
+	static int last_used_texture = -1;
+
+	if (used_texture < 0 || used_texture > 3)
+	{
+		srand(time(0));
+		srand(rand());
+		used_texture = (int)(rand()%4);
+	}
+
+	if (last_used_texture != used_texture)
+	{
+		texture_tiles = gfx_load_texture(tiles_textures[used_texture], IMG_AUTO, 0);
+
+		texture_doodads = gfx_load_texture(doodads_textures[used_texture], IMG_AUTO, 0);
+
+		if(!texture_tiles || !texture_doodads)
+		{
+			used_texture = 0;
+			texture_tiles = gfx_load_texture(tiles_textures[used_texture], IMG_AUTO, 0);
+			texture_doodads = gfx_load_texture(doodads_textures[used_texture], IMG_AUTO, 0);
+		}
+	}
+
+	last_used_texture = used_texture;
+
+	if(texture_tee == -1)
+		texture_tee = gfx_load_texture("skins/default.png", IMG_AUTO, 0);
+
+	if(texture_game == -1)
+		texture_game = gfx_load_texture("game.png", IMG_AUTO, 0);
+
+	if (config.ui_new_background)
+	{
+		float sw = 300*gfx_screenaspect();
+		float sh = 300;
+
+		float min_size = min(sw, sh);
+		float max_size = max(sw, sh);
+		float sun_size = max_size / 3.0f;
+		float sunray_size = sun_size;
+
+		static float last_tick = 0;
+		if (last_tick == 0)
+			last_tick = client_localtime();
+		float curr_tick = client_localtime();
+		static float sun_rotation = 0.0f;
+		sun_rotation += 360.0f * (curr_tick - last_tick) / 100.0f;
+		if (sun_rotation > 90.0f)
+			sun_rotation -= 90.0f;
+		float tick_diff = curr_tick - last_tick;
+		last_tick = curr_tick;
+
+		gfx_mapscreen(0, 0, sw, sh);
+
+		RECT s = *ui_screen();
+
+		gfx_texture_set(-1);
+		gfx_quads_begin();
+			for (int i = 0; i < 4; i++)
+				gfx_setcolorvertex(i, 0.25f, 0.5f, 1.0f, 1.0f);
+			gfx_quads_drawTL(0, 0, sw, sh);
+		gfx_quads_end();
+
+		gfx_quads_begin();
+			gfx_setcolor(1.0f, 1.0f, 0.5f, 0.25f);
+
+			vec2 raystart;
+			raystart.x = sun_size * 0.25f;
+			raystart.y = sun_size * 0.25f;
+
+			vec2 ray_e[4];
+			ray_e[0].x = raystart.x - sunray_size / 10.0f;
+			ray_e[0].y = raystart.y;
+			ray_e[1].x = raystart.x + sunray_size / 10.0f;
+			ray_e[1].y = raystart.y;
+			ray_e[2].x = raystart.x - sunray_size;
+			ray_e[2].y = raystart.y + max_size * 2.0f;
+			ray_e[3].x = raystart.x + sunray_size;
+			ray_e[3].y = raystart.y + max_size * 2.0f;
+
+			vec2 rays[4 * 8];
+
+			for (int i = 0; i < 4 * 8; i++)
+			{
+				float angle = (-45.0f * (i / 4) + sun_rotation) * pi / 180.0f;
+
+				rays[i].x = (ray_e[i%4].x - raystart.x) * cosf(angle) - (ray_e[i%4].y - raystart.y) * sinf(angle) + raystart.x;
+				rays[i].y = (ray_e[i%4].y - raystart.y) * cosf(angle) + (ray_e[i%4].x - raystart.x) * sinf(angle) + raystart.y;
+			}
+
+			for (int i = 0; i < 4 * 8; i += 4)
+			{
+				gfx_quads_draw_freeform(rays[i].x, rays[i].y,
+					rays[i + 1].x, rays[i + 1].y,
+					rays[i + 2].x, rays[i + 2].y,
+					rays[i + 3].x, rays[i + 3].y);
+			}
+		gfx_quads_end();
+
+		gfx_texture_set(texture_sun);
+		gfx_quads_begin();
+			gfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+			gfx_quads_setrotation(sinf(curr_tick * 0.5f) * 0.5f - 0.25f);
+
+			gfx_quads_drawTL(-sun_size * 0.25, -sun_size * 0.25, sun_size * 1.25, sun_size * 1.25);
+		gfx_quads_end();
+
+		float cx = 1024.0f / 16.0f;
+		float cy = 1024.0f / 16.0f;
+
+		{RECT screen = *ui_screen();
+		gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);}
+
+		gfx_texture_set(texture_tiles);
+
+		float scale = 32.0f;
+
+		float screen_x0, screen_y0, screen_x1, screen_y1;
+		gfx_getscreen(&screen_x0, &screen_y0, &screen_x1, &screen_y1);
+
+		sw = screen_x1 - screen_x0;
+		sh = screen_y1 - screen_y0;
+
+		float tile_pixelsize = 1024/32.0f;
+		float final_tilesize = scale/sw * gfx_screenwidth();
+		float final_tilesize_scale = final_tilesize/tile_pixelsize;
+
+		float texsize = 1024.0f;
+		float frac = (1.25f/texsize) * (1/final_tilesize_scale);
+		float nudge = (0.5f/texsize) * (1/final_tilesize_scale);
+
+		int tx = 0;
+		int ty = 1;
+
+		int px0 = tx*(1024/16);
+		int py0 = ty*(1024/16);
+		int px1 = (tx+1)*(1024/16)-1;
+		int py1 = (ty+1)*(1024/16)-1;
+
+		float u0 = nudge + px0/texsize+frac;
+		float v0 = nudge + py0/texsize+frac;
+		float u1 = nudge + px1/texsize-frac;
+		float v1 = nudge + py1/texsize-frac;
+
+		float tcx = -((int)(curr_tick * scale))%((int)(scale));
+		float gcx = grass_tiles[used_texture][1].x > 0 ? -((int)(curr_tick * scale))%((int)(scale * grass_tiles[used_texture][1].x)) : 0;
+		float c_x = -((int)(curr_tick * scale))%((int)(scale * land_tiles[used_texture][1].x));
+		float t_y = sh * 0.75f;
+
+		gfx_quads_begin();
+			gfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+
+			gfx_quads_setsubset(u0,v0,u1,v1);
+
+			for (int i = 0; i < sw / scale + 1; i++)
+			{
+				draw_tiles(c_x + i * scale * land_tiles[used_texture][1].x, t_y, land_tiles[used_texture][0].x, land_tiles[used_texture][0].y, land_tiles[used_texture][1].x, land_tiles[used_texture][1].y, nudge, frac);
+			}
+
+			t_y += land_tiles[used_texture][1].y * scale;
+
+			tx = solid_tile[used_texture].x;
+			ty = solid_tile[used_texture].y;
+			px0 = tx*(1024/16);
+			py0 = ty*(1024/16);
+			px1 = (tx+1)*(1024/16)-1;
+			py1 = (ty+1)*(1024/16)-1;
+
+			u0 = nudge + px0/texsize+frac;
+			v0 = nudge + py0/texsize+frac;
+			u1 = nudge + px1/texsize-frac;
+			v1 = nudge + py1/texsize-frac;
+
+			gfx_quads_setsubset(u0,v0,u1,v1);
+
+			for (int i = 0; i < sw / scale + 1 + land_tiles[used_texture][1].x; i++)
+				for (int j = 0; j < (sh - t_y) / scale; j++)
+					gfx_quads_drawTL(c_x + i * scale, t_y + j * scale, scale, scale);
+		gfx_quads_end();
+
+		gfx_texture_set(texture_doodads);
+
+		t_y = sh * 0.75f - scale;
+
+		static int doodads[11] = {-100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100};
+
+		static float old_c_x = 0.0f;
+		bool moved = (old_c_x < tcx);
+		old_c_x = tcx;
+
+		for (int i = 0; i < 11; i++)
+		{
+			if (doodads[i] <= -10)
+			{
+				if (doodads[i] > -100)
+					doodads[i] = (int)(sw / scale + (frandom() * sw * 2.0f / scale));
+				else
+					doodads[i] = (int)((frandom() * sw * 2.0f / scale));
+			}
+
+			if (moved) doodads[i]--;
+		}
+
+		gfx_quads_begin();
+			gfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
+
+			if (grass_tiles[used_texture][1].x > 0)
+				for (int i = 0; i < sw / scale + 1; i++)
+				{
+					draw_tiles(gcx + i * scale * grass_tiles[used_texture][1].x, t_y, grass_tiles[used_texture][0].x, grass_tiles[used_texture][0].y, grass_tiles[used_texture][1].x, grass_tiles[used_texture][1].y, nudge, frac);
+				}
+
+			for (int i = 0; i < 11; i++)
+			{
+				draw_tiles(tcx + doodads[i] * scale, t_y, doodads_tiles[used_texture][i][0].x, doodads_tiles[used_texture][i][0].y, doodads_tiles[used_texture][i][1].x, doodads_tiles[used_texture][i][1].y, nudge, frac);
+			}
+		gfx_quads_end();
+
+		TEE_RENDER_INFO render_info;
+
+		render_info.texture = texture_tee;
+		render_info.color_body = vec4(1,1,1,1);
+		render_info.color_feet = vec4(1,1,1,1);
+		render_info.got_airjump = 0;
+		render_info.size = 64.0f;
+
+
+		static float tee_x = 0.0f;
+		tee_x += tick_diff * 64.0f;
+		if (tee_x - 128.0f > sw)
+			tee_x = -256.0f;
+		if (tee_x < -256.0f) tee_x = -256.0f;
+
+		vec2 tee_pos = vec2(tee_x, sh * 0.75f - 16.0f);
+
+		float walk_time = fmod(tee_x * 4.0f, 100.0f)/100.0f;
+		ANIMSTATE state;
+		state.set(&data->animations[ANIM_BASE], 0);
+		state.add(&data->animations[ANIM_WALK], walk_time, 1.0f);
+
+		static float attack_tick = 0.0f;
+
+		if (abs(curr_tick - attack_tick) > 0.1f) attack_tick = curr_tick;
+
+		float ct = abs(sin(curr_tick * 2.0f)) * 0.2f;
+		state.add(&data->animations[ANIM_HAMMER_SWING], clamp(ct*5.0f,0.0f,1.0f), 1.0f);
+
+		float angle = sin(tee_x) * 90.0f;
+
+		gfx_texture_set(texture_game);
+		gfx_quads_begin();
+		gfx_quads_setrotation(state.attach.angle*pi*2+angle);
+
+		select_sprite(data->weapons.id[WEAPON_HAMMER].sprite_body, 0);
+
+		vec2 p = tee_pos + vec2(state.attach.x, state.attach.y);
+		p.y += data->weapons.id[WEAPON_HAMMER].offsety;
+
+		gfx_quads_setrotation(-pi/2+state.attach.angle*pi*2);
+
+		draw_sprite(p.x, p.y, data->weapons.id[WEAPON_HAMMER].visual_size);
+		gfx_quads_end();
+
+		render_tee(&state, &render_info, 0, vec2(1.0f, 0.0f), tee_pos);
+
+		return;
+	}
+	
 	if(texture_blob == -1)
 		texture_blob = gfx_load_texture("blob.png", IMG_AUTO, 0);
 
