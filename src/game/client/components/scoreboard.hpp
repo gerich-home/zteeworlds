@@ -8,6 +8,8 @@ class SCOREBOARD : public COMPONENT
 
 	static void con_key_scoreboard(void *result, void *user_data);
 	
+	void render_new();
+	
 	bool active;
 	
 public:

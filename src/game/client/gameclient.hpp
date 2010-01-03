@@ -112,6 +112,18 @@ public:
 		
 		float angle;
 		
+		int last_team;
+
+		struct
+		{
+			int total_kills;
+			int kills[NUM_WEAPONS];
+			int total_killed;
+			int killed[NUM_WEAPONS];
+			int flag_carried;
+			int flag_lost;
+		} stats;
+		
 		void update_render_info();
 	};
 

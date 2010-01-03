@@ -49,6 +49,7 @@ MACRO_CONFIG_INT(ui_new_background_type, 0, 0, 3, CFGFLAG_CLIENT|CFGFLAG_SAVE, "
 MACRO_CONFIG_INT(cl_gameover_screenshot, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Make screenshot after game over")
 MACRO_CONFIG_INT(cl_autorecord, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Automatical demo recording")
 MACRO_CONFIG_INT(cl_autorecord_time, 10, 0, 10000, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Minimal demo length for saving automatical recorded demo")
+MACRO_CONFIG_INT(cl_new_scoreboard, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "New detailed scoreboard")
 
 MACRO_CONFIG_INT(gfx_noclip, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Disable clipping")
 

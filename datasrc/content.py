@@ -320,6 +320,7 @@ container.sprites.Add(Sprite("weapon_ninja_muzzle1", set_game, 25,0,7,4))
 container.sprites.Add(Sprite("weapon_ninja_muzzle2", set_game, 25,4,7,4))
 container.sprites.Add(Sprite("weapon_ninja_muzzle3", set_game, 25,8,7,4))
 
+container.sprites.Add(Sprite("red_minus", set_game, 8,2,2,2))
 container.sprites.Add(Sprite("pickup_health", set_game, 10,2,2,2))
 container.sprites.Add(Sprite("pickup_armor", set_game, 12,2,2,2))
 container.sprites.Add(Sprite("pickup_weapon", set_game, 3,0,6,2))

@@ -460,6 +460,8 @@ void GAMECLIENT::on_reset()
 		clients[i].skin_info.color_body = vec4(1,1,1,1);
 		clients[i].skin_info.color_feet = vec4(1,1,1,1);
 		clients[i].update_render_info();
+		clients[i].last_team = 0;
+		mem_zero(&clients[i].stats, sizeof(clients[i].stats));
 	}
 	
 	for(int i = 0; i < all.num; i++)
@@ -557,8 +559,40 @@ void GAMECLIENT::on_render()
 				autorecord_start_time = client_tick();
 			}
 		}
+		
+		if (snap.gameobj && !snap.gameobj->game_over && old_game_over)
+		{
+			for (int i = 0; i < MAX_CLIENTS; i++)
+				mem_zero(&clients[i].stats, sizeof(clients[i].stats));
+		}
 
 		old_game_over = snap.gameobj ? snap.gameobj->game_over : true;
+	}
+	
+	for (int i = 0; i < MAX_CLIENTS; i++)
+	{
+		if (clients[i].team != clients[i].last_team)
+		{
+			mem_zero(&clients[i].stats, sizeof(clients[i].stats));
+			clients[i].last_team = clients[i].team;
+		}
+	}
+
+	if (snap.gameobj && snap.gameobj->flags&GAMEFLAG_FLAGS && snap.flags[0] && snap.flags[1])
+	{
+		static int old_carried_by[2] = {-2, -2};
+		for (int i = 0; i < 2; i++)
+		{
+			if (old_carried_by[i] < 0 && snap.flags[i]->carried_by >= 0)
+			{
+				clients[snap.flags[i]->carried_by].stats.flag_carried++;
+			}
+			if (old_carried_by[i] >= 0 && snap.flags[i]->carried_by == -2)
+			{
+				clients[old_carried_by[i]].stats.flag_lost++;
+			}
+			old_carried_by[i] = snap.flags[i]->carried_by;
+		}
 	}
 	
 	// update the local character position
@@ -652,7 +686,21 @@ void GAMECLIENT::on_message(int msgtype)
 			
 		NETMSG_SV_SOUNDGLOBAL *msg = (NETMSG_SV_SOUNDGLOBAL *)rawmsg;
 		gameclient.sounds->play(SOUNDS::CHN_GLOBAL, msg->soundid, 1.0f, vec2(0,0));
-	}		
+	} else if(msgtype == NETMSGTYPE_SV_KILLMSG)
+	{
+		NETMSG_SV_KILLMSG *msg = (NETMSG_SV_KILLMSG *)rawmsg;
+
+		if (msg->killer != msg->victim)
+		{
+			if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
+				clients[msg->killer].stats.kills[msg->weapon]++;
+			clients[msg->killer].stats.total_kills++;
+		}
+
+		if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
+			clients[msg->victim].stats.killed[msg->weapon]++;
+		clients[msg->victim].stats.total_killed++;
+	}
 }
 
 void GAMECLIENT::on_statechange(int new_state, int old_state)
