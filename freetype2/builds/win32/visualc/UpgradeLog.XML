@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="freetype">
+</Property><Property Name="Файл решения" Value="C:\zpack4\freetype\builds\win32\visualc\freetype.sln">
+</Property><Property Name="Date" Value="26 декабря 2009 г.">
+</Property><Property Name="Time" Value="23:28">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="freetype.sln" Description="Успешно создана резервная копия файла C:\zpack4\freetype\builds\win32\visualc\freetype.sln.old">
+</Event><Event ErrorLevel="1" Project="freetype" Source="freetype.vcproj" Description="Приложение было обновлено, чтобы включить параметры, связанные с контролем учетных записей пользователей (UAC), появившемся в Windows Vista. По умолчанию, в Windows Vista при включенном UAC, приложение запускается с теми же привилегиями, что и запустивший его процесс. Это также делает невозможным запуск приложений с технологией виртуализации. Параметры, связанные с UAC можно поменять на странице свойств проекта.">
+</Event><Event ErrorLevel="0" Project="freetype" Source="freetype.vcproj" Description="Из проектного файла была успешно сделана резервная копия &quot;C:\zpack4\freetype\builds\win32\visualc\freetype.vcproj.8.00.old&quot;.">
+</Event><Event ErrorLevel="0" Project="freetype" Source="freetype.vcproj" Description="Проект обновлен успешно.">
+</Event><Event ErrorLevel="3" Project="freetype" Source="freetype.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="freetype.sln" Description="Преобразование решения успешно завершено">
+</Event><Event ErrorLevel="3" Project="" Source="freetype.sln" Description="Converted">
+</Event></UpgradeLog>

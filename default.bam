@@ -154,6 +154,11 @@ function build(settings)
 	wavpack = Compile(settings, Collect("src/engine/external/wavpack/*.c"))
 	pnglite = Compile(settings, Collect("src/engine/external/pnglite/*.c"))
 	
+	-- add freetype2
+	settings.link.libpath:Add("freetype2/objs/")
+	settings.link.libs:Add("freetype")
+	settings.cc.includes:Add("freetype2/include/")
+	
 	-- build game components
 	engine_settings = settings:Copy()
 	server_settings = engine_settings:Copy()
