@@ -159,8 +159,8 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 				
 				const char * prev_ptr = (const char *)current;
 
-				isUtf8Char = (*current)&0x80;
 				character = str_utf8_decode((const char **)(&current));
+				isUtf8Char = str_utf8_char_length(character) > 1;
 				tmp = current;
 				nextcharacter = str_utf8_decode((const char **)(&tmp));
 				if ((void *)nextcharacter > (void *)end) break;
