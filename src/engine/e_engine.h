@@ -49,3 +49,5 @@ int mastersrv_refreshing();
 void mastersrv_dump_servers();
 NETADDR mastersrv_get(int index);
 const char *mastersrv_name(int index);
+
+void zpack2_convert_cyrillic(char * str, bool decode);

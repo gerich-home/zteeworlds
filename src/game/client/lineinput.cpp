@@ -26,18 +26,20 @@ void LINEINPUT::process_input(INPUT_EVENT e)
 	if(cursor_pos > len)
 		cursor_pos = len;
 	
-	char c = e.ch;
+	unsigned int c = e.ch;
 	int k = e.key;
 	
 	// 127 is produced on Mac OS X and corresponds to the delete key
 	if (!(c >= 0 && c < 32) && c != 127)
 	{
-		if (len < sizeof(str) - 1 && cursor_pos < sizeof(str) - 1)
+		char temp[5];
+		int char_len = str_utf8_encode(temp, c);
+		if (len < sizeof(str) - char_len && cursor_pos < sizeof(str) - char_len)
 		{
-			memmove(str + cursor_pos + 1, str + cursor_pos, len - cursor_pos + 1);
-			str[cursor_pos] = c;
-			cursor_pos++;
-			len++;
+			memmove(str + cursor_pos + char_len, str + cursor_pos, len - cursor_pos + 1);
+			str_utf8_encode(&str[cursor_pos], c);
+			cursor_pos += char_len;
+			len += char_len;
 		}
 	}
 	
@@ -45,19 +47,40 @@ void LINEINPUT::process_input(INPUT_EVENT e)
 	{
 		if (k == KEY_BACKSPACE && cursor_pos > 0)
 		{
-			memmove(str + cursor_pos - 1, str + cursor_pos, len - cursor_pos + 1);
-			cursor_pos--;
-			len--;
+			while (1)
+			{
+				bool is_start = str_utf8_isstart(str[cursor_pos - 1]);
+				memmove(str + cursor_pos - 1, str + cursor_pos, len - cursor_pos + 1);
+				cursor_pos--;
+				len--;
+				if (cursor_pos == 0 || is_start) break;
+			}
 		}
 		else if (k == KEY_DELETE && cursor_pos < len)
 		{
-			memmove(str + cursor_pos, str + cursor_pos + 1, len - cursor_pos);
-			len--;
+			do
+			{
+				memmove(str + cursor_pos, str + cursor_pos + 1, len - cursor_pos);
+				len--;
+			}
+			while (len > 0 && !str_utf8_isstart(str[cursor_pos]));
 		}
 		else if (k == KEY_LEFT && cursor_pos > 0)
-			cursor_pos--;
+		{
+			do
+			{
+				cursor_pos--;
+			}
+			while (cursor_pos > 0 && !str_utf8_isstart(str[cursor_pos]));
+		}
 		else if (k == KEY_RIGHT && cursor_pos < len)
-			cursor_pos++;
+		{
+			do
+			{
+				cursor_pos++;
+			}
+			while (cursor_pos < len && !str_utf8_isstart(str[cursor_pos]));
+		}
 		else if (k == KEY_HOME)
 			cursor_pos = 0;
 		else if (k == KEY_END)

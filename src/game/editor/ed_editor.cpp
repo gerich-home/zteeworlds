@@ -209,7 +209,7 @@ int ui_do_edit_box(void *id, const RECT *rect, char *str, int str_size, float fo
 			len = strlen(str);
 			
 			INPUT_EVENT e = inp_get_event(i);
-			char c = e.ch;
+			unsigned int c = e.ch;
 			int k = e.key;
 
 			if (at_index > len)
@@ -217,11 +217,14 @@ int ui_do_edit_box(void *id, const RECT *rect, char *str, int str_size, float fo
 			
 			if (!(c >= 0 && c < 32) && c != 127)
 			{
-				if (len < str_size - 1 && at_index < str_size - 1)
+				char temp[5];
+				int char_len = str_utf8_encode(temp, c);
+				if (len < str_size - char_len && at_index < str_size - char_len)
 				{
-					memmove(str + at_index + 1, str + at_index, len - at_index + 1);
-					str[at_index] = c;
-					at_index++;
+					memmove(str + at_index + char_len, str + at_index, len - at_index + 1);
+					str_utf8_encode(&str[at_index], c);
+					at_index += char_len;
+					len += char_len;
 				}
 			}
 			
@@ -229,17 +232,40 @@ int ui_do_edit_box(void *id, const RECT *rect, char *str, int str_size, float fo
 			{
 				if (k == KEY_BACKSPACE && at_index > 0)
 				{
-					memmove(str + at_index - 1, str + at_index, len - at_index + 1);
-					at_index--;
+					while (1)
+					{
+						bool is_start = str_utf8_isstart(str[at_index - 1]);
+						memmove(str + at_index - 1, str + at_index, len - at_index + 1);
+						at_index--;
+						len--;
+						if (at_index == 0 || is_start) break;
+					}
 				}
 				else if (k == KEY_DELETE && at_index < len)
-					memmove(str + at_index, str + at_index + 1, len - at_index);
-				else if (k == KEY_RETURN)
-					ui_clear_last_active_item();
+				{
+					do
+					{
+						memmove(str + at_index, str + at_index + 1, len - at_index);
+						len--;
+					}
+					while (len > 0 && !str_utf8_isstart(str[at_index]));
+				}
 				else if (k == KEY_LEFT && at_index > 0)
-					at_index--;
+				{
+					do
+					{
+						at_index--;
+					}
+					while (at_index > 0 && !str_utf8_isstart(str[at_index]));
+				}
 				else if (k == KEY_RIGHT && at_index < len)
-					at_index++;
+				{
+					do
+					{
+						at_index++;
+					}
+					while (at_index < len && !str_utf8_isstart(str[at_index]));
+				}
 				else if (k == KEY_HOME)
 					at_index = 0;
 				else if (k == KEY_END)

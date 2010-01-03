@@ -58,7 +58,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 	const char *end;
 
 	float size = cursor->font_size;
-
+	
 	/* to correct coords, convert to screen coords, round, and convert back */
 	gfx_getscreen(&screen_x0, &screen_y0, &screen_x1, &screen_y1);
 	
@@ -95,21 +95,11 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 		int to_render = length;
 		draw_x = cursor_x;
 		draw_y = cursor_y;
-
-		if(cursor->flags&TEXTFLAG_RENDER)
-		{
-			if (i == 0)
-				gfx_texture_set(font->outline_texture);
-			else
-				gfx_texture_set(font->text_texture);
-
-			gfx_quads_begin();
-			if (i == 0)
-				gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
-			else
-				gfx_setcolor(text_r, text_g, text_b, text_a);
-		}
-
+		bool prev_utf8 = false;
+		int prev_char = 0;
+		ft_FONTCHAR * prev_fontchar = NULL;
+		bool has_gfx_begin = false;
+		
 		while(to_render > 0)
 		{
 			int new_line = 0;
@@ -155,32 +145,112 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 			
 			to_render -= this_batch;
 
-			while(this_batch-- > 0)
+			while(this_batch > 0)
 			{
 				float tex_x0, tex_y0, tex_x1, tex_y1;
 				float width, height;
 				float x_offset, y_offset, x_advance;
-				float advance;
+				float advance = 0;
+				
+				const unsigned char *tmp;
+				int character = 0;
+				int nextcharacter = 0;
+				bool isUtf8Char = false;
+				
+				const char * prev_ptr = (const char *)current;
 
-				if(*current == '\n')
+				isUtf8Char = (*current)&0x80;
+				character = str_utf8_decode((const char **)(&current));
+				tmp = current;
+				nextcharacter = str_utf8_decode((const char **)(&tmp));
+				if ((void *)nextcharacter > (void *)end) break;
+				this_batch -= str_utf8_char_length(character);
+				
+				if(character == '\n')
 				{
 					draw_x = cursor->start_x;
 					draw_y += size;
 					draw_x = (int)(draw_x * fake_to_screen_x) / fake_to_screen_x; /* realign */
 					draw_y = (int)(draw_y * fake_to_screen_y) / fake_to_screen_y;
-					current++;
 					continue;
 				}
 
-				font_character_info(font, *current, &tex_x0, &tex_y0, &tex_x1, &tex_y1, &width, &height, &x_offset, &y_offset, &x_advance);
-
-				if(cursor->flags&TEXTFLAG_RENDER)
+				if (!isUtf8Char && !config.gfx_freetype_font)
 				{
-					gfx_quads_setsubset(tex_x0, tex_y0, tex_x1, tex_y1);
-					gfx_quads_drawTL(draw_x+x_offset*size, draw_y+y_offset*size, width*size, height*size);
-				}
+					if(cursor->flags&TEXTFLAG_RENDER && (prev_utf8 || prev_ptr == text))
+					{
+						if (has_gfx_begin)
+						{
+							gfx_quads_end();
+							has_gfx_begin = false;
+						}
+						
+						if (i == 0)
+							gfx_texture_set(font->outline_texture);
+						else
+							gfx_texture_set(font->text_texture);
 
-				advance = x_advance + font_kerning(font, *current, *(current+1));
+						gfx_quads_begin();
+						has_gfx_begin = true;
+						
+						if (i == 0)
+							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
+						else
+							gfx_setcolor(text_r, text_g, text_b, text_a);
+					}
+					
+					font_character_info(font, character, &tex_x0, &tex_y0, &tex_x1, &tex_y1, &width, &height, &x_offset, &y_offset, &x_advance);
+
+					if(cursor->flags&TEXTFLAG_RENDER)
+					{
+						gfx_quads_setsubset(tex_x0, tex_y0, tex_x1, tex_y1);
+						gfx_quads_drawTL(draw_x+x_offset*size, draw_y+y_offset*size, width*size, height*size);
+					}
+
+					advance = x_advance + font_kerning(font, *current, *(current+1));
+					
+					if(cursor->flags&TEXTFLAG_RENDER)
+					{
+						prev_utf8 = false;
+					}
+				} else if (font_set->ft_font) {
+					ft_FONTCHAR * chr;
+					if (prev_char == character && prev_utf8)
+						chr = prev_fontchar;
+					else
+						chr = ft_font_get_char(font_set->ft_font, character, actual_size);
+					prev_fontchar = chr;
+					if (cursor->flags&TEXTFLAG_RENDER && chr)
+					{
+						if (!prev_utf8 || prev_char != character || prev_ptr == text)
+						{
+							if (has_gfx_begin)
+							{
+								gfx_quads_end();
+								has_gfx_begin = false;
+							}
+							gfx_texture_set(chr->texture[1 - i]);
+							gfx_quads_begin();
+							has_gfx_begin = true;
+							
+							if (i == 0)
+								gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
+							else
+								gfx_setcolor(text_r, text_g, text_b, text_a);
+						
+							gfx_quads_setsubset(0.0f, 0.0f, chr->tex_w, chr->tex_h);
+						}
+						
+						gfx_quads_drawTL(draw_x + chr->x_offset * size, draw_y + chr->y_offset * size, chr->w * size, chr->h * size);
+						
+						prev_utf8 = true;
+					}
+
+					if (chr)
+					{
+						advance = chr->advance;
+					}
+				}
 								
 				if(cursor->flags&TEXTFLAG_STOP_AT_END && draw_x+advance*size-cursor->start_x > cursor->line_width)
 				{
@@ -191,7 +261,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 
 				draw_x += advance*size;
 				cursor->charcount++;
-				current++;
+				prev_char = character;
 			}
 			
 			if(new_line)
@@ -203,8 +273,8 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 				draw_y = (int)(draw_y * fake_to_screen_y) / fake_to_screen_y;				
 			}
 		}
-
-		if(cursor->flags&TEXTFLAG_RENDER)
+		
+		if (cursor->flags&TEXTFLAG_RENDER && has_gfx_begin)
 			gfx_quads_end();
 	}
 

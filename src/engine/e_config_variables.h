@@ -54,6 +54,9 @@ MACRO_CONFIG_INT(gfx_fsaa_samples, 0, 0, 16, CFGFLAG_SAVE|CFGFLAG_CLIENT, "FSAA 
 MACRO_CONFIG_INT(gfx_refresh_rate, 0, 0, 0, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Screen refresh rate")
 MACRO_CONFIG_INT(gfx_finish, 1, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "")
 
+MACRO_CONFIG_INT(gfx_freetype_font, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Use FreeType font")
+MACRO_CONFIG_INT(zpack2_compatible_cyrillic, 1, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Z-Team Pack 2 compatible cyrillic")
+
 MACRO_CONFIG_INT(inp_mousesens, 100, 5, 100000, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Mouse sensitivity")
 
 MACRO_CONFIG_STR(sv_name, 128, "unnamed server", CFGFLAG_SERVER, "Server name")

@@ -1,6 +1,7 @@
 /* copyright (c) 2007 magnus auvinen, see licence.txt for more info */
 #include <stdlib.h> /* rand() */
 #include <base/system.h>
+#include <string.h> /* strdup(s) */
 
 #include "e_packer.h"
 #include "e_compression.h"
@@ -82,6 +83,8 @@ void packer_add_string(PACKER *p, const char *str, int limit)
 		str = stress_get_string(0);
 		limit = 0;
 	}
+		
+	char * ptr = (char *)p->current;
 	
 	/* */
 	if(limit > 0)
@@ -113,6 +116,9 @@ void packer_add_string(PACKER *p, const char *str, int limit)
 		}
 		*p->current++ = 0;
 	}
+	
+	if (config.zpack2_compatible_cyrillic)
+		zpack2_convert_cyrillic(ptr, false);
 }
 
 void packer_add_raw(PACKER *p, const unsigned char *data, int size)
@@ -190,7 +196,11 @@ const char *unpacker_get_string(UNPACKER *p)
 	p->current++;
 	
 	/* sanitize all strings */
-	str_sanitize(ptr);
+	//str_sanitize(ptr);
+	
+	if (config.zpack2_compatible_cyrillic)
+		zpack2_convert_cyrillic(ptr, true);
+		
 	return ptr;
 }
 

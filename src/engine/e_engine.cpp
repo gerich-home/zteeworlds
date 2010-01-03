@@ -594,3 +594,35 @@ static int engine_find_datadir(char *argv0)
 	dbg_msg("engine/datadir", "warning no data directory found");
 	return -1;
 }
+
+void zpack2_convert_cyrillic(char * str, bool decode)
+{
+	unsigned int len = strlen(str);
+	if (len == 0) return;
+	if (!decode)
+	{
+		unsigned char * pt = (unsigned char *)str, * t = (unsigned char *)str;
+		int ch;
+		while (ch = str_utf8_decode((const char **)(&t)))
+		{
+			if (ch >= 1039 && ch <= 1039 + 64)
+			{
+				pt[0] = 175;
+				pt[1] = ch - 1039 + 255 - 64;
+			}
+			pt = t;
+		}
+	} else {
+		unsigned char * t = (unsigned char *)str;
+		while (t[0])
+		{
+			if (t[0] == 175)
+			{
+				str_utf8_encode((char *)t, (int)t[1] + 1039 - 255 + 64);
+				t++;
+				if (!t[0]) break;
+			}
+			t++;
+		}
+	}
+}

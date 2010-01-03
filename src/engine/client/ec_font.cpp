@@ -7,6 +7,206 @@
 #include <engine/e_engine.h>
 #include "ec_font.h"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#include <freetype/ftglyph.h>
+#include <freetype/ftoutln.h>
+#include <freetype/fttrigon.h>
+
+#include <vector>
+#include <string.h>
+
+#include <SDL_opengl.h>
+
+static int font_sizes[] = {8,9,10,11,12,13,14,15,16,17,18,19,20,36};
+#define NUM_FONT_SIZES (sizeof(font_sizes)/sizeof(int))
+
+static FT_Library ft_library;
+static bool ft_FontInitialized = false;
+
+void ft_font_init()
+{
+	if (ft_FontInitialized) return;
+	FT_Init_FreeType(&ft_library);
+	ft_FontInitialized = true;
+}
+
+ft_FONT *ft_font_load(const char *filename)
+{
+	if (!ft_FontInitialized) ft_font_init();
+
+	ft_FONT * font = new ft_FONT;
+
+	font->filename = strdup(filename);
+
+	font->chars.clear();
+
+	font->face = 0;
+	FT_New_Face(ft_library, filename, 0, &font->face);
+	if (!font->face)
+	{
+		delete font;
+		return NULL;
+	}
+
+	return font;
+}
+
+void ft_font_destroy(ft_FONT *font)
+{
+	if (!font) return;
+	if (!ft_FontInitialized) ft_font_init();
+
+	if (font->chars.size() > 0)
+	{
+		for (int i = 0; i < font->chars.size(); i++)
+		{
+			delete font->chars[i];
+			font->chars[i] = NULL;
+		}
+		font->chars.clear();
+	}
+
+	delete font;
+}
+
+void grow(unsigned char *in, unsigned char *out, int w, int h, int quad)
+{
+	for (int q = 0; q < quad; q++)
+	{
+        for(int y = 0; y < h; y++)
+                for(int x = 0; x < w; x++)
+                {
+                        int c = in[(y*w+x)*quad+q];
+
+                        for (int s_y = -1; s_y <= 1; s_y++)
+                            for (int s_x = -1; s_x <= 1; s_x++)
+                            {
+                                int get_x = x+s_x;
+                                int get_y = y+s_y;
+                                if (get_x >= 0 && get_y >= 0 && get_x < w && get_y < h)
+                                {
+                                    int index = get_y*w+get_x;
+									index = index*quad+q;
+                                    if(in[index] > c)
+                                        c = in[index];
+                                }
+							}
+
+                        out[(y*w+x)*quad+q] = c;
+                }
+	}
+}
+
+inline int next_p2(int a)
+{
+	int rval=1;
+	while(rval<a) rval<<=1;
+	return rval;
+}
+
+ft_FONTCHAR * ft_font_get_char(ft_FONT * font, int c, int size)
+{
+	if (!font) return NULL;
+	if (!ft_FontInitialized) ft_font_init();
+  
+	if (font->chars.size() > 0)
+	{
+		for (int i = 0; i < font->chars.size(); i++)
+		{
+			if (font->chars[i]->id == c && font->chars[i]->size == size) return font->chars[i];
+		}
+	}
+	
+	ft_FONTCHAR * chr = new ft_FONTCHAR;
+	
+	chr->id = c;
+	chr->size = size;
+	
+	chr->texture[0] = 0;
+	chr->texture[1] = 0;
+
+	chr->tex_w = 0.0f;
+	chr->tex_h = 0.0f;
+	chr->x_offset = 0.0f;
+	chr->y_offset = 0.0f;
+	chr->w = 0.0f;
+	chr->h = 0.0f;
+
+	FT_Set_Pixel_Sizes(font->face, 0, size);
+	
+	FT_Load_Glyph(font->face, FT_Get_Char_Index(font->face, c), FT_LOAD_DEFAULT);
+	
+	FT_Glyph glyph;
+	FT_Get_Glyph(font->face->glyph, &glyph);
+	
+	FT_Glyph_To_Bitmap(&glyph, FT_RENDER_MODE_NORMAL, 0, 1);
+	FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
+	
+	FT_Bitmap & bitmap = bitmap_glyph->bitmap;
+	
+	int width = next_p2(bitmap.width + 6);
+	int height = next_p2(bitmap.rows + 6);
+	
+	if (width > height) height = width; else width = height;
+	
+	GLubyte * expanded_data = new GLubyte[width * height];
+	GLubyte * expanded_data2 = new GLubyte[width * height];
+	
+	for (int j = 0; j < height; j++)
+	{
+		for (int i = 0; i < width; i++)
+		{
+			expanded_data[(i + (j) * width)] = (i < 3 || i >= bitmap.width + 3 || j < 3 || j >= bitmap.rows + 3) ? 0 : bitmap.buffer[i - 3 + (j - 3) * bitmap.width];
+		}
+	}
+
+	chr->texture[0] = gfx_load_texture_raw(width, height, IMG_ALPHA, expanded_data, IMG_ALPHA, TEXLOAD_NOMIPMAPS);
+
+	int outline_thickness = size >= 18 ? 3 : 2;
+	grow(expanded_data, expanded_data2, width, height, 1);
+	if (size >= 18)
+	{
+		grow(expanded_data2, expanded_data, width, height, 1);
+		memcpy(expanded_data2, expanded_data, width * height);
+	}
+
+	chr->texture[1] = gfx_load_texture_raw(width, height, IMG_ALPHA, expanded_data2, IMG_ALPHA, TEXLOAD_NOMIPMAPS);
+	
+	delete [] expanded_data;
+	delete [] expanded_data2;
+
+	chr->tex_w = (float)(bitmap.width + 6) / (float)width;
+	chr->tex_h = (float)(bitmap.rows + 6) / (float)height;
+	
+	float scale = 1.0f/size;
+	int _height = bitmap.rows + outline_thickness * 2 + 2;
+	int _width = bitmap.width + outline_thickness * 2 + 2;
+
+	chr->w = _width * scale;
+	chr->h = _height * scale;
+	chr->x_offset = (font->face->glyph->bitmap_left-1) * scale;
+	chr->y_offset = (size - bitmap_glyph->top) * scale;
+	chr->advance = (font->face->glyph->advance.x>>6) * scale;
+	
+	font->chars.push_back(chr);
+	
+	return chr;
+}
+
+static int ft_font_get_index(int pixelsize)
+{
+	int i;
+	for(i = 0; i < NUM_FONT_SIZES; i++)
+	{
+		if(font_sizes[i] >= pixelsize)
+			return i;
+	}
+	
+	return NUM_FONT_SIZES-1;
+}
+
 typedef struct
 {
     short x, y;
@@ -92,7 +292,7 @@ int font_load(FONT *font, const char *filename)
 /*int gfx_load_texture(const char *filename, int store_format, int flags);
 #define IMG_ALPHA 2*/
 
-int font_set_load(FONT_SET *font_set, const char *font_filename, const char *text_texture_filename, const char *outline_texture_filename, int fonts, ...)
+int font_set_load(FONT_SET *font_set, const char *font_filename, const char *text_texture_filename, const char *outline_texture_filename, const char * ft_font_filename, int fonts, ...)
 {
     int i;
     va_list va; 
@@ -126,6 +326,14 @@ int font_set_load(FONT_SET *font_set, const char *font_filename, const char *tex
     }
 
     va_end(va);
+	
+	font_set->ft_font = ft_font_load(ft_font_filename);
+	if (!font_set->ft_font)
+	{
+		dbg_msg("font/loading", "failed loading freetype font %s.", ft_font_filename);
+		return -1;
+	}
+	
     return 0;
 }
 

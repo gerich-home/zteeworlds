@@ -158,6 +158,10 @@ void MENUS::render_settings_player(RECT main_view)
 			if (!config.cl_default_skin_only)
 				gameclient.skins->load_all();
 		}
+		
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.zpack2_compatible_cyrillic, "Z-Team Pack 2 compatible cyrillic", config.zpack2_compatible_cyrillic, &button, ui_draw_checkbox, 0))
+			config.zpack2_compatible_cyrillic ^= 1;
 	}
 		
 	// draw header
@@ -580,6 +584,10 @@ void MENUS::render_settings_graphics(RECT main_view)
 			config.ui_new_background_type = (config.ui_new_background_type + 1)%4;
 		}
 	}
+	
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.gfx_freetype_font, "Use FreeType for displaying text", config.gfx_freetype_font, &button, ui_draw_checkbox, 0))
+		config.gfx_freetype_font ^= 1;
 }
 
 void MENUS::render_settings_sound(RECT main_view)
