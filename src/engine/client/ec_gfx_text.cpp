@@ -60,7 +60,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 	static int smileys_texture = -1;
 	
 	if (cursor->flags&TEXTFLAG_SMILEYS && smileys_texture < 0)
-		smileys_texture = gfx_load_texture("smileys.png", IMG_AUTO, 0);
+		smileys_texture = gfx_load_texture("smileys.png", IMG_AUTO, TEXLOAD_NOMIPMAPS|TEXLOAD_NORESAMPLE);
 
 	float size = cursor->font_size;
 	
@@ -230,16 +230,19 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 							gfx_quads_end();
 							has_gfx_begin = false;
 						}
+						
+						int tsw = actual_size * 0.5f;
+						int tsh = actual_size * 0.5f;
 					
 						gfx_texture_set(smileys_texture);
 						gfx_quads_begin();
-							gfx_quads_setsubset((float)(smile_index%4) / 4.0f, (float)(smile_index/4) / 4.0f, (float)(smile_index%4 + 1) / 4.0f, (float)((smile_index/4) + 1) / 4.0f);
+							gfx_quads_setsubset((float)(smile_index%4) * 0.25f, (float)(smile_index/4) * 0.25f, (float)(smile_index%4 + 1) * 0.25f, (float)((smile_index/4) + 1) * 0.25f);
 							gfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
-							gfx_quads_drawTL(draw_x + 0 * actual_size, draw_y - 0.1 * actual_size, 1 * actual_size, 1 * actual_size);
+							gfx_quads_drawTL(draw_x + 0 * tsw, draw_y + 0 * tsh, 1 * tsw, 1 * tsh);
 						gfx_quads_end();
 					}
 					
-					advance = 2;
+					advance = 1;
 				} else
 				if (font_set->ft_font) {
 					ft_FONTCHAR * chr;

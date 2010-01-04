@@ -664,7 +664,8 @@ typedef struct
 void gfx_text_set_cursor(TEXT_CURSOR *cursor, float x, float y, float font_size, int flags);
 void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length);
 
-
+int gfx_get_texture_width(int index);
+int gfx_get_texture_height(int index);
 
 
 #endif

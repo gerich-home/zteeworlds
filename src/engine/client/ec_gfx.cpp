@@ -4,18 +4,7 @@
 
 #include "SDL.h"
 
-#ifdef CONF_FAMILY_WINDOWS
-	#define WIN32_LEAN_AND_MEAN
-	#include <windows.h>
-#endif
-
-#ifdef CONF_PLATFORM_MACOSX
-	#include <OpenGL/gl.h>
-	#include <OpenGL/glu.h>
-#else
-	#include <GL/gl.h>
-	#include <GL/glu.h>
-#endif
+#include "SDL_opengl.h"
 
 #include <base/system.h>
 #include <engine/external/pnglite/pnglite.h>
@@ -87,6 +76,8 @@ typedef struct
 	int memsize;
 	int flags;
 	int next;
+	int width;
+	int height;
 } TEXTURE;
 
 enum
@@ -429,6 +420,28 @@ int gfx_get_video_modes(VIDEO_MODE *list, int maxcount)
 	return num_modes;
 }
 
+int gfx_get_texture_width(int index)
+{
+	if(index == invalid_texture)
+		return 0;
+		
+	if(index < 0)
+		return 0;
+		
+	return textures[index].width;
+}
+
+int gfx_get_texture_height(int index)
+{
+	if(index == invalid_texture)
+		return 0;
+		
+	if(index < 0)
+		return 0;
+		
+	return textures[index].width;
+}
+
 int gfx_unload_texture(int index)
 {
 	if(index == invalid_texture)
@@ -492,6 +505,9 @@ int gfx_load_texture_raw(int w, int h, int format, const void *data, int store_f
 	first_free_texture = textures[tex].next;
 	textures[tex].next = -1;
 	
+	textures[tex].width = w;
+	textures[tex].height = h;
+	
 	/* resample if needed */
 	if(!(flags&TEXLOAD_NORESAMPLE) && config.gfx_texture_quality==0)
 	{
@@ -548,11 +564,21 @@ int gfx_load_texture_raw(int w, int h, int format, const void *data, int store_f
 	{
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 	} else {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, -1000);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 1000);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 100);
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
 	}
-
+	
 	gluBuild2DMipmaps(GL_TEXTURE_2D, store_oglformat, w, h, oglformat, GL_UNSIGNED_BYTE, texdata);
 	
 	/* calculate memory usage */

@@ -14,26 +14,26 @@
 #include "chat.hpp"
 
 static const int smileys_count = 16;
-static const int smileys_texts_per_smile = 4;
+static const int smileys_texts_per_smile = 6;
 static const int smileys_texts_count = smileys_count * smileys_texts_per_smile;
 
-static const char * smileys_texts[16][4] = {
-	{":D",			"=D",			":-D",		""},
-	{"8)",			"8-)",			":cool:",	"*cool*"},
-	{":/",			":-/",			":\\",		":-\\"},
-	{":lol:",		"*lol*",		":rofl:",	"*rofl*"},
-	{":mad:",		"*mad*",		":evil:",	"*evil*"},
-	{":|",			":-|",			"=|",		""},
-	{":rolleyes:",	"*rolleyes*",	"",			""},
-	{":(",			":-(",			"=(",		""},
-	{":)",			":-)",			"=)",		""},
-	{":P",			":-P",			"=P",		""},
-	{";)",			";-)",			"",			""},
-	{":O",			":-O",			"=O",		""},
-	{"",			"",				"",			""},
-	{"",			"",				"",			""},
-	{"",			"",				"",			""},
-	{"",			"",				"",			""}
+static const char * smileys_texts[16][6] = {
+	{":)",			":-)",			"=)",		"",			"",			""},
+	{";)",			";-)",			"",			"",			"",			""},
+	{":D",			"=D",			":-D",		"",			"",			""},
+	{"8)",			"8-)",			":cool:",	"*cool*",	"",			""},
+	{":/",			":-/",			":\\",		":-\\",		"",			""},
+	{":|",			":-|",			"=|",		"",			"",			""},
+	{":(",			":-(",			"=(",		"",			"",			""},
+	{":O",			":-O",			"=O",		"",			"",			""},
+	{":P",			":-P",			"=P",		"",			"",			""},
+	{":lol:",		"*lol*",		":rofl:",	"*rofl*",	"",			""},
+	{":[",			":-[",			"=[",		":]",		":-]",		"=]"},
+	{":evil:",		"*evil*",		":E",		":-E",		"=E",		""},
+	{":!",			":-!",			"=!",		":sick:",	"*sick*",	""},
+	{":dead:",		"*dead*",		"X(",		"X-(",		"",			""},
+	{":mad:",		"*mad*",		":crazy:",	"*crazy*",	"",			""},
+	{"?)",			"?-)",			"?(",		"?-(",		"",			""}
 };
 
 void CHAT::on_statechange(int new_state, int old_state)
