@@ -52,7 +52,7 @@ void PLAYERS::render_hand(TEE_RENDER_INFO *info, vec2 center_pos, vec2 dir, floa
 
 		select_sprite(outline?SPRITE_TEE_HAND_OUTLINE:SPRITE_TEE_HAND, 0, 0, 0);
 		gfx_quads_setrotation(angle);
-		gfx_quads_draw(hand_pos.x, hand_pos.y, 2*basesize, 2*basesize);
+		draw_sprite(hand_pos.x, hand_pos.y, 2*basesize);
 	}
 
 	gfx_quads_setrotation(0);

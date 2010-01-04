@@ -255,7 +255,7 @@ void HUD::render_healthandammo()
 	// if weaponstage is active, put a "glow" around the stage ammo
 	select_sprite(data->weapons.id[gameclient.snap.local_character->weapon%NUM_WEAPONS].sprite_proj);
 	for (int i = 0; i < min(gameclient.snap.local_character->ammocount, 10); i++)
-		gfx_quads_drawTL(x+i*12,y+24,10,10);
+		draw_sprite2(x+i*12,y+24,10);
 
 	gfx_quads_end();
 
@@ -265,21 +265,21 @@ void HUD::render_healthandammo()
 	// render health
 	select_sprite(SPRITE_HEALTH_FULL);
 	for(; h < gameclient.snap.local_character->health; h++)
-		gfx_quads_drawTL(x+h*12,y,10,10);
+		draw_sprite2(x+h*12,y,10);
 
 	select_sprite(SPRITE_HEALTH_EMPTY);
 	for(; h < 10; h++)
-		gfx_quads_drawTL(x+h*12,y,10,10);
+		draw_sprite2(x+h*12,y,10);
 
 	// render armor meter
 	h = 0;
 	select_sprite(SPRITE_ARMOR_FULL);
 	for(; h < gameclient.snap.local_character->armor; h++)
-		gfx_quads_drawTL(x+h*12,y+12,10,10);
+		draw_sprite2(x+h*12,y+12,10);
 
 	select_sprite(SPRITE_ARMOR_EMPTY);
 	for(; h < 10; h++)
-		gfx_quads_drawTL(x+h*12,y+12,10,10);
+		draw_sprite2(x+h*12,y+12,10);
 	gfx_quads_end();
 }
 

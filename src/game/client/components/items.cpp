@@ -70,8 +70,9 @@ void ITEMS::render_projectile(const NETOBJ_PROJECTILE *current, int itemid)
 			gfx_quads_setrotation(0);
 
 	}
+	
 
-	gfx_quads_draw(pos.x, pos.y, 32, 32);
+	draw_sprite(pos.x, pos.y, 32);
 	gfx_quads_setrotation(0);
 	gfx_quads_end();
 }
@@ -142,6 +143,14 @@ void ITEMS::render_flag(const NETOBJ_FLAG *prev, const NETOBJ_FLAG *current)
 	if(gameclient.snap.local_info && current->carried_by == gameclient.snap.local_info->cid)
 		pos = gameclient.local_character_pos;
 
+	if (config.gfx_shadows)
+	{
+		vec4 oldcolor = gfx_getcolor(0);
+		gfx_setcolor(0, 0, 0, oldcolor.a * 0.5f);
+		gfx_quads_draw(pos.x + 1, pos.y-size*0.75f + 1, size, size * 2);
+		gfx_setcolor(oldcolor.r, oldcolor.b, oldcolor.g, oldcolor.a);
+	}
+	
 	gfx_quads_draw(pos.x, pos.y-size*0.75f, size, size*2);
 	gfx_quads_end();
 }

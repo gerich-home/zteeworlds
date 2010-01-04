@@ -43,6 +43,7 @@ void select_sprite(SPRITE *spr, int flags=0, int sx=0, int sy=0);
 void select_sprite(int id, int flags=0, int sx=0, int sy=0);
 
 void draw_sprite(float x, float y, float size);
+void draw_sprite2(float x, float y, float size);
 
 // rects
 void draw_round_rect(float x, float y, float w, float h, float r);

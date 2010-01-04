@@ -78,8 +78,30 @@ void select_sprite(int id, int flags, int sx, int sy)
 
 void draw_sprite(float x, float y, float size)
 {
+	if (config.gfx_shadows)
+	{
+		vec4 oldcolor = gfx_getcolor(0);
+		gfx_setcolor(0, 0, 0, oldcolor.a * 0.5f);
+		gfx_quads_draw(x + 1, y + 1, size * sprite_w_scale, size * sprite_h_scale);
+		gfx_setcolor(oldcolor.r, oldcolor.b, oldcolor.g, oldcolor.a);
+	}
+
 	gfx_quads_draw(x, y, size*sprite_w_scale, size*sprite_h_scale);
 }
+
+void draw_sprite2(float x, float y, float size)
+{
+	if (config.gfx_shadows)
+	{
+		vec4 oldcolor = gfx_getcolor(0);
+		gfx_setcolor(0, 0, 0, oldcolor.a * 0.5f);
+		gfx_quads_drawTL(x + 1, y + 1, size, size);
+		gfx_setcolor(oldcolor.r, oldcolor.b, oldcolor.g, oldcolor.a);
+	}
+
+	gfx_quads_drawTL(x, y, size, size);
+}
+
 
 void draw_round_rect_ext(float x, float y, float w, float h, float r, int corners)
 {
@@ -161,79 +183,88 @@ void render_tee(ANIMSTATE *anim, TEE_RENDER_INFO *info, int emote, vec2 dir, vec
 	gfx_quads_begin();
 	//gfx_quads_draw(pos.x, pos.y-128, 128, 128);
 
-	// first pass we draw the outline
-	// second pass we draw the filling
-	for(int p = 0; p < 2; p++)
-	{
-		int outline = p==0 ? 1 : 0;
-
-		for(int f = 0; f < 2; f++)
+	// If there are shadows, use it
+	for (int q = config.gfx_shadows; q >= 0; q--){
+		// first pass we draw the outline
+		// second pass we draw the filling
+		for(int p = 0; p < 2; p++)
 		{
-			float animscale = info->size * 1.0f/64.0f;
-			float basesize = info->size;
-			if(f == 1)
+			int outline = p==0 ? 1 : 0;
+
+			for(int f = 0; f < 2; f++)
 			{
-				gfx_quads_setrotation(anim->body.angle*pi*2);
-
-				// draw body
-				gfx_setcolor(info->color_body.r, info->color_body.g, info->color_body.b, 1.0f);
-				vec2 body_pos = position + vec2(anim->body.x, anim->body.y)*animscale;
-				select_sprite(outline?SPRITE_TEE_BODY_OUTLINE:SPRITE_TEE_BODY, 0, 0, 0);
-				gfx_quads_draw(body_pos.x, body_pos.y, basesize, basesize);
-
-				// draw eyes
-				if(p == 1)
+				float animscale = info->size * 1.0f/64.0f;
+				float basesize = info->size;
+				if(f == 1)
 				{
-					switch (emote)
+					gfx_quads_setrotation(anim->body.angle*pi*2);
+
+					// draw body
+					if (q == 0)
+						gfx_setcolor(info->color_body.r, info->color_body.g, info->color_body.b, 1.0f);
+					else
+						gfx_setcolor(0, 0, 0, 0.5f);
+					vec2 body_pos = position + vec2(anim->body.x, anim->body.y)*animscale;
+					select_sprite(outline?SPRITE_TEE_BODY_OUTLINE:SPRITE_TEE_BODY, 0, 0, 0);
+					gfx_quads_draw(body_pos.x + q * 1, body_pos.y + q * 1, basesize, basesize);
+
+					// draw eyes
+					if(p == 1)
 					{
-						case EMOTE_PAIN:
-							select_sprite(SPRITE_TEE_EYE_PAIN, 0, 0, 0);
-							break;
-						case EMOTE_HAPPY:
-							select_sprite(SPRITE_TEE_EYE_HAPPY, 0, 0, 0);
-							break;
-						case EMOTE_SURPRISE:
-							select_sprite(SPRITE_TEE_EYE_SURPRISE, 0, 0, 0);
-							break;
-						case EMOTE_ANGRY:
-							select_sprite(SPRITE_TEE_EYE_ANGRY, 0, 0, 0);
-							break;
-						default:
-							select_sprite(SPRITE_TEE_EYE_NORMAL, 0, 0, 0);
-							break;
+						switch (emote)
+						{
+							case EMOTE_PAIN:
+								select_sprite(SPRITE_TEE_EYE_PAIN, 0, 0, 0);
+								break;
+							case EMOTE_HAPPY:
+								select_sprite(SPRITE_TEE_EYE_HAPPY, 0, 0, 0);
+								break;
+							case EMOTE_SURPRISE:
+								select_sprite(SPRITE_TEE_EYE_SURPRISE, 0, 0, 0);
+								break;
+							case EMOTE_ANGRY:
+								select_sprite(SPRITE_TEE_EYE_ANGRY, 0, 0, 0);
+								break;
+							default:
+								select_sprite(SPRITE_TEE_EYE_NORMAL, 0, 0, 0);
+								break;
+						}
+						
+						float eyescale = basesize*0.40f;
+						float h = emote == EMOTE_BLINK ? basesize*0.15f : eyescale;
+						float eyeseparation = (0.075f - 0.010f*fabs(direction.x))*basesize;
+						vec2 offset = vec2(direction.x*0.125f, -0.05f+direction.y*0.10f)*basesize;
+						gfx_quads_draw(body_pos.x-eyeseparation+offset.x + q * 1, body_pos.y+offset.y + q * 1, eyescale, h);
+						gfx_quads_draw(body_pos.x+eyeseparation+offset.x + q * 1, body_pos.y+offset.y + q * 1, -eyescale, h);
 					}
-					
-					float eyescale = basesize*0.40f;
-					float h = emote == EMOTE_BLINK ? basesize*0.15f : eyescale;
-					float eyeseparation = (0.075f - 0.010f*fabs(direction.x))*basesize;
-					vec2 offset = vec2(direction.x*0.125f, -0.05f+direction.y*0.10f)*basesize;
-					gfx_quads_draw(body_pos.x-eyeseparation+offset.x, body_pos.y+offset.y, eyescale, h);
-					gfx_quads_draw(body_pos.x+eyeseparation+offset.x, body_pos.y+offset.y, -eyescale, h);
 				}
-			}
 
-			// draw feet
-			ANIM_KEYFRAME *foot = f ? &anim->front_foot : &anim->back_foot;
+				// draw feet
+				ANIM_KEYFRAME *foot = f ? &anim->front_foot : &anim->back_foot;
 
-			float w = basesize;
-			float h = basesize/2;
+				float w = basesize;
+				float h = basesize/2;
 
-			gfx_quads_setrotation(foot->angle*pi*2);
-			
-			bool indicate = !info->got_airjump && config.cl_airjumpindicator;
-			float cs = 1.0f; // color scale
-			
-			if(outline)
-				select_sprite(SPRITE_TEE_FOOT_OUTLINE, 0, 0, 0);
-			else
-			{
-				select_sprite(SPRITE_TEE_FOOT, 0, 0, 0);
-				if(indicate)
-					cs = 0.5f;
-			}
+				gfx_quads_setrotation(foot->angle*pi*2);
 				
-			gfx_setcolor(info->color_feet.r*cs, info->color_feet.g*cs, info->color_feet.b*cs, 1.0f);
-			gfx_quads_draw(position.x+foot->x*animscale, position.y+foot->y*animscale, w, h);
+				bool indicate = !info->got_airjump && config.cl_airjumpindicator;
+				float cs = 1.0f; // color scale
+				
+				if(outline)
+					select_sprite(SPRITE_TEE_FOOT_OUTLINE, 0, 0, 0);
+				else
+				{
+					select_sprite(SPRITE_TEE_FOOT, 0, 0, 0);
+					if(indicate)
+						cs = 0.5f;
+				}
+					
+				if (q == 0)
+					gfx_setcolor(info->color_feet.r*cs, info->color_feet.g*cs, info->color_feet.b*cs, 1.0f);
+				else
+					gfx_setcolor(0, 0, 0, 0.5f);
+				gfx_quads_draw(position.x+foot->x*animscale + q * 1, position.y+foot->y*animscale + q * 1, w, h);
+			}
 		}
 	}
 

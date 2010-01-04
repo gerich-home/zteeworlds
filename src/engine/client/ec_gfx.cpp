@@ -1038,3 +1038,8 @@ void gfx_maximize()
 {
 	/* TODO: SDL */
 }
+
+vec4 gfx_getcolor(int vertex)
+{
+	return vec4(color[vertex].r, color[vertex].g, color[vertex].b, color[vertex].a);
+}

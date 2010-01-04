@@ -3,6 +3,7 @@
 #define ENGINE_IF_GFX_H
 
 #include "client/ec_font.h"
+#include <base/vmath.hpp>
 
 /*
 	Title: Graphics
@@ -666,6 +667,8 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length);
 
 int gfx_get_texture_width(int index);
 int gfx_get_texture_height(int index);
+
+vec4 gfx_getcolor(int vertex);
 
 
 #endif
