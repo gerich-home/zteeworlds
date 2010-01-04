@@ -58,6 +58,7 @@ MACRO_CONFIG_INT(gfx_freetype_font, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Use F
 MACRO_CONFIG_INT(zpack2_compatible_cyrillic, 1, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Z-Team Pack 2 compatible cyrillic")
 MACRO_CONFIG_INT(gfx_text_shadows, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Render text with shadows")
 MACRO_CONFIG_INT(gfx_shadows, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Render game objects with shadows")
+MACRO_CONFIG_INT(gfx_outlines, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Render tiles with outlines")
 
 MACRO_CONFIG_INT(inp_mousesens, 100, 5, 100000, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Mouse sensitivity")
 

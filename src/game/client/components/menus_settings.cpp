@@ -614,6 +614,10 @@ void MENUS::render_settings_graphics(RECT main_view)
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 	if (ui_do_button(&config.gfx_shadows, "Shadows", config.gfx_shadows, &button, ui_draw_checkbox, 0))
 		config.gfx_shadows ^= 1;
+	
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.gfx_outlines, "Shadows", config.gfx_outlines, &button, ui_draw_checkbox, 0))
+		config.gfx_outlines ^= 1;
 }
 
 void MENUS::render_settings_sound(RECT main_view)

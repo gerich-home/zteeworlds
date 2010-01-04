@@ -2,6 +2,7 @@
 #include <math.h>
 #include <base/math.hpp>
 #include <engine/e_client_interface.h>
+#include <game/layers.hpp>
 
 #include "render.hpp"
 
@@ -173,7 +174,12 @@ void render_tilemap(TILE *tiles, int w, int h, float scale, vec4 color, int rend
 	float final_tilesize_scale = final_tilesize/tile_pixelsize;
 	
 	gfx_quads_begin();
-	gfx_setcolor(color.r, color.g, color.b, color.a);
+	if (renderflags&TILERENDERFLAG_SHADOW)
+		gfx_setcolor(0, 0, 0, color.a * 0.5f);
+	else if (renderflags&TILERENDERFLAG_OUTLINE)
+		gfx_setcolor(color.r * 0.3f, color.g * 0.3f, color.b * 0.3f, color.a);
+	else
+		gfx_setcolor(color.r, color.g, color.b, color.a);
 	
 	int starty = (int)(screen_y0/scale)-1;
 	int startx = (int)(screen_x0/scale)-1;
@@ -212,6 +218,38 @@ void render_tilemap(TILE *tiles, int w, int h, float scale, vec4 color, int rend
 					continue; // my = 0;
 				if(my>=h)
 					continue; // my = h-1;
+			}
+			
+			if (renderflags&TILERENDERFLAG_OUTLINE)
+			{
+				MAPITEM_LAYER_TILEMAP *gamemap = layers_game_layer();
+				TILE *gametiles = (TILE *)map_get_data(gamemap->data);
+
+				int gx = mx, gy = my;
+
+				if(renderflags&TILERENDERFLAG_EXTEND)
+				{
+					if(gx<0)
+						gx = 0;
+					if(gx>=gamemap->width)
+						gx = gamemap->width - 1;
+					if(gy<0)
+						gy = 0;
+					if(gy>=gamemap->height)
+						gy = gamemap->height - 1;
+				} else {
+					if(gx<0)
+						continue;
+					if(gx>=gamemap->width)
+						continue;
+					if(gy<0)
+						continue;
+					if(gy>=gamemap->height)
+						continue;
+				}
+
+				if (gametiles[gx + gy * gamemap->width].index != TILE_SOLID)
+					continue;
 			}
 			
 			int c = mx + my*w;
@@ -263,7 +301,12 @@ void render_tilemap(TILE *tiles, int w, int h, float scale, vec4 color, int rend
 					}
 					
 					gfx_quads_setsubset(u0,v0,u1,v1);
-					gfx_quads_drawTL(x*scale, y*scale, scale, scale);
+					if (renderflags&TILERENDERFLAG_SHADOW)
+						gfx_quads_drawTL(x*scale + 3, y*scale + 3, scale, scale);
+					else if (renderflags&TILERENDERFLAG_OUTLINE)
+						gfx_quads_drawTL(x*scale - 2, y*scale - 2, scale + 4, scale + 4);
+					else
+						gfx_quads_drawTL(x*scale, y*scale, scale, scale);
 				}
 			}
 			x += tiles[c].skip;
