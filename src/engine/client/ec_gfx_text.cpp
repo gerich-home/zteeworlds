@@ -171,7 +171,6 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					current++;
 					isUtf8Char = false;
 					this_batch--;
-					//if ((void *)nextcharacter > (void *)end) break;
 					break;
 				} else {
 					isUtf8Char = config.gfx_freetype_font ? true : str_utf8_char_length(character) > 1;
@@ -219,6 +218,14 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					if(cursor->flags&TEXTFLAG_RENDER)
 					{
 						gfx_quads_setsubset(tex_x0, tex_y0, tex_x1, tex_y1);
+						
+						if (config.gfx_text_shadows && i == 0)
+						{
+							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.5f * text_a);
+							gfx_quads_drawTL(draw_x+x_offset*size + 1, draw_y+y_offset*size + 1, width*size, height*size);
+							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
+						}
+						
 						gfx_quads_drawTL(draw_x+x_offset*size, draw_y+y_offset*size, width*size, height*size);
 					}
 
@@ -247,6 +254,11 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 						gfx_texture_set(smileys_texture);
 						gfx_quads_begin();
 							gfx_quads_setsubset((float)(smile_index%4) * 0.25f, (float)(smile_index/4) * 0.25f, (float)(smile_index%4 + 1) * 0.25f, (float)((smile_index/4) + 1) * 0.25f);
+							if (config.gfx_text_shadows && i == 0)
+							{
+								gfx_setcolor(0.0f, 0.0f, 0.0f, 0.5f * text_a);
+								gfx_quads_drawTL(draw_x + 0 * tsw + 1, draw_y + 0 * tsh + 1, 1 * tsw, 1 * tsh);
+							}
 							gfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
 							gfx_quads_drawTL(draw_x + 0 * tsw, draw_y + 0 * tsh, 1 * tsw, 1 * tsh);
 						gfx_quads_end();
@@ -281,6 +293,12 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 							gfx_quads_setsubset(0.0f, 0.0f, chr->tex_w, chr->tex_h);
 						}
 						
+						if (config.gfx_text_shadows && i == 0)
+						{
+							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.5f * text_a);
+							gfx_quads_drawTL(draw_x + chr->x_offset * size + 1, draw_y + chr->y_offset * size * 0.9f + 1, chr->w * size, chr->h * size);
+							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
+						}
 						gfx_quads_drawTL(draw_x + chr->x_offset * size, draw_y + chr->y_offset * size * 0.9f, chr->w * size, chr->h * size);
 						
 						prev_utf8 = true;

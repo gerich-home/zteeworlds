@@ -606,6 +606,10 @@ void MENUS::render_settings_graphics(RECT main_view)
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 	if (ui_do_button(&config.gfx_smileys, "Smileys", config.gfx_smileys, &button, ui_draw_checkbox, 0))
 		config.gfx_smileys ^= 1;
+	
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.gfx_text_shadows, "Text with shadows", config.gfx_text_shadows, &button, ui_draw_checkbox, 0))
+		config.gfx_text_shadows ^= 1;
 }
 
 void MENUS::render_settings_sound(RECT main_view)
