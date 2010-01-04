@@ -165,11 +165,21 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 				const char * prev_ptr = (const char *)current;
 
 				character = str_utf8_decode((const char **)(&current));
-				isUtf8Char = str_utf8_char_length(character) > 1;
-				tmp = current;
-				nextcharacter = str_utf8_decode((const char **)(&tmp));
-				if ((void *)nextcharacter > (void *)end) break;
-				this_batch -= str_utf8_char_length(character);
+				if ((void *)prev_ptr == (void *)current || str_utf8_char_length(character) == 0)
+				{
+					character = *((unsigned char *)current);
+					current++;
+					isUtf8Char = false;
+					this_batch--;
+					//if ((void *)nextcharacter > (void *)end) break;
+					break;
+				} else {
+					isUtf8Char = config.gfx_freetype_font ? true : str_utf8_char_length(character) > 1;
+					tmp = current;
+					nextcharacter = str_utf8_decode((const char **)(&tmp));
+					if ((void *)nextcharacter > (void *)end) break;
+					this_batch -= str_utf8_char_length(character);
+				}
 				
 				if(character == '\n')
 				{
@@ -180,7 +190,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					continue;
 				}
 
-				if (!isUtf8Char && !config.gfx_freetype_font)
+				if (!isUtf8Char)
 				{
 					if(cursor->flags&TEXTFLAG_RENDER)
 					{
