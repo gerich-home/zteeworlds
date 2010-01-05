@@ -121,6 +121,55 @@ void HUD::render_goals()
 				gfx_text(0, whole-20-w/2, 300-40-15+t*20, 14, buf, -1);
 		}
 	}
+	
+	// render small duel score hud
+	if(gameclient.snap.gameobj && config.cl_showduelscores && !(gameflags&GAMEFLAG_TEAMS))
+	{
+		int count = 0;
+		for (int q = 0; q < MAX_CLIENTS; q++)
+		{
+			if (!(gameclient.snap.player_infos[q] && gameclient.snap.player_infos[q]->team >= 0))
+				continue;
+
+			count++;
+		}
+
+		if (count < 3)
+		{
+			int pos = 0;
+			for (int q = 0; q < MAX_CLIENTS; q++)
+			{
+				if (!(gameclient.snap.player_infos[q] && gameclient.snap.player_infos[q]->team >= 0))
+					continue;
+
+				gfx_blend_normal();
+				gfx_texture_set(-1);
+				gfx_quads_begin();
+				gfx_setcolor(0,0,0,0.25f);
+
+				draw_round_rect(whole-40, 300-40-15+pos*20, 50, 18, 5.0f);
+				gfx_quads_end();
+
+				char buf[32];
+				str_format(buf, sizeof(buf), "%d", gameclient.snap.player_infos[q]->score);
+				float w = gfx_text_width(0, 14, buf, -1);
+				gfx_text(0, whole-20-w/2+5, 300-40-15+pos*20, 14, buf, -1);
+
+				const char *name = gameclient.clients[q].name;
+				w = gfx_text_width(0, 10, name, -1);
+				gfx_text(0, whole-40-5-w, 300-40-15+pos*20+2, 10, name, -1);
+				TEE_RENDER_INFO info = gameclient.clients[q].render_info;
+				info.size = 18.0f;
+
+				render_tee(ANIMSTATE::get_idle(), &info, EMOTE_NORMAL, vec2(1,0),
+					vec2(whole-40+10, 300-40-15+9+pos*20+1));
+
+				pos++;
+				if (pos > 1)
+					break;
+			}
+		}
+	}
 
 	// render warmup timer
 	if(gameclient.snap.gameobj->warmup)
