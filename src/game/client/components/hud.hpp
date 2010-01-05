@@ -3,7 +3,8 @@
 class HUD : public COMPONENT
 {	
 	float width;
-	
+	float average_fps; 
+    
 	void render_cursor();
 	
 	void render_fps();

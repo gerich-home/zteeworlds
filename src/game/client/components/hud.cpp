@@ -18,7 +18,8 @@
 
 HUD::HUD()
 {
-	
+	// won't work if zero
+	average_fps = 1.0f;
 }
 	
 void HUD::on_reset()
@@ -200,8 +201,14 @@ void HUD::render_fps()
 {
 	if(config.cl_showfps)
 	{
+		// calculate avg. fps. Little magic...
+		float fps = 1.0f / client_frametime();
+		if((average_fps > 3*fps) || (average_fps*3 < fps))
+			average_fps = fps;
+		average_fps =  fabs(average_fps + (fabs(fps/average_fps - 1) < 0.2f ? 1.0f*(fps/average_fps - 1) : 10.0f*(fps/average_fps - 1)));
+
 		char buf[512];
-		str_format(buf, sizeof(buf), "%d", (int)(1.0f/client_frametime()));
+		str_format(buf, sizeof(buf), "%d", (int)average_fps);
 		gfx_text(0, width-10-gfx_text_width(0,12,buf,-1), 5, 12, buf, -1);
 	}
 }
