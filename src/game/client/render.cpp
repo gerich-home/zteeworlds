@@ -102,6 +102,19 @@ void draw_sprite2(float x, float y, float size)
 	gfx_quads_drawTL(x, y, size, size);
 }
 
+void draw_sprite3(float x, float y, float size)
+{
+	if (config.gfx_shadows)
+	{
+		vec4 oldcolor = gfx_getcolor(0);
+		gfx_setcolor(0, 0, 0, oldcolor.a * 0.5f);
+		gfx_quads_draw(x + 1, y + 1, size, size);
+		gfx_setcolor(oldcolor.r, oldcolor.b, oldcolor.g, oldcolor.a);
+	}
+
+	gfx_quads_draw(x, y, size, size);
+}
+
 
 void draw_round_rect_ext(float x, float y, float w, float h, float r, int corners)
 {

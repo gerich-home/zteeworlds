@@ -72,7 +72,7 @@ void ITEMS::render_projectile(const NETOBJ_PROJECTILE *current, int itemid)
 	}
 	
 
-	draw_sprite(pos.x, pos.y, 32);
+	draw_sprite3(pos.x, pos.y, 32);
 	gfx_quads_setrotation(0);
 	gfx_quads_end();
 }
