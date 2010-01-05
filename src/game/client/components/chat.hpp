@@ -8,7 +8,7 @@ class CHAT : public COMPONENT
 	enum 
 	{
 		MAX_LINES = 10,
-		MAX_HISTORY_LINES = 10,
+		MAX_HISTORY_LINES = 25,
 	};
 
 	struct LINE
@@ -30,7 +30,6 @@ class CHAT : public COMPONENT
 	};
 
 	HISTORY_LINE history[MAX_HISTORY_LINES];
-	int history_count;
 	int curr_history_line;
 
 	// chat

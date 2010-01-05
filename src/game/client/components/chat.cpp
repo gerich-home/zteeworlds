@@ -116,6 +116,9 @@ void CHAT::on_console_init()
 	LUA_REGISTER_FUNC(say)
 	LUA_REGISTER_FUNC(say_team)
 	LUA_REGISTER_FUNC(chat)
+	
+	for (int i = 0; i < MAX_HISTORY_LINES; i++)
+		memset(history[i].text, 0, sizeof(history[0].text));
 }
 
 bool CHAT::on_input(INPUT_EVENT e)
@@ -133,46 +136,36 @@ bool CHAT::on_input(INPUT_EVENT e)
 		if(input.get_string()[0])
 		{
 			gameclient.chat->say(mode == MODE_ALL ? 0 : 1, input.get_string());
-			if (history_count == 0 || str_comp_nocase(input.get_string(), history[history_count - 1].text) != 0)
+			if (str_comp_nocase(input.get_string(), history[0].text) != 0)
 			{
-				if (history_count == MAX_HISTORY_LINES)
-				{
-					for (int i = 1; i < MAX_HISTORY_LINES; i++)
-						str_copy(history[i - 1].text, history[i].text, sizeof(history[0].text));
-					str_copy(history[history_count - 1].text, input.get_string(), sizeof(history[0].text));
-				} else {
-					str_copy(history[history_count].text, input.get_string(), sizeof(history[0].text));
-					history_count++;
-				}
+				for (int i = MAX_HISTORY_LINES - 2; i >= 0; i--)
+					str_copy(history[i + 1].text, history[i].text, sizeof(history[0].text));
+				str_copy(history[0].text, input.get_string(), sizeof(history[0].text));
 			}
 		}
 		mode = MODE_NONE;
 	}
 	else if (e.flags&INPFLAG_PRESS && e.key == KEY_UP)
 	{
-		if (curr_history_line < 0) curr_history_line = history_count;
-		curr_history_line--;
-
-		if (curr_history_line < 0) curr_history_line = 0;
-		if (curr_history_line >= history_count || history_count == 0)
+		curr_history_line = curr_history_line + 1;
+		if (curr_history_line < 0) curr_history_line = -1;
+		while ((curr_history_line >= MAX_HISTORY_LINES || history[curr_history_line].text[0] == 0) && (curr_history_line >= 0)) curr_history_line--;
+		if (curr_history_line < 0) curr_history_line = -1;
+		if (curr_history_line < 0)
 			input.set("");
 		else
-		{
 			input.set(history[curr_history_line].text);
-		}
 	}
 	else if (e.flags&INPFLAG_PRESS && e.key == KEY_DOWN)
 	{
-		if (curr_history_line <= history_count)
-		{
-			curr_history_line++;
-			input.set(history[curr_history_line].text);
-		}
-		else
-		{
-			curr_history_line = -1;
+		curr_history_line = curr_history_line - 1;
+		if (curr_history_line < 0) curr_history_line = -1;
+		while ((curr_history_line >= MAX_HISTORY_LINES || history[curr_history_line].text[0] == 0) && (curr_history_line >= 0)) curr_history_line--;
+		if (curr_history_line < 0) curr_history_line = -1;
+		if (curr_history_line < 0)
 			input.set("");
-		}
+		else
+			input.set(history[curr_history_line].text);
 	}
 	else
 		input.process_input(e);
