@@ -396,3 +396,70 @@ void MENUS::render_servercontrol(RECT main_view)
 	}		
 }
 
+void MENUS::render_ingame_serverbrowser(RECT main_view)
+{
+	RECT box;
+	RECT button;
+	
+	static int prev_page = config.ui_page;
+	static int last_servers_page = config.ui_page;
+	int active_page = config.ui_page;
+	int new_page = -1;
+	
+	ui_draw_rect(&main_view, color_tabbar_active, CORNER_ALL, 10.0f);
+	
+	ui_hsplit_t(&main_view, 5.0f, &main_view, &main_view);
+	ui_hsplit_t(&main_view, 24.0f, &box, &main_view);
+	ui_vmargin(&box, 20.0f, &box);
+	
+	ui_vsplit_l(&box, 100.0f, &button, &box);
+	static int internet_button=0;
+	int corners = CORNER_TL;
+	if (ui_do_button(&internet_button, "Internet", active_page==PAGE_INTERNET, &button, ui_draw_menu_tab_button, &corners))
+	{
+		if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_INTERNET) client_serverbrowse_refresh(BROWSETYPE_INTERNET);
+		last_servers_page = PAGE_INTERNET;
+		new_page = PAGE_INTERNET;
+	}
+
+	//ui_vsplit_l(&box, 4.0f, 0, &box);
+	ui_vsplit_l(&box, 80.0f, &button, &box);
+	static int lan_button=0;
+	corners = 0;
+	if (ui_do_button(&lan_button, "LAN", active_page==PAGE_LAN, &button, ui_draw_menu_tab_button, &corners))
+	{
+		if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_LAN) client_serverbrowse_refresh(BROWSETYPE_LAN);
+		last_servers_page = PAGE_LAN;
+		new_page = PAGE_LAN;
+	}
+
+	//ui_vsplit_l(&box, 4.0f, 0, &box);
+	ui_vsplit_l(&box, 110.0f, &button, &box);
+	static int favorites_button=0;
+	corners = CORNER_TR;
+	if (ui_do_button(&favorites_button, "Favorites", active_page==PAGE_FAVORITES, &button, ui_draw_menu_tab_button, &corners))
+	{
+		if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_FAVORITES) client_serverbrowse_refresh(BROWSETYPE_FAVORITES);
+		last_servers_page = PAGE_FAVORITES;
+		new_page  = PAGE_FAVORITES;
+	}
+	
+	ui_vsplit_l(&box, 4.0f*5, 0, &box);
+	ui_vsplit_l(&box, 100.0f, &button, &box);
+	static int demos_button=0;
+	if (ui_do_button(&demos_button, "Demos", active_page==PAGE_DEMOS, &button, ui_draw_menu_tab_button, 0))
+	{
+		demolist_populate();
+		new_page  = PAGE_DEMOS;
+	}
+	
+	if(new_page != -1 && client_state() != CLIENTSTATE_OFFLINE)
+	{
+		config.ui_page = new_page;
+	}
+	
+	prev_page = config.ui_page;
+		
+	render_serverbrowser(main_view);
+	return;
+}

@@ -594,6 +594,12 @@ int MENUS::render_menubar(RECT r)
 		if (ui_do_button(&callvote_button, "Call Vote", active_page==PAGE_CALLVOTE, &button, ui_draw_menu_tab_button, 0))
 			new_page = PAGE_CALLVOTE;
 			
+		ui_vsplit_l(&box, 4.0f*5, 0, &box);
+		ui_vsplit_l(&box, 100.0f, &button, &box);
+		static int ingame_browser_button=0;
+		if (ui_do_button(&ingame_browser_button, "Browser", active_page==PAGE_BROWSER, &button, ui_draw_menu_tab_button, 0))
+			new_page = PAGE_BROWSER;
+			
 		ui_vsplit_l(&box, 30.0f, 0, &box);
 	}
 		
@@ -746,6 +752,8 @@ int MENUS::render()
 				render_serverinfo(main_view);
 			else if(game_page == PAGE_CALLVOTE)
 				render_servercontrol(main_view);
+			else if(game_page == PAGE_BROWSER)
+				render_ingame_serverbrowser(main_view);
 			else if(game_page == PAGE_SETTINGS)
 				render_settings(main_view);
 		}

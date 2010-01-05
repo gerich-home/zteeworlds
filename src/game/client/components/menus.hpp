@@ -85,6 +85,7 @@ class MENUS : public COMPONENT
 		PAGE_DEMOS,
 		PAGE_SETTINGS,
 		PAGE_SYSTEM,
+		PAGE_BROWSER,
 	};
 
 	int game_page;
@@ -148,6 +149,7 @@ class MENUS : public COMPONENT
 	void render_servercontrol(RECT main_view);
 	void render_servercontrol_kick(RECT main_view);
 	void render_servercontrol_server(RECT main_view);
+	void render_ingame_serverbrowser(RECT main_view);
 	
 	// found in menus_browser.cpp
 	int selected_index;
