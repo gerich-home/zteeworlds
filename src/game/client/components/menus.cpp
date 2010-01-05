@@ -513,6 +513,8 @@ int MENUS::render_menubar(RECT r)
 	RECT box = r;
 	RECT button;
 	
+	static int prev_page = config.ui_page;
+	static int last_servers_page = config.ui_page;
 	int active_page = config.ui_page;
 	int new_page = -1;
 	
@@ -536,7 +538,8 @@ int MENUS::render_menubar(RECT r)
 		int corners = CORNER_TL;
 		if (ui_do_button(&internet_button, "Internet", active_page==PAGE_INTERNET, &button, ui_draw_menu_tab_button, &corners))
 		{
-			client_serverbrowse_refresh(BROWSETYPE_INTERNET);
+			if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_INTERNET) client_serverbrowse_refresh(BROWSETYPE_INTERNET);
+			last_servers_page = PAGE_INTERNET;
 			new_page = PAGE_INTERNET;
 		}
 
@@ -546,7 +549,8 @@ int MENUS::render_menubar(RECT r)
 		corners = 0;
 		if (ui_do_button(&lan_button, "LAN", active_page==PAGE_LAN, &button, ui_draw_menu_tab_button, &corners))
 		{
-			client_serverbrowse_refresh(BROWSETYPE_LAN);
+			if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_LAN) client_serverbrowse_refresh(BROWSETYPE_LAN);
+			last_servers_page = PAGE_LAN;
 			new_page = PAGE_LAN;
 		}
 
@@ -556,7 +560,8 @@ int MENUS::render_menubar(RECT r)
 		corners = CORNER_TR;
 		if (ui_do_button(&favorites_button, "Favorites", active_page==PAGE_FAVORITES, &button, ui_draw_menu_tab_button, &corners))
 		{
-			client_serverbrowse_refresh(BROWSETYPE_FAVORITES);
+			if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_FAVORITES) client_serverbrowse_refresh(BROWSETYPE_FAVORITES);
+			last_servers_page = PAGE_FAVORITES;
 			new_page  = PAGE_FAVORITES;
 		}
 		
@@ -619,6 +624,8 @@ int MENUS::render_menubar(RECT r)
 		else
 			game_page = new_page;
 	}
+		
+	prev_page = config.ui_page;
 		
 	return 0;
 }
@@ -690,9 +697,11 @@ int MENUS::render()
 	if(first)
 	{
 		if(config.ui_page == PAGE_INTERNET)
-			client_serverbrowse_refresh(0);
+			client_serverbrowse_refresh(BROWSETYPE_INTERNET);
 		else if(config.ui_page == PAGE_LAN)
-			client_serverbrowse_refresh(1);
+			client_serverbrowse_refresh(BROWSETYPE_LAN);
+		else if(config.ui_page == PAGE_FAVORITES)
+			client_serverbrowse_refresh(BROWSETYPE_FAVORITES);
 		first = false;
 	}
 	
