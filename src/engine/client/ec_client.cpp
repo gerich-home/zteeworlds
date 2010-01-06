@@ -340,7 +340,7 @@ enum
 
 /* the game snapshots are modifiable by the game */
 SNAPSTORAGE snapshot_storage;
-static SNAPSTORAGE_HOLDER *snapshots[NUM_SNAPSHOT_TYPES];
+static SNAPSTORAGE_HOLDER *snapshots[NUM_SNAPSHOT_TYPES] = {0, 0};
 
 static int recived_snapshots = 0;
 static char snapshot_incomming_data[MAX_SNAPSHOT_SIZE];
@@ -602,6 +602,9 @@ static void client_on_enter_game()
 
 void client_entergame()
 {
+	if(state == CLIENTSTATE_DEMOPLAYBACK)
+		return;
+	
 	/* now we will wait for two snapshots */
 	/* to finish the connection */
 	client_send_entergame();
