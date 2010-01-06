@@ -37,7 +37,8 @@ struct INPUTSET
 static void con_key_input_set(void *result, void *user_data)
 {
 	INPUTSET *set = (INPUTSET *)user_data;
-	*set->variable = console_arg_int(result, 0) ? *set->variable = set->value : 0;
+	if(console_arg_int(result, 0)) 
+		*set->variable = set->value;
 }
 
 static void con_key_input_nextprev_weapon(void *result, void *user_data)
