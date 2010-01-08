@@ -314,7 +314,7 @@ void SCOREBOARD::render_new()
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->score_limit)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Score limit: ", gameclient.snap.gameobj->score_limit);
+		str_format(buf, sizeof(buf), "Score limit: %d", gameclient.snap.gameobj->score_limit);
 		ui_do_label(&footer, buf, footer.h * 0.8f, -1);
 	}
 
@@ -323,7 +323,7 @@ void SCOREBOARD::render_new()
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->time_limit)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Time limit: ", gameclient.snap.gameobj->time_limit);
+		str_format(buf, sizeof(buf), "Time limit: %d", gameclient.snap.gameobj->time_limit);
 		ui_do_label(&footer, buf, footer.h * 0.8f, -1);
 	}
 
