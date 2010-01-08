@@ -272,6 +272,22 @@ release_settings.debug = 0
 release_settings.cc.optimize = 1
 release_settings.cc.defines:Add("CONF_RELEASE")
 
+trunc_debug_settings = NewSettings()
+trunc_debug_settings.config_name = "debug_trunc"
+trunc_debug_settings.config_ext = "_trunc_d"
+trunc_debug_settings.debug = 1
+trunc_debug_settings.cc.optimize = 0
+trunc_debug_settings.cc.defines:Add("CONF_DEBUG")
+trunc_debug_settings.cc.defines:Add("CONF_TRUNC")
+
+trunc_release_settings = NewSettings()
+trunc_release_settings.config_name = "release_trunc"
+trunc_release_settings.config_ext = "_trunc"
+trunc_release_settings.debug = 0
+trunc_release_settings.cc.optimize = 1
+trunc_release_settings.cc.defines:Add("CONF_RELEASE")
+trunc_release_settings.cc.defines:Add("CONF_TRUNC")
+
 if platform == "macosx"  and arch == "ia32" then
 	debug_settings_ppc = debug_settings:Copy()
 	debug_settings_ppc.config_name = "debug_ppc"
@@ -296,22 +312,61 @@ if platform == "macosx"  and arch == "ia32" then
 	release_settings_x86.config_name = "release_x86"
 	release_settings_x86.config_ext = "_x86"
 	release_settings_x86.cc.defines:Add("CONF_RELEASE")
+	
+	trunc_debug_settings_ppc = trunc_debug_settings:Copy()
+	trunc_debug_settings_ppc.config_name = "debug_trunc_ppc"
+	trunc_debug_settings_ppc.config_ext = "_trunc_ppc_d"
+	trunc_debug_settings_ppc.cc.flags:Add("-arch ppc")
+	trunc_debug_settings_ppc.link.flags:Add("-arch ppc")
+	trunc_debug_settings_ppc.cc.defines:Add("CONF_DEBUG")
+	trunc_debug_settings_ppc.cc.defines:Add("CONF_TRUNC")
+
+	trunc_release_settings_ppc = trunc_release_settings:Copy()
+	trunc_release_settings_ppc.config_name = "release_trunc_ppc"
+	trunc_release_settings_ppc.config_ext = "_trunc_ppc"
+	trunc_release_settings_ppc.cc.flags:Add("-arch ppc")
+	trunc_release_settings_ppc.link.flags:Add("-arch ppc")
+	trunc_release_settings_ppc.cc.defines:Add("CONF_RELEASE")
+	trunc_release_settings_ppc.cc.defines:Add("CONF_TRUNC")
+
+	trunc_debug_settings_x86 = trunc_debug_settings:Copy()
+	trunc_debug_settings_x86.config_name = "debug_trunc_x86"
+	trunc_debug_settings_x86.config_ext = "_trunc_x86_d"
+	trunc_debug_settings_x86.cc.defines:Add("CONF_DEBUG")
+	trunc_debug_settings_x86.cc.defines:Add("CONF_TRUNC")
+
+	trunc_release_settings_x86 = trunc_release_settings:Copy()
+	trunc_release_settings_x86.config_name = "release_trunc_x86"
+	trunc_release_settings_x86.config_ext = "_trunc_x86"
+	trunc_release_settings_x86.cc.defines:Add("CONF_RELEASE")
+	trunc_release_settings_x86.cc.defines:Add("CONF_TRUNC")
 
 	ppc_d = build(debug_settings_ppc)
 	x86_d = build(debug_settings_x86)
 	ppc_r = build(release_settings_ppc)
 	x86_r = build(release_settings_x86)
+	ppc_t_d = build(trunc_debug_settings_ppc)
+	x86_t_d = build(trunc_debug_settings_x86)
+	ppc_t_r = build(trunc_release_settings_ppc)
+	x86_t_r = build(trunc_release_settings_x86)
 	DefaultTarget("game_debug_x86")
-	PseudoTarget("release", ppc_r, x86_r)
-	PseudoTarget("debug", ppc_d, x86_d)
+	PseudoTarget("release", ppc_r, x86_r, t_ppc_r, t_x86_r)
+	PseudoTarget("debug", ppc_d, x86_d, t_ppc_d, t_x86_d)
 
 	PseudoTarget("server_release", "server_release_x86", "server_release_ppc")
 	PseudoTarget("server_debug", "server_debug_x86", "server_debug_ppc")
 	PseudoTarget("client_release", "client_release_x86", "client_release_ppc")
 	PseudoTarget("client_debug", "client_debug_x86", "client_debug_ppc")
+	
+	PseudoTarget("server_release_trunc", "server_release_trunc_x86", "server_release_trunc_ppc")
+	PseudoTarget("server_debug_trunc", "server_debug_trunc_x86", "server_debug_trunc_ppc")
+	PseudoTarget("client_release_trunc", "client_release_trunc_x86", "client_release_trunc_ppc")
+	PseudoTarget("client_debug_trunc", "client_debug_trunc_x86", "client_debug_trunc_ppc")
 else
 	build(debug_settings)
 	build(release_settings)
+	build(trunc_debug_settings)
+	build(trunc_release_settings)
 	DefaultTarget("game_debug")
 end
 

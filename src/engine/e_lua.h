@@ -18,9 +18,15 @@ const char * LuaError();
 
 lua_State * GetLuaState();
 
-int LuaGetIntConfigValue(const char * name);
-const char * LuaGetStrConfigValue(const char * name);
+#ifndef CONF_TRUNC
 
 #define LUA_REGISTER_FUNC(func) lua_register(GetLuaState(), #func , _lua_ ## func ); \
 	__pragma(message("Lua function: " # func))
+	
+#else
+
+#define LUA_REGISTER_FUNC(func) ;
+
+#endif
+	
 #endif

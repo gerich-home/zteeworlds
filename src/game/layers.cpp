@@ -60,6 +60,8 @@ MAPITEM_GROUP *layers_game_group()
 	return game_group;
 }
 
+#ifndef CONF_TRUNC
+
 static int _lua_map_groups_start(lua_State * L)
 {
 	lua_pushinteger(L, groups_start);
@@ -242,3 +244,11 @@ void _lua_map_package_register()
 {
 	luaL_register(GetLuaState(), "map", map_lib);
 }
+
+#else
+
+void _lua_map_package_register()
+{
+}
+
+#endif

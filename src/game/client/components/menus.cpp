@@ -737,6 +737,8 @@ int MENUS::render()
 	// some margin around the screen
 	ui_margin(&screen, 10.0f, &screen);
 	
+	#ifndef CONF_TRUNC
+	
 	static int last_popup = POPUP_NONE;
 	static int reconnection_time = 0;
 
@@ -755,6 +757,8 @@ int MENUS::render()
 	if (popup != POPUP_DISCONNECTED) reconnection_time = 0;
 
 	last_popup = popup;
+	
+	#endif
 
 	if (popup == POPUP_NONE && client_state() == CLIENTSTATE_OFFLINE)
 	{
@@ -838,11 +842,13 @@ int MENUS::render()
 			title = "Disconnected";
 			extra_text = client_error_string();
 			button_text = "Ok";
+			#ifndef CONF_TRUNC
 			if (config.cl_reconnect_time > 0)
 			{
 				str_format(buf, sizeof(buf), "Ok (%d)", reconnection_time - (int)time(0));
 				button_text = buf;
 			}
+			#endif
 			extra_align = -1;
 		}
 		else if(popup == POPUP_PURE)

@@ -1151,6 +1151,8 @@ void GAMECLIENT::con_kill(void *result, void *user_data)
 	((GAMECLIENT*)user_data)->send_kill(-1);
 }
 
+#ifndef CONF_TRUNC
+
 static int _lua_gameclient_connected(lua_State * L)
 {
 	lua_pushboolean(L, gameclient.snap.gameobj != NULL);
@@ -1286,3 +1288,11 @@ void _lua_gameclient_package_register()
 {
 	luaL_register(GetLuaState(), "gameclient", gameclient_lib);
 }
+
+#else
+
+void _lua_gameclient_package_register()
+{
+}
+
+#endif

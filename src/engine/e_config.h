@@ -44,6 +44,7 @@ typedef void (*CONFIG_STR_SETTER)(CONFIGURATION *c, const char *str);
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_STR
 
+#ifndef CONF_TRUNC
 static int _lua_config(lua_State * L)
 {
 	int count = lua_gettop(L);
@@ -69,5 +70,6 @@ static int _lua_config(lua_State * L)
 	}
 	return 0;
 }
+#endif
 
 #endif
