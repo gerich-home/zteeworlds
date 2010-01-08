@@ -264,7 +264,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 						gfx_quads_end();
 					}
 					
-					advance = 1;
+					advance = 1.2f;
 				} else
 				if (font_set->ft_font) {
 					ft_FONTCHAR * chr;
@@ -299,7 +299,7 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 							gfx_quads_drawTL(draw_x + chr->x_offset * size + 1, draw_y + chr->y_offset * size * 0.9f + 1, chr->w * size, chr->h * size);
 							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
 						}
-						gfx_quads_drawTL(draw_x + chr->x_offset * size, draw_y + chr->y_offset * size * 0.9f, chr->w * size, chr->h * size);
+						gfx_quads_drawTL(draw_x + chr->x_offset * size, draw_y + chr->y_offset * size * 0.75f, chr->w * size, chr->h * size);
 						
 						prev_utf8 = true;
 					}

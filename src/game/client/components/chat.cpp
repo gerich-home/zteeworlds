@@ -321,9 +321,10 @@ void CHAT::on_render()
 			char * c = lines[r].text;
 			char * end = c + tlen;
 			char * d = buf;
+			bool prevSmile = false;
 			while (*c)
 			{
-				if (str_utf8_isstart(*c) && (c == lines[r].text || *(c - 1) < 'A'))
+				if (str_utf8_isstart(*c) && (c == lines[r].text || *(c - 1) < 'A' || prevSmile))
 				{
 					char buf0[64];
 					char buf1[64];
@@ -360,11 +361,13 @@ void CHAT::on_render()
 						*d = *c;
 						c++;
 						d++;
-					}
+						prevSmile = false;
+					} else prevSmile = true;
 				} else {
 					*d = *c;
 					c++;
 					d++;
+					prevSmile = false;
 				}
 			}
 			
