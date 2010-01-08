@@ -737,6 +737,32 @@ int MENUS::render()
 	// some margin around the screen
 	ui_margin(&screen, 10.0f, &screen);
 	
+	static int last_popup = POPUP_NONE;
+	static int reconnection_time = 0;
+
+	if (last_popup != POPUP_DISCONNECTED && popup == POPUP_DISCONNECTED && config.cl_reconnect_time > 0 && reconnection_time == 0)
+	{
+		reconnection_time = (int)time(0) + clamp(config.cl_reconnect_time, 3, 100);//client_tick() + config.cl_reconnect_time * client_tickspeed();
+	}
+
+	if (popup == POPUP_DISCONNECTED && config.cl_reconnect_time > 0 && (int)time(0) > reconnection_time/*client_tick() > reconnection_time*/)
+	{
+		reconnection_time = 0;
+		client_connect(config.ui_server_address);
+		return 0;
+	}
+
+	if (popup != POPUP_DISCONNECTED) reconnection_time = 0;
+
+	last_popup = popup;
+
+	if (popup == POPUP_NONE && client_state() == CLIENTSTATE_OFFLINE)
+	{
+		if(config.cl_show_welcome)
+			popup = POPUP_FIRST_LAUNCH;
+		config.cl_show_welcome = 0;
+	}
+	
 	if(popup == POPUP_NONE)
 	{
 		// do tab bar
@@ -812,6 +838,11 @@ int MENUS::render()
 			title = "Disconnected";
 			extra_text = client_error_string();
 			button_text = "Ok";
+			if (config.cl_reconnect_time > 0)
+			{
+				str_format(buf, sizeof(buf), "Ok (%d)", reconnection_time - (int)time(0));
+				button_text = buf;
+			}
 			extra_align = -1;
 		}
 		else if(popup == POPUP_PURE)

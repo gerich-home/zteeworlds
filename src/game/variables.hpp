@@ -33,6 +33,7 @@ MACRO_CONFIG_INT(player_color_feet, 65408, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "P
 MACRO_CONFIG_STR(player_skin, 64, "default", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player skin")
 MACRO_CONFIG_INT(cl_default_skin_only, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Default skin only")
 MACRO_CONFIG_INT(cl_showduelscores, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show small scoreboard in 1on1 game")
+MACRO_CONFIG_INT(cl_reconnect_time, 10, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Auto reconnection if disconnected")
 
 MACRO_CONFIG_INT(ui_page, 5, 0, 9, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface page")
 MACRO_CONFIG_INT(ui_toolbox_page, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Toolbox page")
