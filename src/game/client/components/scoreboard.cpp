@@ -604,7 +604,7 @@ void SCOREBOARD::render_new()
 					RECT line_t = line;
 					
 					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
-						str_format(buf, sizeof(buf), "-");
+						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%.1f", gameclient.clients[info->cid].stats.total_kills - gameclient.clients[info->cid].stats.total_killed, (float)gameclient.clients[info->cid].stats.total_kills / (float)(gameclient.clients[info->cid].stats.total_killed == 0 ? 1 : gameclient.clients[info->cid].stats.total_killed));
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
@@ -615,7 +615,7 @@ void SCOREBOARD::render_new()
 				{
 					RECT line_t = line;
 					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
-						str_format(buf, sizeof(buf), "-");
+						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.total_kills, gameclient.clients[info->cid].stats.total_killed);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
@@ -628,7 +628,7 @@ void SCOREBOARD::render_new()
 				{
 					RECT line_t = line;
 					if (gameclient.clients[info->cid].stats.kills[i] == 0 && gameclient.clients[info->cid].stats.killed[i] == 0)
-						str_format(buf, sizeof(buf), "-");
+						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.kills[i], gameclient.clients[info->cid].stats.killed[i]);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
@@ -641,7 +641,7 @@ void SCOREBOARD::render_new()
 				{
 					RECT line_t = line;
 					if (gameclient.clients[info->cid].stats.flag_carried == 0 && gameclient.clients[info->cid].stats.flag_lost == 0)
-						str_format(buf, sizeof(buf), "-");
+						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.flag_carried, gameclient.clients[info->cid].stats.flag_lost);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
