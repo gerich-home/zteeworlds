@@ -347,7 +347,7 @@ void GAMECLIENT::on_init()
 	{
 		int music_id = snd_load_wv("audio/music.wv");
 		if (music_id >= 0)
-			snd_play_at(SOUNDS::CHN_MUSIC, music_id, SNDFLAG_LOOP, 0, 0);
+			snd_play(SOUNDS::CHN_MUSIC, music_id, SNDFLAG_LOOP);
 	}
 
 	config.cl_threadsoundloading = 0;

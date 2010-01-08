@@ -177,6 +177,12 @@ static void mix(short *final_out, unsigned frames)
 				in_r = in_l;
 
 			/* volume calculation */
+			if(v->flags&SNDFLAG_POS != SNDFLAG_POS)
+			{
+				v->x = center_x;
+				v->y = center_y;
+			}
+			
 			if(v->flags&SNDFLAG_POS && v->channel->pan)
 			{
 				/* TODO: we should respect the channel panning value */
