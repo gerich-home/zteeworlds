@@ -52,7 +52,6 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 		COL_PLAYERS,
 		COL_PING,
 		COL_PROGRESS,
-		COL_VERSION,
 	};
 	
 	static column cols[] = {
@@ -215,8 +214,10 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 			}
 		}
 		
+		if (row.y + row.h < 0) continue;
+		
 		// check if we need to do more
-		if(row.y > original_view.y+original_view.h && !ui_active_item())
+		if((row.y > original_view.y+original_view.h) && !ui_active_item())
 			break;
 
 		for(int c = 0; c < num_cols; c++)
@@ -300,13 +301,6 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 					item->progression = 100;
 				ui_draw_browse_icon(item->progression, &button);
 			}
-			else if(id == COL_VERSION)
-			{
-				const char *version = item->version;
-				if(strcmp(version, "0.3 e2d7973c6647a13c") == 0) // TODO: remove me later on
-					version = "0.3.0";
-				ui_do_label(&button, version, 12.0f, 1);
-			}			
 			else if(id == COL_GAMETYPE)
 			{
 				ui_do_label(&button, item->gametype, 12.0f, 0);

@@ -527,6 +527,13 @@ void GAMECLIENT::on_render()
 		if (snap.gameobj && snap.gameobj->game_over && !old_game_over && client_state() != CLIENTSTATE_DEMOPLAYBACK)
 		{
 			if (config.cl_gameover_screenshot) tick_to_screenshot = client_tick() + client_tickspeed() * 7; //7 secs
+			if (config.cl_autorecord)
+			{
+				if (abs(client_tick() - autorecord_start_time) / client_tickspeed() < config.cl_autorecord_time)
+					console_execute_line("purgerecord");
+				else
+					console_execute_line("stoprecord");
+			}
 		}
 		static void * old_gameobj = NULL;
 		if (snap.gameobj && ((client_tick() - snap.gameobj->round_start_tick) < client_tickspeed() * 0.1f))
@@ -552,10 +559,10 @@ void GAMECLIENT::on_render()
 		{
 			if (config.cl_autorecord)
 			{
-				if (abs(client_tick() - autorecord_start_time) / client_tickspeed() < config.cl_autorecord_time)
+				/*if (abs(client_tick() - autorecord_start_time) / client_tickspeed() < config.cl_autorecord_time)
 					console_execute_line("purgerecord");
 				else
-					console_execute_line("stoprecord");
+					console_execute_line("stoprecord");*/
 				autorecord_start_time = 0;
 				console_execute_line("record");
 				autorecord_start_time = client_tick();

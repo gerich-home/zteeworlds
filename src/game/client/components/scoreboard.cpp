@@ -602,7 +602,11 @@ void SCOREBOARD::render_new()
 
 				{
 					RECT line_t = line;
-					str_format(buf, sizeof(buf), "%d/%.1f", gameclient.clients[info->cid].stats.total_kills - gameclient.clients[info->cid].stats.total_killed, (float)gameclient.clients[info->cid].stats.total_kills / (float)(gameclient.clients[info->cid].stats.total_killed == 0 ? 1 : gameclient.clients[info->cid].stats.total_killed));
+					
+					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
+						str_format(buf, sizeof(buf), "-");
+					else
+						str_format(buf, sizeof(buf), "%d/%.1f", gameclient.clients[info->cid].stats.total_kills - gameclient.clients[info->cid].stats.total_killed, (float)gameclient.clients[info->cid].stats.total_kills / (float)(gameclient.clients[info->cid].stats.total_killed == 0 ? 1 : gameclient.clients[info->cid].stats.total_killed));
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 				}
@@ -610,7 +614,10 @@ void SCOREBOARD::render_new()
 				ui_vsplit_l(&line, spacing, 0, &line);
 				{
 					RECT line_t = line;
-					str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.total_kills, gameclient.clients[info->cid].stats.total_killed);
+					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
+						str_format(buf, sizeof(buf), "-");
+					else
+						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.total_kills, gameclient.clients[info->cid].stats.total_killed);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 				}
@@ -620,7 +627,10 @@ void SCOREBOARD::render_new()
 				for (int i = 0; i < NUM_WEAPONS; i++)
 				{
 					RECT line_t = line;
-					str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.kills[i], gameclient.clients[info->cid].stats.killed[i]);
+					if (gameclient.clients[info->cid].stats.kills[i] == 0 && gameclient.clients[info->cid].stats.killed[i] == 0)
+						str_format(buf, sizeof(buf), "-");
+					else
+						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.kills[i], gameclient.clients[info->cid].stats.killed[i]);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 
@@ -630,7 +640,10 @@ void SCOREBOARD::render_new()
 				if (gameclient.snap.gameobj->flags&GAMEFLAG_FLAGS)
 				{
 					RECT line_t = line;
-					str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.flag_carried, gameclient.clients[info->cid].stats.flag_lost);
+					if (gameclient.clients[info->cid].stats.flag_carried == 0 && gameclient.clients[info->cid].stats.flag_lost == 0)
+						str_format(buf, sizeof(buf), "-");
+					else
+						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.flag_carried, gameclient.clients[info->cid].stats.flag_lost);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 				}

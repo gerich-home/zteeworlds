@@ -174,6 +174,12 @@ void MENUS::render_settings_player(RECT main_view)
 		{
 			config.cl_gameover_screenshot = config.cl_gameover_screenshot?0:1;
 		}
+		
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_new_scoreboard, "New detailed scoreboard", config.cl_new_scoreboard, &button, ui_draw_checkbox, 0))
+		{
+			config.cl_new_scoreboard = config.cl_new_scoreboard?0:1;
+		}
 	}
 		
 	// draw header
