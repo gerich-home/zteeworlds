@@ -48,6 +48,8 @@ class CONSOLE : public COMPONENT
 	int console_state;
 	float state_change_end;
 	float state_change_duration;
+	
+	int page;
 
 
 	static void possible_commands_render_callback(const char *str, void *user);

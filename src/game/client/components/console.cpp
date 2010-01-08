@@ -190,6 +190,7 @@ CONSOLE::CONSOLE()
 	console_state = CONSOLE_CLOSED;
 	state_change_end = 0.0f;
 	state_change_duration = 0.1f;
+	page = 0;
 }
 
 float CONSOLE::time_now()
@@ -414,6 +415,24 @@ void CONSOLE::on_render()
 		// render log
 		y -= row_height;
 		char *entry = (char *)ringbuf_last(console->backlog);
+		int page_rowcount = y / row_height;
+		if (page > 0)
+		{
+			int i;
+			for (i = 0; i < page * page_rowcount && entry; i++)
+			{
+				entry = (char *)ringbuf_prev(console->backlog, entry);
+			}
+			if (!entry)
+			{
+				page = i / page_rowcount;
+				entry = (char *)ringbuf_last(console->backlog);
+				for (i = 0; i < page * page_rowcount && entry; i++)
+				{
+					entry = (char *)ringbuf_prev(console->backlog, entry);
+				}
+			}
+		}
 		while (y > 0.0f && entry)
 		{
 			gfx_text(0, x, y, font_size, entry, -1);
@@ -430,6 +449,21 @@ void CONSOLE::on_message(int msgtype, void *rawmsg)
 
 bool CONSOLE::on_input(INPUT_EVENT e)
 {
+	if (e.flags&INPFLAG_PRESS)
+	{
+		if (e.key == KEY_PAGEUP)
+		{
+			page++;
+			return false;
+		}
+		else if (e.key == KEY_PAGEDOWN && page > 0)
+		{
+			page--;
+			return false;
+		}
+		else page = 0;
+	}
+	
 	if(console_state == CONSOLE_CLOSED)
 		return false;
 	if(e.key >= KEY_F1 && e.key <= KEY_F15)
@@ -476,6 +510,7 @@ void CONSOLE::toggle(int type)
 	}
 
 	console_type = type;
+	page = 0;
 }
 
 void CONSOLE::con_toggle_local_console(void *result, void *user_data)
