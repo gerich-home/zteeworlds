@@ -216,7 +216,12 @@ static void mix(short *final_out, unsigned frames)
 			
 			/* free voice if not used any more */
 			if(v->tick == v->snd->num_frames)
-				v->snd = 0;
+			{
+				if (v->flags&SNDFLAG_LOOP)
+					v->tick = 0;
+				else
+					v->snd = 0;
+			}
 			
 		}
 	}
@@ -298,6 +303,8 @@ int snd_update()
 		sound_volume = wanted_volume;
 		lock_release(sound_lock);
 	}
+	
+	snd_set_channel(1, config.music_volume * 0.01f, 1.0f);
 	
 	return 0;
 }

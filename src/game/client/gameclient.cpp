@@ -343,6 +343,12 @@ void GAMECLIENT::on_init()
 	dbg_msg("font", "gfx memory used for font textures: %d", gfx_memory_usage()-before);
 	
 	gfx_text_set_default_font(&default_font);
+	
+	{
+		int music_id = snd_load_wv("audio/music.wv");
+		if (music_id >= 0)
+			snd_play_at(SOUNDS::CHN_MUSIC, music_id, SNDFLAG_LOOP, 0, 0);
+	}
 
 	config.cl_threadsoundloading = 0;
 
