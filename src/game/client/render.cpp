@@ -10,6 +10,7 @@
 #include <game/layers.hpp>
 #include "animstate.hpp"
 #include "render.hpp"
+#include "gameclient.hpp"
 
 static float sprite_w_scale;
 static float sprite_h_scale;
@@ -315,6 +316,15 @@ void mapscreen_to_world(float center_x, float center_y, float parallax_x, float 
 	center_y *= parallax_y;
 	width *= zoom;
 	height *= zoom;
+	
+	#ifndef CONF_TRUNC
+	if (gameclient.snap.local_info && gameclient.snap.local_info->team == -1)
+	{
+		width /= config.cl_spectator_zoom * 0.01f;
+		height /= config.cl_spectator_zoom * 0.01f;
+	}
+	#endif
+	
 	points[0] = offset_x+center_x-width/2;
 	points[1] = offset_y+center_y-height/2;
 	points[2] = offset_x+center_x+width/2;

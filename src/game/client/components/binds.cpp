@@ -113,6 +113,11 @@ void BINDS::set_defaults()
 	bind(KEY_F4, "vote no");	
 	
 	bind(KEY_MOUSE_3, "+fastmenu");
+	
+#ifndef CONF_TRUNC
+	bind(KEY_KP_PLUS, "lua config(\"cl_spectator_zoom\", config(\"cl_spectator_zoom\" + 5)); lua infomsg(\"Spectator zoom: \" + tostring(config(\"cl_spectator_zoom\")))");
+	bind(KEY_KP_MINUS, "lua config(\"cl_spectator_zoom\", config(\"cl_spectator_zoom\" - 5)); lua infomsg(\"Spectator zoom: \" + tostring(config(\"cl_spectator_zoom\")))");
+#endif
 }
 
 static int _lua_bind(lua_State * L)
