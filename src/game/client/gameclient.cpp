@@ -343,12 +343,6 @@ void GAMECLIENT::on_init()
 	dbg_msg("font", "gfx memory used for font textures: %d", gfx_memory_usage()-before);
 	
 	gfx_text_set_default_font(&default_font);
-	
-	{
-		int music_id = snd_load_wv("audio/music.wv");
-		if (music_id >= 0)
-			snd_play(SOUNDS::CHN_MUSIC, music_id, SNDFLAG_LOOP);
-	}
 
 	config.cl_threadsoundloading = 0;
 
@@ -375,6 +369,12 @@ void GAMECLIENT::on_init()
 
 	for(int i = 0; i < all.num; i++)
 		all.components[i]->on_reset();
+		
+	{
+		int music_id = snd_load_wv("audio/music.wv");
+		if (music_id >= 0)
+			snd_play(SOUNDS::CHN_MUSIC, music_id, SNDFLAG_LOOP);
+	}
 	
 	int64 end = time_get();
 	dbg_msg("", "%f.2ms", ((end-start)*1000)/(float)time_freq());
