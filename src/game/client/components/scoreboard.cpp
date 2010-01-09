@@ -325,8 +325,8 @@ void SCOREBOARD::render_new()
 		need_w -= abs(spacing_t - spacing_real_t);
 	}
 	
-	if (abs(w - need_w) < 5.0f) w = need_w;
-	else w = w * 0.975f + need_w * 0.025f;
+	if (abs(w - need_w) < 7.0f) w = need_w;
+	else w = w * 0.9f + need_w * 0.1f;
 
 	float x = (width - w) / 2;
 	float y = (height - h) / 2;
