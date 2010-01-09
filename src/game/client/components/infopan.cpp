@@ -15,9 +15,22 @@ void INFOPAN::con_infomsg(void *result, void *user_data)
 	((INFOPAN*)user_data)->add_line(console_arg_string(result, 0));
 }
 
+static int _lua_infomsg(lua_State * L)
+{
+	int count = lua_gettop(L);
+	if (count > 0 && lua_isstring(L, 1))
+	{
+		const char * line = lua_tostring(L, 1);
+		gameclient.infopan->add_line(line);		
+	}
+	return 0;
+}
+
 void INFOPAN::on_console_init()
 {
 	MACRO_REGISTER_COMMAND("infomsg", "r", CFGFLAG_CLIENT, con_infomsg, this, "Info message");
+	
+	LUA_REGISTER_FUNC(infomsg)
 }
 
 void INFOPAN::on_message(int msgtype, void *rawmsg)
