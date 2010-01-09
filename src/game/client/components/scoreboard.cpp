@@ -274,8 +274,59 @@ void SCOREBOARD::render_new()
 	float width = 400*3.0f*gfx_screenaspect();
 	float height = 400*3.0f;
 
-	float w = 1400.0f;
+	static float w = 1400.0f;
 	float h = 900.0f;
+	
+	float need_w = 1400.0f;
+	
+	int weapons = 0;
+	bool active_weapons[NUM_WEAPONS];
+	
+	for (int j = 0; j < NUM_WEAPONS; j++) active_weapons[j] = false;
+	
+	for (int i = 0; i < MAX_CLIENTS; i++)
+	{
+		if (!gameclient.snap.player_infos[i]) continue;
+		for (int j = 0; j < NUM_WEAPONS; j++)
+		{
+			if (gameclient.clients[i].stats.kills[j] != 0 || gameclient.clients[i].stats.killed[j] != 0)
+			{
+				active_weapons[j] = true;
+			}
+		}
+	}
+	
+	for (int j = 0; j < NUM_WEAPONS; j++) if (active_weapons[j]) weapons++;
+	
+	{
+		RECT main_view_t;
+		main_view_t.x = (width - w) / 2;
+		main_view_t.y = (height - h) / 2;
+		main_view_t.w = w;
+		main_view_t.h = h;
+		
+		RECT header_t;
+
+		ui_hsplit_t(&main_view_t, 40.0f, &header_t, &main_view_t);
+
+		ui_vsplit_l(&header_t, 15.0f, 0, &header_t);
+		ui_vsplit_r(&header_t, 15.0f, &header_t, 0);
+
+		ui_margin(&main_view_t, 10.0f, &main_view_t);
+
+		ui_vsplit_l(&header_t, 15.0f, 0, &main_view_t);
+		ui_vsplit_r(&header_t, 15.0f, &main_view_t, 0);
+		
+		header_t.w -=  50.0f + 330.0f + 125.0f + 75.0f;
+		
+		float spacing_t = header_t.w / (NUM_WEAPONS + 3);
+		float spacing_real_t = header_t.w / (weapons + (gameclient.snap.gameobj->flags&GAMEFLAG_FLAGS ? 3 : 2));
+		
+		need_w -= abs(spacing_t - spacing_real_t);
+	}
+	
+	if (abs(w - need_w) < 5.0f) w = need_w;
+	else w = w * 0.975f + need_w * 0.025f;
 
 	float x = (width - w) / 2;
 	float y = (height - h) / 2;
@@ -364,9 +415,9 @@ void SCOREBOARD::render_new()
 	float spacing;
 	
 	if (gameclient.snap.gameobj->flags&GAMEFLAG_FLAGS)
-		spacing = (header_width - 50.0f - 330.0f - 125.0f - 75.0f) / (NUM_WEAPONS + 3);
+		spacing = (header_width - 50.0f - 330.0f - 125.0f - 75.0f) / (weapons + 3);
 	else
-		spacing = (header_width - 50.0f - 330.0f - 125.0f - 75.0f) / (NUM_WEAPONS + 2);
+		spacing = (header_width - 50.0f - 330.0f - 125.0f - 75.0f) / (weapons + 2);
 
 	gfx_texture_set(data->images[IMAGE_GAME].id);
 	gfx_quads_begin();
@@ -375,22 +426,24 @@ void SCOREBOARD::render_new()
 
 	{
 		select_sprite(&data->sprites[SPRITE_STAR1]);
-		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size / 2.0f + header.h * 0.1f, sprite_size, sprite_size);
+		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size * 0.5f + header.h * 0.1f, sprite_size, sprite_size);
 		ui_vsplit_l(&header, spacing, 0, &header);
 	}
 	{
 		select_sprite(&data->sprites[SPRITE_RED_MINUS]);
-		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size / 2.0f + header.h * 0.1f, sprite_size, sprite_size);
+		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size * 0.5f + header.h * 0.1f, sprite_size, sprite_size);
 		ui_vsplit_l(&header, spacing, 0, &header);
 	}
 
 	for (int i = 0; i < NUM_WEAPONS; i++)
 	{
+		if (!active_weapons[i]) continue;
+		
 		select_sprite((i == WEAPON_HAMMER || i == WEAPON_NINJA) ? data->weapons.id[i].sprite_body : data->weapons.id[i].sprite_proj);
 
 		float sw = i != WEAPON_NINJA ? sprite_size : sprite_size * 2.0f;
 
-		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size / 2.0f + header.h * 0.1f, sw, sprite_size);
+		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size * 0.5f + header.h * 0.1f, sw, sprite_size);
 
 		ui_vsplit_l(&header, spacing, 0, &header);
 	}
@@ -398,8 +451,8 @@ void SCOREBOARD::render_new()
 	if (gameclient.snap.gameobj->flags&GAMEFLAG_FLAGS)
 	{
 		select_sprite(&data->sprites[SPRITE_FLAG_RED]);
-		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size / 2.0f + header.h * 0.1f, sprite_size * 0.5f, sprite_size);
-		ui_vsplit_l(&header, ((header_width / 2) * 4.25f / 5) / (NUM_WEAPONS + 3), 0, &header);
+		gfx_quads_draw(header.x + spacing * 0.5f, header.y + sprite_size * 0.5f + header.h * 0.1f, sprite_size * 0.5f, sprite_size);
+		//ui_vsplit_l(&header, ((header_width / 2) * 4.25f / 5) / (NUM_WEAPONS + 3), 0, &header);
 	}
 
 	gfx_quads_end();
@@ -577,13 +630,13 @@ void SCOREBOARD::render_new()
 
 			ui_do_label(&line, gameclient.clients[info->cid].name, line_height * 0.8f, -1);
 
-			ui_vsplit_l(&line, 350.0f, 0, &line);
+			ui_vsplit_l(&line, 330.0f, 0, &line);
 
 			if (team != 2)
 			{
 				RECT line_t = line;
 				str_format(buf, sizeof(buf), "%d", info->score);
-				line_t.x += abs(125.0f - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
+				line_t.x += abs(125.0f - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 				ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 			}
 
@@ -592,7 +645,7 @@ void SCOREBOARD::render_new()
 			{
 				RECT line_t = line;
 				str_format(buf, sizeof(buf), "%d", info->latency);
-				line_t.x += abs(75.0f - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
+				line_t.x += abs(75.0f - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 				ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 			}
 
@@ -607,7 +660,7 @@ void SCOREBOARD::render_new()
 						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%.1f", gameclient.clients[info->cid].stats.total_kills - gameclient.clients[info->cid].stats.total_killed, (float)gameclient.clients[info->cid].stats.total_kills / (float)(gameclient.clients[info->cid].stats.total_killed == 0 ? 1 : gameclient.clients[info->cid].stats.total_killed));
-					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
+					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 				}
 
@@ -618,7 +671,7 @@ void SCOREBOARD::render_new()
 						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.total_kills, gameclient.clients[info->cid].stats.total_killed);
-					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
+					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 				}
 
@@ -626,12 +679,13 @@ void SCOREBOARD::render_new()
 
 				for (int i = 0; i < NUM_WEAPONS; i++)
 				{
+					if (!active_weapons[i]) continue;
 					RECT line_t = line;
 					if (gameclient.clients[info->cid].stats.kills[i] == 0 && gameclient.clients[info->cid].stats.killed[i] == 0)
 						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.kills[i], gameclient.clients[info->cid].stats.killed[i]);
-					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
+					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 
 					ui_vsplit_l(&line, spacing, 0, &line);
@@ -644,7 +698,7 @@ void SCOREBOARD::render_new()
 						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.flag_carried, gameclient.clients[info->cid].stats.flag_lost);
-					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) / 2.0f;
+					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 					ui_do_label(&line_t, buf, line_height * 0.8f, -1);
 				}
 			}
