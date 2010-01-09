@@ -122,6 +122,7 @@ public:
 			int killed[NUM_WEAPONS];
 			int flag_carried;
 			int flag_lost;
+			int flag_killed;
 		} stats;
 		
 		void update_render_info();
