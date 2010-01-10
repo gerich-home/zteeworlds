@@ -14,8 +14,11 @@
 #include <game/client/ui.hpp>
 //#include <game/client/gameclient.hpp>
 //#include <game/client/animstate.hpp>
+#include <engine/e_demorec.h>
 
 #include "menus.hpp"
+
+static char rewrite_filename[1024] = {0};
 
 void MENUS::ui_draw_demoplayer_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
@@ -29,28 +32,34 @@ void MENUS::render_demoplayer(RECT main_view)
 	
 	const float seekbar_height = 15.0f;
 	const float buttonbar_height = 20.0f;
+	const float rewritebar_height = 20.0f;
 	const float margins = 5.0f;
 	float total_height;
 	
 	if(menu_active)
-		total_height = seekbar_height+buttonbar_height+margins*3;
+		total_height = seekbar_height+buttonbar_height+rewritebar_height+margins*4;
 	else
-		total_height = seekbar_height+margins*2;
+		return;
+		//total_height = seekbar_height+margins*2;
 	
 	ui_hsplit_b(&main_view, total_height, 0, &main_view);
-	ui_vsplit_l(&main_view, 250.0f, 0, &main_view);
-	ui_vsplit_r(&main_view, 250.0f, &main_view, 0);
+	ui_vsplit_l(&main_view, 150.0f, 0, &main_view);
+	ui_vsplit_r(&main_view, 150.0f, &main_view, 0);
 	
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_T, 10.0f);
 		
 	ui_margin(&main_view, 5.0f, &main_view);
 	
-	RECT seekbar, buttonbar;
+	RECT seekbar, buttonbar, rewritebar;
 	
 	if(menu_active)
 	{
 		ui_hsplit_t(&main_view, seekbar_height, &seekbar, &buttonbar);
 		ui_hsplit_t(&buttonbar, margins, 0, &buttonbar);
+		buttonbar.h = buttonbar_height;
+		rewritebar = buttonbar;
+		rewritebar.y += buttonbar_height + margins;
+		rewritebar.h = rewritebar_height;
 	}
 	else
 		seekbar = main_view;
@@ -169,6 +178,32 @@ void MENUS::render_demoplayer(RECT main_view)
 		static int exit_button = 0;
 		if(ui_do_button(&exit_button, "Exit", 0, &button, ui_draw_demoplayer_button, 0))
 			client_disconnect();
+			
+			
+		// make first button
+		ui_vsplit_l(&rewritebar, buttonbar_height, &button, &rewritebar);
+		static int make_first_button = 0;
+		if(ui_do_button(&make_first_button, "[", info->paused, &button, ui_draw_demoplayer_button, 0))
+			demorec_make_first();
+			
+		ui_vsplit_l(&rewritebar, margins, 0, &rewritebar);
+			
+		// make last button
+		ui_vsplit_l(&rewritebar, buttonbar_height, &button, &rewritebar);
+		static int make_last_button = 0;
+		if(ui_do_button(&make_last_button, "]", info->paused, &button, ui_draw_demoplayer_button, 0))
+			demorec_make_last();
+			
+		// rewrite button
+		ui_vsplit_r(&rewritebar, buttonbar_height*3, &rewritebar, &button);
+		static int rewrite_button = 0;
+		if(ui_do_button(&rewrite_button, "Rewrite", 0, &button, ui_draw_demoplayer_button, 0))
+			demorec_rewrite(rewrite_filename);
+			
+		ui_vsplit_l(&rewritebar, margins, 0, &rewritebar);
+		ui_vsplit_r(&rewritebar, margins, &rewritebar, 0);
+		
+		ui_do_edit_box(rewrite_filename, &rewritebar, rewrite_filename, sizeof(rewrite_filename), 14.0f);
 	}
 }
 
@@ -370,6 +405,7 @@ void MENUS::render_demolist(RECT main_view)
 	static int selected_item = -1;
 	static int num_items = 0;
 	static int demolist_id = 0;
+	char buf[1024];
 	
 	ui_do_listbox_start(&demolist_id, &main_view, 17.0f, "Demos", num_items, selected_item);
 	for(int i = 0; i < num_demos; i++)
@@ -383,6 +419,13 @@ void MENUS::render_demolist(RECT main_view)
 	if(selected_item >= 0 && selected_item < num_demos && inp_mouse_doubleclick())
 	{
 		ui_set_active_item(0);
+		
+		int len = str_length(demos[selected_item].name);
+		int i = len - 1;
+		while (demos[selected_item].name[i] != '.' && i > 0) i--;
+		mem_copy(rewrite_filename, demos[selected_item].name, i);
+		str_format(rewrite_filename + i, sizeof(rewrite_filename) - i, " (rewrite).demo");
+		
 		client_demoplayer_play(demos[selected_item].filename);
 	}
 	
@@ -402,6 +445,12 @@ void MENUS::render_demolist(RECT main_view)
 	{
 		if(selected_item >= 0 && selected_item < num_demos)
 		{
+			int len = str_length(demos[selected_item].name);
+			int i = len - 1;
+			while (demos[selected_item].name[i] != '.' && i > 0) i--;
+			mem_copy(rewrite_filename, demos[selected_item].name, i);
+			str_format(rewrite_filename + i, sizeof(rewrite_filename) - i, " (rewrite).demo");
+		
 			const char *error = client_demoplayer_play(demos[selected_item].filename);
 			if(error)
 				popup_message("Error", error, "Ok");
