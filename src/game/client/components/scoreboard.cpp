@@ -274,10 +274,10 @@ void SCOREBOARD::render_new()
 	float width = 400*3.0f*gfx_screenaspect();
 	float height = 400*3.0f;
 
-	static float w = 1400.0f;
+	static float w = 1500.0f;
 	float h = 900.0f;
 	
-	float need_w = 1400.0f;
+	float need_w = 1500.0f;
 	
 	int weapons = 0;
 	bool active_weapons[NUM_WEAPONS];
