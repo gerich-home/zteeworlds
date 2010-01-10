@@ -26,6 +26,14 @@ void HUD::on_reset()
 {
 }
 
+static void mapscreen_to_group(float center_x, float center_y, MAPITEM_GROUP *group)
+{
+	float points[4];
+	mapscreen_to_world(center_x, center_y, group->parallax_x/100.0f, group->parallax_y/100.0f,
+		group->offset_x, group->offset_y, gfx_screenaspect(), 1.0f, points);
+	gfx_mapscreen(points[0], points[1], points[2], points[3]);
+}
+
 void HUD::render_spectate()
 {
 	if(gameclient.freeview)
@@ -199,14 +207,6 @@ void HUD::render_goals()
 		w = gfx_text_width(0, 24, buf, -1);
 		gfx_text(0, 150*gfx_screenaspect()+-w/2, 75, 24, buf, -1);
 	}	
-}
-
-static void mapscreen_to_group(float center_x, float center_y, MAPITEM_GROUP *group)
-{
-	float points[4];
-	mapscreen_to_world(center_x, center_y, group->parallax_x/100.0f, group->parallax_y/100.0f,
-		group->offset_x, group->offset_y, gfx_screenaspect(), 1.0f, points);
-	gfx_mapscreen(points[0], points[1], points[2], points[3]);
 }
 
 void HUD::render_fps()
