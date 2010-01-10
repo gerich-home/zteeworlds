@@ -926,12 +926,16 @@ int demorec_rewrite(const char * filename)
 	}
 
 	dbg_msg("demorec/record", "Stopped recording");
-	io_close(record_file);
+	if (record_file)
+		io_close(record_file);
 	record_file = 0;
-	io_close(play_file);
+	if (play_file)
+		io_close(play_file);
 	play_file = 0;
 	mem_free(keyframes);
 	keyframes = 0;
 
+	demorec_playback_load(filename);
+	
 	return 0;
 }
