@@ -320,6 +320,25 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 			client_connect(config.ui_server_address);
 	}
 
+	if(selected_index > -1)
+	{
+		for(int i = 0; i < num_inputevents; i++)
+		{
+			int new_index = -1;
+			if(inputevents[i].flags&INPFLAG_PRESS)
+			{
+				if(inputevents[i].key == KEY_DOWN) new_index = selected_index + 1;
+				if(inputevents[i].key == KEY_UP) new_index = selected_index - 1;
+			}
+			if(new_index > -1 && new_index < num_servers)
+			{
+				selected_index = new_index;
+				SERVER_INFO *item = client_serverbrowse_sorted_get(selected_index);
+				strncpy(config.ui_server_address, item->address, sizeof(config.ui_server_address));
+			}
+		}
+	}
+
 	ui_draw_rect(&status, vec4(1,1,1,0.25f), CORNER_B, 5.0f);
 	ui_margin(&status, 5.0f, &status);
 	
