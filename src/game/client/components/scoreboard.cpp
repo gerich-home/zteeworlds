@@ -694,7 +694,7 @@ void SCOREBOARD::render_new()
 				if (gameclient.snap.gameobj->flags&GAMEFLAG_FLAGS)
 				{
 					RECT line_t = line;
-					if (gameclient.clients[info->cid].stats.flag_carried == 0 && gameclient.clients[info->cid].stats.flag_lost == 0)
+					if (gameclient.clients[info->cid].stats.flag_carried == 0 && gameclient.clients[info->cid].stats.flag_lost == 0 && gameclient.clients[info->cid].stats.flag_killed == 0)
 						str_format(buf, sizeof(buf), "---");
 					else
 						str_format(buf, sizeof(buf), "%d/%d/%d", gameclient.clients[info->cid].stats.flag_carried, gameclient.clients[info->cid].stats.flag_killed, gameclient.clients[info->cid].stats.flag_lost);
