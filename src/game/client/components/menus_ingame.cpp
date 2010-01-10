@@ -5,6 +5,7 @@
 #include <stdlib.h> // atoi
 
 #include <engine/e_client_interface.h>
+#include <engine/e_demorec.h>
 
 #include <game/generated/g_protocol.hpp>
 #include <game/generated/gc_data.hpp>
@@ -35,6 +36,26 @@ void MENUS::render_game(RECT main_view)
 
 	if(gameclient.snap.local_info && gameclient.snap.gameobj)
 	{
+		ui_vsplit_r(&main_view, 10.0f, &main_view, &button);
+		ui_vsplit_r(&main_view, 130.0f, &main_view, &button);
+		static int record_button = 0;
+		if(ui_do_button(&record_button, demorec_isrecording() ? "Stop record" : "Record", 0, &button, ui_draw_menu_button, 0))
+		{
+			if (demorec_isrecording())
+				console_execute_line("stoprecord");
+			else
+				console_execute_line("record");
+		}
+
+		ui_vsplit_r(&main_view, 10.0f, &main_view, &button);
+		ui_vsplit_r(&main_view, 130.0f, &main_view, &button);
+		static int screenshot_button = 0;
+		if(ui_do_button(&screenshot_button, "Screenshot", 0, &button, ui_draw_menu_button, 0))
+		{
+			gameclient.tick_to_screenshot = client_tick();
+			menu_active = false;
+		}
+		
 		if(gameclient.snap.local_info->team != -1)
 		{
 			ui_vsplit_l(&main_view, 10.0f, &button, &main_view);
