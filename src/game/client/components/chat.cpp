@@ -244,7 +244,7 @@ void CHAT::on_render()
 	{
 		// render chat input
 		TEXT_CURSOR cursor;
-		gfx_text_set_cursor(&cursor, x, y, 8.0f, TEXTFLAG_RENDER);
+		gfx_text_set_cursor(&cursor, x, y, 7.5f, TEXTFLAG_RENDER);
 		cursor.line_width = 200.0f;
 		
 		if(mode == MODE_ALL)
