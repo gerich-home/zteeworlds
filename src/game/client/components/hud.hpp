@@ -7,6 +7,7 @@ class HUD : public COMPONENT
     
 	void render_cursor();
 	
+	void render_spectate();
 	void render_fps();
 	void render_connectionwarning();
 	void render_teambalancewarning();

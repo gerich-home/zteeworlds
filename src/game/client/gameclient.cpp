@@ -393,7 +393,8 @@ void GAMECLIENT::dispatch_input()
 	// handle mouse movement
 	int x=0, y=0;
 	inp_mouse_relative(&x, &y);
-	if(x || y)
+//	if(x || y)
+	if(x || y || !freeview)
 	{
 		for(int h = 0; h < input.num; h++)
 		{
@@ -424,7 +425,32 @@ void GAMECLIENT::dispatch_input()
 
 int GAMECLIENT::on_snapinput(int *data)
 {
-	return controls->snapinput(data);
+//	return controls->snapinput(data);
+	int val = controls->snapinput(data);
+	if(val && snap.spectate)
+	{
+		NETOBJ_PLAYER_INPUT *inp = (NETOBJ_PLAYER_INPUT *)data;
+		static bool last_fire = false, last_hook = false;
+
+		if(inp->fire&1 && !last_fire)
+		{
+			find_next_spectable_cid();
+			last_fire = true;
+		}
+		else if(!(inp->fire&1) && last_fire)
+			last_fire = false;
+
+		if(inp->hook && !last_hook)
+		{
+			freeview = !freeview;
+			if(!freeview)
+				find_next_spectable_cid();
+			last_hook = true;
+		}
+		else if(!inp->hook && last_hook)
+			last_hook = false;
+	}
+	return val;
 }
 
 void GAMECLIENT::on_connected()
@@ -446,6 +472,9 @@ void GAMECLIENT::on_connected()
 	
 	// send the inital info
 	send_info(true);
+	
+	freeview = true;
+	spectate_cid = -1;
 	
 	tick_to_screenshot = -1;
 }
@@ -496,6 +525,40 @@ void GAMECLIENT::update_local_character_pos()
 			vec2(snap.local_prev_character->x, snap.local_prev_character->y),
 			vec2(snap.local_character->x, snap.local_character->y), client_intratick());
 	}
+	if(spectate_cid == -1)
+		freeview = true;
+	if(snap.spectate && !freeview)
+	{
+		if(!snap.characters[spectate_cid].active || clients[spectate_cid].team == -1)
+		{
+			freeview = true;
+			return;
+		}
+		spectate_pos = mix(
+			vec2(snap.characters[spectate_cid].prev.x, snap.characters[spectate_cid].prev.y),
+			vec2(snap.characters[spectate_cid].cur.x, snap.characters[spectate_cid].cur.y), client_intratick());
+	}
+}
+ 
+void GAMECLIENT::find_next_spectable_cid()
+{
+	int next = spectate_cid+1;
+	next %= MAX_CLIENTS;
+	int prev = next;
+	while(!snap.characters[next].active || clients[next].team == -1)
+	{
+		next++;
+		next %= MAX_CLIENTS;
+		if(next == prev)
+		{
+			freeview = true;
+			spectate_cid = -1;
+			return;
+		}
+	}
+	spectate_cid = next;
+	if(freeview)
+		freeview = false;
 }
 
 

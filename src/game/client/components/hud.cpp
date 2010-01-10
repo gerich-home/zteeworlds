@@ -26,6 +26,18 @@ void HUD::on_reset()
 {
 }
 
+void HUD::render_spectate()
+{
+	if(gameclient.freeview)
+		gfx_text(0, 4*gfx_screenaspect(), 4, 8, "Freeview", -1);
+	else
+	{
+		char buf[96];
+		str_format(buf, sizeof(buf), "Following: %s", gameclient.clients[gameclient.spectate_cid].name);
+		gfx_text(0, 4*gfx_screenaspect(), 4, 8, buf, -1);
+	}
+}
+
 void HUD::render_goals()
 {
 	// TODO: split this up into these:
@@ -360,4 +372,6 @@ void HUD::on_render()
 	render_teambalancewarning();
 	render_voting();
 	render_cursor();
+	if(spectate && !(gameclient.snap.gameobj && gameclient.snap.gameobj->game_over))
+		render_spectate();
 }

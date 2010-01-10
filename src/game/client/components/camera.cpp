@@ -20,7 +20,13 @@ void CAMERA::on_render()
 
 	// update camera center		
 	if(gameclient.snap.spectate)
-		center = gameclient.controls->mouse_pos;
+//		center = gameclient.controls->mouse_pos;
+	{
+		if(gameclient.freeview)
+			center = gameclient.controls->mouse_pos;
+		else
+			center = gameclient.spectate_pos;
+	}
 	else
 	{
 

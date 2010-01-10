@@ -129,6 +129,10 @@ public:
 	};
 
 	CLIENT_DATA clients[MAX_CLIENTS];
+	bool freeview;
+	int spectate_cid;
+	vec2 spectate_pos;
+	void find_next_spectable_cid();
 	
 	int tick_to_screenshot;
 	
