@@ -710,16 +710,16 @@ void GAMECLIENT::on_message(int msgtype)
 			if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
 				clients[msg->killer].stats.kills[msg->weapon]++;
 			clients[msg->killer].stats.total_kills++;
+			
+			if (snap.gameobj->flags&GAMEFLAG_FLAGS && msg->mode_special&1)
+			{
+				clients[msg->killer].stats.flag_killed++;
+			}
 		}
 
 		if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
 			clients[msg->victim].stats.killed[msg->weapon]++;
 		clients[msg->victim].stats.total_killed++;
-		
-		if (snap.gameobj->flags&GAMEFLAG_FLAGS && msg->mode_special&1)
-		{
-			clients[msg->killer].stats.flag_killed++;
-		}
 	}
 }
 
