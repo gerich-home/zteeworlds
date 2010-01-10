@@ -4,6 +4,7 @@
 #include <engine/e_lua.h>
 #include <game/client/gameclient.hpp>
 #include "binds.hpp"
+#include "infopan.hpp"
 
 bool BINDS::BINDS_SPECIAL::on_input(INPUT_EVENT e)
 {
@@ -115,8 +116,8 @@ void BINDS::set_defaults()
 	bind(KEY_MOUSE_3, "+fastmenu");
 	
 #ifndef CONF_TRUNC
-	bind(KEY_KP_PLUS, "lua config(\"cl_spectator_zoom\", config(\"cl_spectator_zoom\" + 5)); lua infomsg(\"Spectator zoom: \" + tostring(config(\"cl_spectator_zoom\")))");
-	bind(KEY_KP_MINUS, "lua config(\"cl_spectator_zoom\", config(\"cl_spectator_zoom\" - 5)); lua infomsg(\"Spectator zoom: \" + tostring(config(\"cl_spectator_zoom\")))");
+	bind(KEY_KP_PLUS, "inc_spectator_zoom");
+	bind(KEY_KP_MINUS, "dec_spectator_zoom");
 #endif
 }
 
@@ -183,6 +184,42 @@ static int _lua_dump_binds(lua_State * L)
 	return 0;
 }
 
+#ifndef CONF_TRUNC
+void con_inc_spectator_zoom(void *result, void *user_data)
+{
+	config.cl_spectator_zoom += 5;
+	char buf[128];
+	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	gameclient.infopan->add_line(buf);
+}
+
+void con_dec_spectator_zoom(void *result, void *user_data)
+{
+	config.cl_spectator_zoom -= 5;
+	char buf[128];
+	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	gameclient.infopan->add_line(buf);
+}
+
+static int _lua_inc_spectator_zoom(lua_State * L)
+{
+	config.cl_spectator_zoom += 5;
+	char buf[128];
+	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	gameclient.infopan->add_line(buf);
+	return 0;
+}
+
+static int _lua_dec_spectator_zoom(lua_State * L)
+{
+	config.cl_spectator_zoom -= 5;
+	char buf[128];
+	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	gameclient.infopan->add_line(buf);
+	return 0;
+}
+#endif
+
 void BINDS::on_console_init()
 {
 	// bindings
@@ -190,6 +227,13 @@ void BINDS::on_console_init()
 	MACRO_REGISTER_COMMAND("unbind", "s", CFGFLAG_CLIENT, con_unbind, this, "Unbind key");
 	MACRO_REGISTER_COMMAND("unbindall", "", CFGFLAG_CLIENT, con_unbindall, this, "Unbind all keys");
 	MACRO_REGISTER_COMMAND("dump_binds", "", CFGFLAG_CLIENT, con_dump_binds, this, "Dump binds");
+	
+	#ifndef CONF_TRUNC
+	MACRO_REGISTER_COMMAND("inc_spectator_zoom", "", CFGFLAG_CLIENT, con_inc_spectator_zoom, this, "Increase spectator zoom");
+	MACRO_REGISTER_COMMAND("dec_spectator_zoom", "", CFGFLAG_CLIENT, con_dec_spectator_zoom, this, "Increase spectator zoom");
+	LUA_REGISTER_FUNC(inc_spectator_zoom)
+	LUA_REGISTER_FUNC(dec_spectator_zoom)
+	#endif
 	
 	LUA_REGISTER_FUNC(bind)
 	LUA_REGISTER_FUNC(unbind)
