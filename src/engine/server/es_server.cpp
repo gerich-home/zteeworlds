@@ -1175,11 +1175,12 @@ static int server_run()
 				perf_end();
 			}
 			
-			lua_getglobal(GetLuaState(), "server_event_tick");
-			if(lua_isfunction(GetLuaState(), lua_gettop(GetLuaState())))
-			{
-				lua_call(GetLuaState(), 0, 0);
-			}
+			#ifndef CONF_TRUNC
+			lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "server_event_tick");
+			if(lua_isfunction(GetLuaState(), -1))
+				lua_pcall(GetLuaState(), 0, 0, 0);
+			lua_pop(GetLuaState(), 1);
+			#endif
 
 			perf_end();
 	
@@ -1210,11 +1211,12 @@ static int server_run()
 			
 			if (second_time < time_get())
 			{
-				lua_getglobal(GetLuaState(), "server_event_second");
-				if(lua_isfunction(GetLuaState(), lua_gettop(GetLuaState())))
-				{
-					lua_call(GetLuaState(), 0, 0);
-				}
+				#ifndef CONF_TRUNC
+				lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "server_event_second");
+				if(lua_isfunction(GetLuaState(), -1))
+					lua_pcall(GetLuaState(), 0, 0, 0);
+				lua_pop(GetLuaState(), 1);
+				#endif
 				second_time = time_get() + time_freq();
 			}
 			

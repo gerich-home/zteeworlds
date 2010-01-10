@@ -1636,6 +1636,8 @@ static void client_run()
 	local_start_time = time_get();
 	snapshot_parts = 0;
 	
+	int64 second_time = time_get();
+	
 	/* init graphics and sound */
 	if(gfx_init() != 0)
 		return;
@@ -1801,6 +1803,13 @@ static void client_run()
 				}
 			}
 		}
+		
+		#ifndef CONF_TRUNC
+		lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "client_event_tick");
+		if(lua_isfunction(GetLuaState(), -1))
+			lua_pcall(GetLuaState(), 0, 0, 0);
+		lua_pop(GetLuaState(), 1);
+		#endif
 
 		perf_end();
 
@@ -1839,6 +1848,17 @@ static void client_run()
 			
 			if(config.dbg_pref)
 				perf_dump(&rootscope);
+		}
+		
+		if (second_time < time_get())
+		{
+			#ifndef CONF_TRUNC
+			lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "client_event_second");
+			if(lua_isfunction(GetLuaState(), -1))
+				lua_pcall(GetLuaState(), 0, 0, 0);
+			lua_pop(GetLuaState(), 1);
+			#endif
+			second_time = time_get() + time_freq();
 		}
 		
 		/* update frametime */
