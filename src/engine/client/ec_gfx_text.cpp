@@ -248,8 +248,12 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 							has_gfx_begin = false;
 						}
 						
-						int tsw = actual_size * 0.5f;
-						int tsh = actual_size * 0.5f;
+						// A little hack to displaying smiles at baseline...
+						font_character_info(font, 'O', &tex_x0, &tex_y0, &tex_x1, &tex_y1, &width, &height, &x_offset, &y_offset, &x_advance);
+						
+						float smile_size = width > height ? width : height;
+						smile_size *= 1.1f;
+						y_offset -= smile_size - (width > height ? width : height);
 					
 						gfx_texture_set(smileys_texture);
 						gfx_quads_begin();
@@ -257,10 +261,10 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 							if (config.gfx_text_shadows && i == 0)
 							{
 								gfx_setcolor(0.0f, 0.0f, 0.0f, 0.5f * text_a);
-								gfx_quads_drawTL(draw_x + 0 * tsw + 1, draw_y + 0 * tsh + 1, 1 * tsw, 1 * tsh);
+								gfx_quads_drawTL(draw_x+0*size + 1, draw_y+y_offset*size + 1, smile_size*size, smile_size*size);
 							}
 							gfx_setcolor(1.0f, 1.0f, 1.0f, 1.0f);
-							gfx_quads_drawTL(draw_x + 0 * tsw, draw_y + 0 * tsh, 1 * tsw, 1 * tsh);
+							gfx_quads_drawTL(draw_x+0*size, draw_y+y_offset*size, smile_size*size, smile_size*size);
 						gfx_quads_end();
 					}
 					
