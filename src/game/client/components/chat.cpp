@@ -311,7 +311,7 @@ void CHAT::on_render()
 		else if(lines[r].team)
 			gfx_text_color(0.65f,1,0.65f,1); // team message
 
-		if (config.gfx_smileys)
+		if (config.gfx_smileys && lines[r].client_id != -1)
 		{
 			char buf[1024];
 			memset(buf, 0, sizeof(buf));
