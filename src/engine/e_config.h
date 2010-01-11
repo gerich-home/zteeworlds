@@ -53,15 +53,15 @@ static int _lua_config(lua_State * L)
 		const char * param_name = lua_tostring(L, 1);
 		if (count > 1)
 		{
-#define MACRO_CONFIG_INT(name,def,min,max,flags,desc) if (str_comp_nocase(param_name, #name ) == 0 && lua_isnumber(L, 2)) { config.##name = lua_tointeger(L, 2); return 0; }
-#define MACRO_CONFIG_STR(name,len,def,flags,desc) if (str_comp_nocase(param_name, #name ) == 0 && lua_isstring(L, 2)) { mem_copy(config.##name, lua_tostring(L, 2), len ); return 0; }
+#define MACRO_CONFIG_INT(name,def,min,max,flags,desc) if (str_comp_nocase(param_name, #name ) == 0 && lua_isnumber(L, 2)) { config. ## name = lua_tointeger(L, 2); return 0; }
+#define MACRO_CONFIG_STR(name,len,def,flags,desc) if (str_comp_nocase(param_name, #name ) == 0 && lua_isstring(L, 2)) { mem_copy(config. ## name, lua_tostring(L, 2), len ); return 0; }
 #include "e_config_variables.h"
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_STR
 			dbg_msg("lua/debug", "Cannot find config variable %s", param_name);
 		} else {
-#define MACRO_CONFIG_INT(name,def,min,max,flags,desc) if (str_comp_nocase(param_name, #name ) == 0) { lua_pushinteger(L, config.##name ); return 1; }
-#define MACRO_CONFIG_STR(name,len,def,flags,desc) if (str_comp_nocase(param_name, #name ) == 0) { lua_pushstring(L, config.##name ); return 1; }
+#define MACRO_CONFIG_INT(name,def,min,max,flags,desc) if (str_comp_nocase(param_name, #name ) == 0) { lua_pushinteger(L, config. ## name ); return 1; }
+#define MACRO_CONFIG_STR(name,len,def,flags,desc) if (str_comp_nocase(param_name, #name ) == 0) { lua_pushstring(L, config. ## name ); return 1; }
 #include "e_config_variables.h"
 #undef MACRO_CONFIG_INT
 #undef MACRO_CONFIG_STR
