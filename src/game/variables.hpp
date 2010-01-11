@@ -35,7 +35,7 @@ MACRO_CONFIG_INT(cl_default_skin_only, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "De
 MACRO_CONFIG_INT(cl_showduelscores, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show small scoreboard in 1on1 game")
 #ifndef CONF_TRUNC
 MACRO_CONFIG_INT(cl_reconnect_time, 10, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Auto reconnection if disconnected")
-MACRO_CONFIG_INT(cl_spectator_zoom, 100, 10, 10000, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Zoom in spectator mode")
+MACRO_CONFIG_INT(cl_spectator_zoom, 100, 10, 500, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Zoom in spectator mode")
 #endif
 
 MACRO_CONFIG_INT(ui_page, 5, 0, 9, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface page")

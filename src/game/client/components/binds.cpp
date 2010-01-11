@@ -187,7 +187,7 @@ static int _lua_dump_binds(lua_State * L)
 #ifndef CONF_TRUNC
 void con_inc_spectator_zoom(void *result, void *user_data)
 {
-	config.cl_spectator_zoom += 5;
+	config.cl_spectator_zoom = clamp(config.cl_spectator_zoom + 5, 10, 500);
 	char buf[128];
 	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
@@ -195,7 +195,7 @@ void con_inc_spectator_zoom(void *result, void *user_data)
 
 void con_dec_spectator_zoom(void *result, void *user_data)
 {
-	config.cl_spectator_zoom -= 5;
+	config.cl_spectator_zoom = clamp(config.cl_spectator_zoom - 5, 10, 500);
 	char buf[128];
 	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
@@ -203,7 +203,7 @@ void con_dec_spectator_zoom(void *result, void *user_data)
 
 static int _lua_inc_spectator_zoom(lua_State * L)
 {
-	config.cl_spectator_zoom += 5;
+	config.cl_spectator_zoom = clamp(config.cl_spectator_zoom + 5, 10, 500);
 	char buf[128];
 	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
@@ -212,7 +212,7 @@ static int _lua_inc_spectator_zoom(lua_State * L)
 
 static int _lua_dec_spectator_zoom(lua_State * L)
 {
-	config.cl_spectator_zoom -= 5;
+	config.cl_spectator_zoom = clamp(config.cl_spectator_zoom - 5, 10, 500);
 	char buf[128];
 	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
