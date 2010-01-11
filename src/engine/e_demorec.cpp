@@ -386,7 +386,7 @@ static void do_tick()
 
 	while(1)
 	{
-		if(read_chunk_header(&chunk_type, &chunk_size, &chunk_tick))
+		if(read_chunk_header(&chunk_type, &chunk_size, &chunk_tick) || chunk_tick > playbackinfo.last_tick)
 		{
 			/* stop on error or eof */
 			dbg_msg("demorec", "end of file");
