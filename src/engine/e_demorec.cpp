@@ -693,8 +693,11 @@ int demorec_rewrite(const char * filename)
 		dbg_msg("demorec/record", "Load demo or stop recording", filename);
 		return -1;
 	}
+	
+	char rf_buf[1024] = {0};
+	str_format(rf_buf, sizeof(rf_buf), "demos/%s", filename);
 
-	record_file = engine_openfile(filename, IOFLAG_WRITE);
+	record_file = engine_openfile(rf_buf, IOFLAG_WRITE);
 
 	if(!record_file)
 	{
