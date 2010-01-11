@@ -1,6 +1,7 @@
 #include <memory.h> // memcmp
 
 #include <engine/e_client_interface.h>
+#include <engine/e_demorec.h>
 #include <game/generated/g_protocol.hpp>
 #include <game/generated/gc_data.hpp>
 
@@ -292,6 +293,9 @@ void HUD::render_voting()
 void HUD::render_cursor()
 {
 	if(!gameclient.snap.local_character)
+		return;
+		
+	if (demorec_isplaying())
 		return;
 		
 	mapscreen_to_group(gameclient.camera->center.x, gameclient.camera->center.y, layers_game_group());
