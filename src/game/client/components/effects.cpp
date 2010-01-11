@@ -67,7 +67,7 @@ void EFFECTS::powerupshine(vec2 pos, vec2 size)
 	p.gravity = -100;
 	p.life_span = 1.3f;
 	//p.color = vec4(1.0f,0.15f,0.15f,1.0f);
-	p.color = vec4(frandom()*0.5f + 0.5f,frandom()*0.5f + 0.5f,frandom()*0.5f + 0.5f,0.5f);
+	p.color = vec4(frandom()*0.5f + 0.5f,frandom()*0.5f + 0.5f,frandom()*0.5f + 0.5f,0.8f);
 	}
 	else
 	{
@@ -119,7 +119,7 @@ void EFFECTS::redflagshine(vec2 pos, vec2 size)
 	p.gravity = frandom() -170.0;
 	p.life_span = 7.0f / 10.0f;
 	//p.color = vec4(0.85f,0.2f,0.2f,1.0f);
-	p.color = vec4(frandom()*0.5f + 0.5f,frandom()*0.5f,frandom()*0.5f,0.5f);
+	p.color = vec4(frandom()*0.5f + 0.5f,frandom()*0.5f,frandom()*0.5f,0.8f);
 	p.start_size = 15.0f;
 	p.end_size = 0;
 	p.rot = frandom()*pi*2;
@@ -142,7 +142,7 @@ void EFFECTS::blueflagshine(vec2 pos, vec2 size)
 	p.gravity = frandom() -170;
 	p.life_span = 7.0f / 10.0f;
 	//p.color = vec4(0.2f,0.2f,0.85f,1.0f);
-	p.color = vec4(frandom()*0.5f,frandom()*0.5f,frandom()*0.5f + 0.5f,0.5f);
+	p.color = vec4(frandom()*0.5f,frandom()*0.5f,frandom()*0.5f + 0.5f,0.8f);
 	p.start_size = 15.0f;
 	p.end_size = 0;
 	p.rot = frandom()*pi*2;
@@ -260,7 +260,7 @@ void EFFECTS::sgbullettrail(vec2 pos)
 	p.set_default();
 	p.spr = SPRITE_PART_BALL;
 	//p.color = vec4(frandom(), frandom(), frandom() ,1.0f);
-	p.color = vec4(frandom()*0.5f+0.5f,frandom()*0.5f+0.5f,frandom()*0.5f+0.5f,0.5f);
+	p.color = vec4(frandom()*0.5f+0.5f,frandom()*0.5f+0.5f,frandom()*0.5f+0.5f,1.0f);
 	p.pos = pos;
 	if(config.gfx_eyecandy)
 	{
