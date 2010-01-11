@@ -535,6 +535,7 @@ void GAMECLIENT::update_local_character_pos()
 		if(!snap.characters[spectate_cid].active || clients[spectate_cid].team == -1)
 		{
 			freeview = true;
+			find_next_spectable_cid();
 			return;
 		}
 		spectate_pos = mix(
@@ -545,7 +546,34 @@ void GAMECLIENT::update_local_character_pos()
  
 void GAMECLIENT::find_next_spectable_cid()
 {
-	int next = spectate_cid+1;
+	int prev_cid = spectate_cid;
+	int next_cid = -1;
+	float min_dist = 10000.0f;
+	
+	for (int i = 0; i < MAX_CLIENTS; i++)
+	{
+		if (i == prev_cid) continue;
+		if (!snap.characters[i].active || clients[i].team == -1) continue;
+		float curr_dist = distance(vec2(snap.characters[i].cur.x, snap.characters[i].cur.y), camera->center);
+		if (next_cid < 0 || curr_dist < min_dist)
+		{
+			next_cid = i;
+			min_dist = curr_dist;
+		}
+	}
+	if (next_cid < 0)
+	{
+		if (prev_cid < 0 || !snap.characters[prev_cid].active || clients[prev_cid].team == -1)
+		{
+			freeview = true;
+			spectate_cid = -1;
+		}
+	} else {
+		spectate_cid = next_cid;
+		freeview = false;
+	}
+	
+	/*int next = spectate_cid+1;
 	next %= MAX_CLIENTS;
 	int prev = next;
 	while(!snap.characters[next].active || clients[next].team == -1)
@@ -561,7 +589,7 @@ void GAMECLIENT::find_next_spectable_cid()
 	}
 	spectate_cid = next;
 	if(freeview)
-		freeview = false;
+		freeview = false;*/
 }
 
 
