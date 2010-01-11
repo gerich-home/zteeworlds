@@ -10,6 +10,7 @@ public:
 	virtual void on_render();
 
 	void bullettrail(vec2 pos);
+	void sgbullettrail(vec2 pos);
 	void smoketrail(vec2 pos, vec2 vel);
 	void skidtrail(vec2 pos, vec2 vel);
 	void explosion(vec2 pos);
@@ -19,6 +20,9 @@ public:
 	void playerspawn(vec2 pos);
 	void playerdeath(vec2 pos, int cid);
 	void powerupshine(vec2 pos, vec2 size);
+	void weaponshine(vec2 pos, vec2 size);
+	void redflagshine(vec2 pos, vec2 size);
+	void blueflagshine(vec2 pos, vec2 size);
 
 	void update();
 };

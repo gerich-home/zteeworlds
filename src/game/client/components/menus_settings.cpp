@@ -700,6 +700,10 @@ void MENUS::render_settings_graphics(RECT main_view)
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 	if (ui_do_button(&config.gfx_outlines, _t("Outlines"), config.gfx_outlines, &button, ui_draw_checkbox, 0))
 		config.gfx_outlines ^= 1;
+		
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.gfx_eyecandy, _t("Eye candy"), config.gfx_eyecandy, &button, ui_draw_checkbox, 0))
+		config.gfx_eyecandy ^= 1;
 }
 
 void MENUS::render_settings_sound(RECT main_view)

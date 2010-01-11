@@ -61,7 +61,10 @@ void ITEMS::render_projectile(const NETOBJ_PROJECTILE *current, int itemid)
 	}
 	else
 	{
-		gameclient.effects->bullettrail(pos);
+		if(current->type == WEAPON_GUN)
+			gameclient.effects->bullettrail(pos);
+		if(current->type == WEAPON_SHOTGUN)
+			gameclient.effects->sgbullettrail(pos);
 		gameclient.flow->add(pos, vel*1000*client_frametime(), 10.0f);
 
 		if(length(vel) > 0.00001f)
@@ -89,6 +92,8 @@ void ITEMS::render_pickup(const NETOBJ_PICKUP *prev, const NETOBJ_PICKUP *curren
 		angle = 0; //-pi/6;//-0.25f * pi * 2.0f;
 		select_sprite(data->weapons.id[clamp(current->subtype, 0, NUM_WEAPONS-1)].sprite_body);
 		size = data->weapons.id[clamp(current->subtype, 0, NUM_WEAPONS-1)].visual_size;
+		if (config.gfx_eyecandy)
+			gameclient.effects->weaponshine(pos, vec2(96,18));
 	}
 	else
 	{
@@ -125,12 +130,7 @@ void ITEMS::render_flag(const NETOBJ_FLAG *prev, const NETOBJ_FLAG *current)
 	gfx_blend_normal();
 	gfx_texture_set(data->images[IMAGE_GAME].id);
 	gfx_quads_begin();
-
-	if(current->team == 0) // red team
-		select_sprite(SPRITE_FLAG_RED);
-	else
-		select_sprite(SPRITE_FLAG_BLUE);
-
+	
 	gfx_quads_setrotation(angle);
 
 	vec2 pos = mix(vec2(prev->x, prev->y), vec2(current->x, current->y), client_intratick());
@@ -142,6 +142,19 @@ void ITEMS::render_flag(const NETOBJ_FLAG *prev, const NETOBJ_FLAG *current)
 	// make sure to use predicted position if we are the carrier
 	if(gameclient.snap.local_info && current->carried_by == gameclient.snap.local_info->cid)
 		pos = gameclient.local_character_pos;
+
+	if(current->team == 0) // red team
+	{
+		select_sprite(SPRITE_FLAG_RED);
+		if (config.gfx_eyecandy)
+			gameclient.effects->redflagshine(pos, vec2(96,18));
+	}
+	else
+	{
+		select_sprite(SPRITE_FLAG_BLUE);
+		if (config.gfx_eyecandy)
+			gameclient.effects->blueflagshine(pos, vec2(96,18));
+	}
 
 	if (config.gfx_shadows)
 	{
