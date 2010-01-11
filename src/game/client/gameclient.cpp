@@ -41,6 +41,7 @@
 #include "components/record_state.hpp"
 #include "components/infopan.hpp"
 #include "components/fastmenu.hpp"
+#include "components/languages.hpp"
 
 GAMECLIENT gameclient;
 
@@ -68,6 +69,7 @@ static VOTING voting;
 static RECORD_STATE record_state;
 static INFOPAN infopan;
 static FASTMENU fastmenu;
+static LANGUAGES languages;
 
 static PLAYERS players;
 static NAMEPLATES nameplates;
@@ -103,7 +105,7 @@ static void load_sounds_thread(void *do_render)
 
 static void con_serverdummy(void *result, void *user_data)
 {
-	dbg_msg("client", "this command is not available on the client");
+	dbg_msg("client", _t("this command is not available on the client"));
 }
 
 static void con_demo_makefirst(void *result, void *user_data)
@@ -138,7 +140,7 @@ static void con_demo_rewrite(void *result, void *user_data)
 		const DEMOREC_PLAYBACKINFO * pbi = demorec_playback_info();
 		if (!pbi || !demorec_isplaying())
 		{
-			dbg_msg("demorec/record", "Load demo first");
+			dbg_msg("demorec/record", _t("Load demo first"));
 			return;
 		}
 		
@@ -166,7 +168,7 @@ static int _lua_demo_rewrite(lua_State * L)
 		const DEMOREC_PLAYBACKINFO * pbi = demorec_playback_info();
 		if (!pbi || !demorec_isplaying())
 		{
-			dbg_msg("demorec/record", "Load demo first");
+			dbg_msg("demorec/record", _t("Load demo first"));
 			return 0;
 		}
 		
@@ -236,6 +238,7 @@ void GAMECLIENT::on_console_init()
 	fastmenu = &::fastmenu;	
 	emoticon = &::emoticon;
 	scoreboard = &::scoreboard;
+	languages = &::languages;
 	
 	// make a list of all the systems, make sure to add them in the corrent render order
 	all.add(skins);
@@ -248,6 +251,7 @@ void GAMECLIENT::on_console_init()
 	all.add(sounds);
 	all.add(voting);
 	all.add(particles); // doesn't render anything, just updates all the particles
+	all.add(languages);
 	
 	all.add(&maplayers_background); // first to render
 	all.add(&particles->render_trail);
@@ -340,7 +344,6 @@ void GAMECLIENT::on_init()
 	
 	int before = gfx_memory_usage();
 	font_set_load(&default_font, "fonts/default_font%d.tfnt", "fonts/default_font%d.png", "fonts/default_font%d_b.png", "data/fonts/font.ttf", 14, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 36);
-	dbg_msg("font", "gfx memory used for font textures: %d", gfx_memory_usage()-before);
 	
 	gfx_text_set_default_font(&default_font);
 
@@ -737,7 +740,6 @@ void GAMECLIENT::on_message(int msgtype)
 	void *rawmsg = netmsg_secure_unpack(msgtype);
 	if(!rawmsg)
 	{
-		dbg_msg("client", "dropped weird message '%s' (%d), failed on '%s'", netmsg_get_name(msgtype), msgtype, netmsg_failed_on());
 		return;
 	}
 
@@ -1140,7 +1142,6 @@ void GAMECLIENT::on_predict()
 
 		if(mem_comp(&before, &now, sizeof(NETOBJ_CHARACTER_CORE)) != 0)
 		{
-			dbg_msg("client", "prediction error");
 			for(unsigned i = 0; i < sizeof(NETOBJ_CHARACTER_CORE)/sizeof(int); i++)
 				if(((int *)&before)[i] != ((int *)&now)[i])
 				{

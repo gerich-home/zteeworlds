@@ -31,7 +31,7 @@ void MENUS::render_game(RECT main_view)
 	
 	ui_vsplit_r(&main_view, 120.0f, &main_view, &button);
 	static int disconnect_button = 0;
-	if(ui_do_button(&disconnect_button, "Disconnect", 0, &button, ui_draw_menu_button, 0))
+	if(ui_do_button(&disconnect_button, _t("Disconnect"), 0, &button, ui_draw_menu_button, 0))
 		client_disconnect();
 
 	if(gameclient.snap.local_info && gameclient.snap.gameobj)
@@ -39,7 +39,7 @@ void MENUS::render_game(RECT main_view)
 		ui_vsplit_r(&main_view, 10.0f, &main_view, &button);
 		ui_vsplit_r(&main_view, 130.0f, &main_view, &button);
 		static int record_button = 0;
-		if(ui_do_button(&record_button, demorec_isrecording() ? "Stop record" : "Record", 0, &button, ui_draw_menu_button, 0))
+		if(ui_do_button(&record_button, demorec_isrecording() ? _t("Stop record") : _t("Record"), 0, &button, ui_draw_menu_button, 0))
 		{
 			if (demorec_isrecording())
 				console_execute_line("stoprecord");
@@ -50,7 +50,7 @@ void MENUS::render_game(RECT main_view)
 		ui_vsplit_r(&main_view, 10.0f, &main_view, &button);
 		ui_vsplit_r(&main_view, 130.0f, &main_view, &button);
 		static int screenshot_button = 0;
-		if(ui_do_button(&screenshot_button, "Screenshot", 0, &button, ui_draw_menu_button, 0))
+		if(ui_do_button(&screenshot_button, _t("Screenshot"), 0, &button, ui_draw_menu_button, 0))
 		{
 			gameclient.tick_to_screenshot = client_tick();
 			menu_active = false;
@@ -61,7 +61,7 @@ void MENUS::render_game(RECT main_view)
 			ui_vsplit_l(&main_view, 10.0f, &button, &main_view);
 			ui_vsplit_l(&main_view, 120.0f, &button, &main_view);
 			static int spectate_button = 0;
-			if(ui_do_button(&spectate_button, "Spectate", 0, &button, ui_draw_menu_button, 0))
+			if(ui_do_button(&spectate_button, _t("Spectate"), 0, &button, ui_draw_menu_button, 0))
 			{
 				gameclient.send_switch_team(-1);
 				set_active(false);
@@ -75,7 +75,7 @@ void MENUS::render_game(RECT main_view)
 				ui_vsplit_l(&main_view, 10.0f, &button, &main_view);
 				ui_vsplit_l(&main_view, 120.0f, &button, &main_view);
 				static int spectate_button = 0;
-				if(ui_do_button(&spectate_button, "Join Red", 0, &button, ui_draw_menu_button, 0))
+				if(ui_do_button(&spectate_button, _t("Join Red"), 0, &button, ui_draw_menu_button, 0))
 				{
 					gameclient.send_switch_team(0);
 					set_active(false);
@@ -87,7 +87,7 @@ void MENUS::render_game(RECT main_view)
 				ui_vsplit_l(&main_view, 10.0f, &button, &main_view);
 				ui_vsplit_l(&main_view, 120.0f, &button, &main_view);
 				static int spectate_button = 0;
-				if(ui_do_button(&spectate_button, "Join Blue", 0, &button, ui_draw_menu_button, 0))
+				if(ui_do_button(&spectate_button, _t("Join Blue"), 0, &button, ui_draw_menu_button, 0))
 				{
 					gameclient.send_switch_team(1);
 					set_active(false);
@@ -101,7 +101,7 @@ void MENUS::render_game(RECT main_view)
 				ui_vsplit_l(&main_view, 10.0f, &button, &main_view);
 				ui_vsplit_l(&main_view, 120.0f, &button, &main_view);
 				static int spectate_button = 0;
-				if(ui_do_button(&spectate_button, "Join Game", 0, &button, ui_draw_menu_button, 0))
+				if(ui_do_button(&spectate_button, _t("Join Game"), 0, &button, ui_draw_menu_button, 0))
 				{
 					gameclient.send_switch_team(0);
 					set_active(false);
@@ -127,14 +127,14 @@ void MENUS::render_game(RECT main_view)
 		// do yes button
 		ui_vsplit_l(&votearea, 50.0f, &button, &votearea);
 		static int yes_button = 0;
-		if(ui_do_button(&yes_button, "Yes", 0, &button, ui_draw_menu_button, 0))
+		if(ui_do_button(&yes_button, _t("Yes"), 0, &button, ui_draw_menu_button, 0))
 			gameclient.voting->vote(1);
 
 		// do no button
 		ui_vsplit_l(&votearea, 5.0f, 0, &votearea);
 		ui_vsplit_l(&votearea, 50.0f, &button, &votearea);
 		static int no_button = 0;
-		if(ui_do_button(&no_button, "No", 0, &button, ui_draw_menu_button, 0))
+		if(ui_do_button(&no_button, _t("No"), 0, &button, ui_draw_menu_button, 0))
 			gameclient.voting->vote(-1);
 		
 		// do time left
@@ -158,7 +158,7 @@ void MENUS::render_game(RECT main_view)
 	}		
 	else
 	{
-		ui_do_label(&votearea, "No vote in progress", 18.0f, -1);
+		ui_do_label(&votearea, _t("No vote in progress"), 18.0f, -1);
 	}*/
 }
 
@@ -207,23 +207,23 @@ void MENUS::render_serverinfo(RECT main_view)
 	x = 5.0f;
 	y = 0.0f;
 	
-	gfx_text(0, serverinfo.x+x, serverinfo.y+y, 32, "Server info", 250);
+	gfx_text(0, serverinfo.x+x, serverinfo.y+y, 32, _t("Server info"), 250);
 	y += 32.0f+5.0f;
 	
 	mem_zero(buf, sizeof(buf));
 	str_format(
 		buf,
 		sizeof(buf),
-		"%s\n\n"
+		_t("%s\n\n"
 		"Address: %s\n"
 		"Ping: %d\n"
 		"Version: %s\n"
-		"Password: %s\n",
+		"Password: %s\n"),
 		current_server_info.name,
 		config.ui_server_address,
 		gameclient.snap.local_info->latency,
 		current_server_info.version,
-		current_server_info.flags&1 ? "Yes" : "No"
+		current_server_info.flags&1 ? _t("Yes") : _t("No")
 	);
 	
 	gfx_text(0, serverinfo.x+x, serverinfo.y+y, 20, buf, 250);
@@ -233,7 +233,7 @@ void MENUS::render_serverinfo(RECT main_view)
 		int is_favorite = client_serverbrowse_isfavorite(current_server_info.netaddr);
 		ui_hsplit_b(&serverinfo, 20.0f, &serverinfo, &button);
 		static int add_fav_button = 0;
-		if (ui_do_button(&add_fav_button, "Favorite", is_favorite, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&add_fav_button, _t("Favorite"), is_favorite, &button, ui_draw_checkbox, 0))
 		{
 			if(is_favorite)
 				client_serverbrowse_removefavorite(current_server_info.netaddr);
@@ -251,20 +251,20 @@ void MENUS::render_serverinfo(RECT main_view)
 	x = 5.0f;
 	y = 0.0f;
 	
-	gfx_text(0, gameinfo.x+x, gameinfo.y+y, 32, "Game info", 250);
+	gfx_text(0, gameinfo.x+x, gameinfo.y+y, 32, _t("Game info"), 250);
 	y += 32.0f+5.0f;
 	
 	mem_zero(buf, sizeof(buf));
 	str_format(
 		buf,
 		sizeof(buf),
-		"\n\n"
+		_t("\n\n"
 		"Gametype: %s\n"
 		"Map: %s\n"
 		"Score limit: %d\n"
 		"Time limit: %d\n"
 		"\n"
-		"Players: %d/%d\n",
+		"Players: %d/%d\n"),
 		current_server_info.gametype,
 		current_server_info.map,
 		gameclient.snap.gameobj->score_limit,
@@ -280,7 +280,7 @@ void MENUS::render_serverinfo(RECT main_view)
 	ui_margin(&motd, 5.0f, &motd);
 	y = 0.0f;
 	x = 5.0f;
-	gfx_text(0, motd.x+x, motd.y+y, 32, "MOTD", -1);
+	gfx_text(0, motd.x+x, motd.y+y, 32, _t("MOTD"), -1);
 	y += 32.0f+5.0f;
 	gfx_text(0, motd.x+x, motd.y+y, 16, gameclient.motd->server_motd, (int)motd.w);
 }
@@ -298,7 +298,7 @@ void MENUS::render_servercontrol_server(RECT main_view)
 
 	static int votelist = 0;
 	RECT list = main_view;
-	ui_do_listbox_start(&votelist, &list, 24.0f, "Options", num_options, callvote_selectedoption);
+	ui_do_listbox_start(&votelist, &list, 24.0f, _t("Options"), num_options, callvote_selectedoption);
 	
 	for(VOTING::VOTEOPTION *option = gameclient.voting->first; option; option = option->next)
 	{
@@ -317,7 +317,7 @@ void MENUS::render_servercontrol_kick(RECT main_view)
 	RECT header, footer;
 	ui_hsplit_t(&main_view, 20, &header, &main_view);
 	ui_draw_rect(&header, vec4(1,1,1,0.25f), CORNER_T, 5.0f); 
-	ui_do_label(&header, "Players", 18.0f, 0);
+	ui_do_label(&header, _t("Players"), 18.0f, 0);
 
 	// draw footers	
 	ui_hsplit_b(&main_view, 20, &main_view, &footer);
@@ -363,6 +363,8 @@ void MENUS::render_servercontrol(RECT main_view)
 	RECT button;
 	
 	const char *tabs[] = {"Options", "Kick"};
+	tabs[0] = _t("Options");
+	tabs[1] = _t("Kick");
 	int num_tabs = (int)(sizeof(tabs)/sizeof(*tabs));
 	
 	for(int i = 0; i < num_tabs; i++)
@@ -394,7 +396,7 @@ void MENUS::render_servercontrol(RECT main_view)
 		ui_vsplit_r(&bottom, 120.0f, &bottom, &button);
 		
 		static int callvote_button = 0;
-		if(ui_do_button(&callvote_button, "Call vote", 0, &button, ui_draw_menu_button, 0))
+		if(ui_do_button(&callvote_button, _t("Call vote"), 0, &button, ui_draw_menu_button, 0))
 		{
 			if(control_page == 0)
 			{
@@ -436,7 +438,7 @@ void MENUS::render_ingame_serverbrowser(RECT main_view)
 	ui_vsplit_l(&box, 100.0f, &button, &box);
 	static int internet_button=0;
 	int corners = CORNER_TL;
-	if (ui_do_button(&internet_button, "Internet", active_page==PAGE_INTERNET, &button, ui_draw_menu_tab_button, &corners))
+	if (ui_do_button(&internet_button, _t("Internet"), active_page==PAGE_INTERNET, &button, ui_draw_menu_tab_button, &corners))
 	{
 		if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_INTERNET) client_serverbrowse_refresh(BROWSETYPE_INTERNET);
 		last_servers_page = PAGE_INTERNET;
@@ -447,7 +449,7 @@ void MENUS::render_ingame_serverbrowser(RECT main_view)
 	ui_vsplit_l(&box, 80.0f, &button, &box);
 	static int lan_button=0;
 	corners = 0;
-	if (ui_do_button(&lan_button, "LAN", active_page==PAGE_LAN, &button, ui_draw_menu_tab_button, &corners))
+	if (ui_do_button(&lan_button, _t("LAN"), active_page==PAGE_LAN, &button, ui_draw_menu_tab_button, &corners))
 	{
 		if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_LAN) client_serverbrowse_refresh(BROWSETYPE_LAN);
 		last_servers_page = PAGE_LAN;
@@ -458,7 +460,7 @@ void MENUS::render_ingame_serverbrowser(RECT main_view)
 	ui_vsplit_l(&box, 110.0f, &button, &box);
 	static int favorites_button=0;
 	corners = CORNER_TR;
-	if (ui_do_button(&favorites_button, "Favorites", active_page==PAGE_FAVORITES, &button, ui_draw_menu_tab_button, &corners))
+	if (ui_do_button(&favorites_button, _t("Favorites"), active_page==PAGE_FAVORITES, &button, ui_draw_menu_tab_button, &corners))
 	{
 		if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_FAVORITES) client_serverbrowse_refresh(BROWSETYPE_FAVORITES);
 		last_servers_page = PAGE_FAVORITES;
@@ -468,7 +470,7 @@ void MENUS::render_ingame_serverbrowser(RECT main_view)
 	ui_vsplit_l(&box, 4.0f*5, 0, &box);
 	ui_vsplit_l(&box, 100.0f, &button, &box);
 	static int demos_button=0;
-	if (ui_do_button(&demos_button, "Demos", active_page==PAGE_DEMOS, &button, ui_draw_menu_tab_button, 0))
+	if (ui_do_button(&demos_button, _t("Demos"), active_page==PAGE_DEMOS, &button, ui_draw_menu_tab_button, 0))
 	{
 		demolist_populate();
 		new_page  = PAGE_DEMOS;

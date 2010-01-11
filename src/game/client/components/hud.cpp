@@ -37,11 +37,11 @@ static void mapscreen_to_group(float center_x, float center_y, MAPITEM_GROUP *gr
 void HUD::render_spectate()
 {
 	if(gameclient.freeview)
-		gfx_text(0, 4*gfx_screenaspect(), 4, 8, "Freeview", -1);
+		gfx_text(0, 4*gfx_screenaspect(), 4, 8, _t("Freeview"), -1);
 	else
 	{
 		char buf[96];
-		str_format(buf, sizeof(buf), "Following: %s", gameclient.clients[gameclient.spectate_cid].name);
+		str_format(buf, sizeof(buf), _t("Following: %s"), gameclient.clients[gameclient.spectate_cid].name);
 		gfx_text(0, 4*gfx_screenaspect(), 4, 8, buf, -1);
 	}
 }
@@ -82,7 +82,7 @@ void HUD::render_goals()
 
 	if(gameclient.snap.gameobj->sudden_death)
 	{
-		const char *text = "Sudden Death";
+		const char *text = _t("Sudden Death");
 		float w = gfx_text_width(0, 16, text, -1);
 		gfx_text(0, half-w/2, 2, 16, text, -1);
 	}
@@ -196,8 +196,8 @@ void HUD::render_goals()
 	if(gameclient.snap.gameobj->warmup)
 	{
 		char buf[256];
-		float w = gfx_text_width(0, 24, "Warmup", -1);
-		gfx_text(0, 150*gfx_screenaspect()+-w/2, 50, 24, "Warmup", -1);
+		float w = gfx_text_width(0, 24, _t("Warmup"), -1);
+		gfx_text(0, 150*gfx_screenaspect()+-w/2, 50, 24, _t("Warmup"), -1);
 
 		int seconds = gameclient.snap.gameobj->warmup/SERVER_TICK_SPEED;
 		if(seconds < 5)
@@ -229,7 +229,7 @@ void HUD::render_connectionwarning()
 {
 	if(client_connection_problems())
 	{
-		const char *text = "Connection Problems...";
+		const char *text = _t("Connection Problems...");
 		float w = gfx_text_width(0, 24, text, -1);
 		gfx_text(0, 150*gfx_screenaspect()-w/2, 50, 24, text, -1);
 	}
@@ -243,7 +243,7 @@ void HUD::render_teambalancewarning()
 	{	
 		if (config.cl_warning_teambalance && abs(gameclient.snap.team_size[0]-gameclient.snap.team_size[1]) >= 2)
 		{
-			const char *text = "Please balance teams!";
+			const char *text = _t("Please balance teams!");
 			if(flash)
 				gfx_text_color(1,1,0.5f,1);
 			else
@@ -271,7 +271,7 @@ void HUD::render_voting()
 	char buf[512];
 	gfx_text(0x0, 5, 60, 6, gameclient.voting->vote_description(), -1);
 
-	str_format(buf, sizeof(buf), "%ds left", gameclient.voting->seconds_left());
+	str_format(buf, sizeof(buf), _t("%ds left"), gameclient.voting->seconds_left());
 	float tw = gfx_text_width(0x0, 6, buf, -1);
 	gfx_text(0x0, 5+100-tw, 60, 6, buf, -1);
 	
@@ -281,11 +281,11 @@ void HUD::render_voting()
 	
 	const char *yes_key = gameclient.binds->get_key("vote yes");
 	const char *no_key = gameclient.binds->get_key("vote no");
-	str_format(buf, sizeof(buf), "%s - Vote Yes", yes_key);
+	str_format(buf, sizeof(buf), _t("%s - Vote Yes"), yes_key);
 	base.y += base.h+1;
 	ui_do_label(&base, buf, 6.0f, -1);
 
-	str_format(buf, sizeof(buf), "Vote No - %s", no_key);
+	str_format(buf, sizeof(buf), _t("Vote No - %s"), no_key);
 	ui_do_label(&base, buf, 6.0f, 1);
 }
 

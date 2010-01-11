@@ -141,7 +141,7 @@ void FASTMENU::list()
 	for (int i = 0; i < commands.size(); i++)
 	{
 		if (!commands[i] || !commands[i]->title || !commands[i]->command)
-			dbg_msg("fastmenu", "#%d. error", i + 1);
+			dbg_msg("fastmenu", "#%d. %s", i + 1, _t("error"));
 		else
 			dbg_msg("fastmenu", "#%d. %s => \"%s\"", i + 1, commands[i]->title, commands[i]->command);
 	}

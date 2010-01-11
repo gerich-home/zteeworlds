@@ -65,7 +65,7 @@ void CHAT::con_chat(void *result, void *user_data)
 	else if(strcmp(mode, "team") == 0)
 		((CHAT*)user_data)->enable_mode(1);
 	else
-		dbg_msg("console", "expected all or team as mode");
+		dbg_msg("console", _t("expected all or team as mode"));
 }
 
 static int _lua_say(lua_State * L)
@@ -102,7 +102,7 @@ static int _lua_chat(lua_State * L)
 		else if(strcmp(mode, "team") == 0)
 			gameclient.chat->enable_mode(1);
 		else
-			dbg_msg("console", "expected all or team as mode");		
+			dbg_msg("console", _t("expected all or team as mode"));		
 	}
 	return 0;
 }

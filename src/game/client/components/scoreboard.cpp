@@ -62,21 +62,21 @@ void SCOREBOARD::render_goals(float x, float y, float w)
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->score_limit)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Score Limit: %d", gameclient.snap.gameobj->score_limit);
+		str_format(buf, sizeof(buf), _t("Score Limit: %d"), gameclient.snap.gameobj->score_limit);
 		gfx_text(0, x+20.0f, y, 22.0f, buf, -1);
 		tw += gfx_text_width(0, 22.0f, buf, -1);
 	}
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->time_limit)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Time Limit: %d min", gameclient.snap.gameobj->time_limit);
+		str_format(buf, sizeof(buf), _t("Time Limit: %d min"), gameclient.snap.gameobj->time_limit);
 		gfx_text(0, x+220.0f, y, 22.0f, buf, -1);
 		tw += gfx_text_width(0, 22.0f, buf, -1);
 	}
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->round_num && gameclient.snap.gameobj->round_current)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Round %d/%d", gameclient.snap.gameobj->round_current, gameclient.snap.gameobj->round_num);
+		str_format(buf, sizeof(buf), _t("Round %d/%d"), gameclient.snap.gameobj->round_current, gameclient.snap.gameobj->round_num);
 		gfx_text(0, x+450.0f, y, 22.0f, buf, -1);
 		
 	/*[48c3fd4c][game/scoreboard]: timelimit x:219.428558
@@ -90,7 +90,7 @@ void SCOREBOARD::render_spectators(float x, float y, float w)
 	int count = 0;
 	float h = 120.0f;
 	
-	str_copy(buffer, "Spectators: ", sizeof(buffer));
+	str_copy(buffer, _t("Spectators: "), sizeof(buffer));
 
 	gfx_blend_normal();
 	gfx_texture_set(-1);
@@ -136,9 +136,9 @@ void SCOREBOARD::render_scoreboard(float x, float y, float w, int team, const ch
 	if(!title)
 	{
 		if(gameclient.snap.gameobj->game_over)
-			title = "Game Over";
+			title = _t("Game Over");
 		else
-			title = "Score Board";
+			title = _t("Score Board");
 	}
 
 	float tw = gfx_text_width(0, 48, title, -1);
@@ -197,9 +197,9 @@ void SCOREBOARD::render_scoreboard(float x, float y, float w, int team, const ch
 	}
 
 	// render headlines
-	gfx_text(0, x+10, y, 24.0f, "Score", -1);
-	gfx_text(0, x+125, y, 24.0f, "Name", -1);
-	gfx_text(0, x+w-70, y, 24.0f, "Ping", -1);
+	gfx_text(0, x+10, y, 24.0f, _t("Score"), -1);
+	gfx_text(0, x+125, y, 24.0f, _t("Name"), -1);
+	gfx_text(0, x+w-70, y, 24.0f, _t("Ping"), -1);
 	y += 29.0f;
 
 	float font_size = 35.0f;
@@ -365,7 +365,7 @@ void SCOREBOARD::render_new()
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->score_limit)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Score limit: %d", gameclient.snap.gameobj->score_limit);
+		str_format(buf, sizeof(buf), _t("Score limit: %d"), gameclient.snap.gameobj->score_limit);
 		ui_do_label(&footer, buf, footer.h * 0.8f, -1);
 	}
 
@@ -374,7 +374,7 @@ void SCOREBOARD::render_new()
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->time_limit)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Time limit: %d", gameclient.snap.gameobj->time_limit);
+		str_format(buf, sizeof(buf), _t("Time limit: %d"), gameclient.snap.gameobj->time_limit);
 		ui_do_label(&footer, buf, footer.h * 0.8f, -1);
 	}
 
@@ -383,30 +383,30 @@ void SCOREBOARD::render_new()
 	if(gameclient.snap.gameobj && gameclient.snap.gameobj->round_num && gameclient.snap.gameobj->round_current)
 	{
 		char buf[64];
-		str_format(buf, sizeof(buf), "Round: %d/%d", gameclient.snap.gameobj->round_current, gameclient.snap.gameobj->round_num);
+		str_format(buf, sizeof(buf), _t("Round: %d/%d"), gameclient.snap.gameobj->round_current, gameclient.snap.gameobj->round_num);
 		ui_do_label(&footer, buf, footer.h * 0.8f, -1);
 	}
 
 	float header_width = header.w;
 
 	ui_vsplit_l(&header, 50.0f, 0, &header);
-	ui_do_label(&header, "Name", header.h * 0.8f, -1);
+	ui_do_label(&header, _t("Name"), header.h * 0.8f, -1);
 
 
 	ui_vsplit_l(&header, 330.0f, 0, &header);
 
 	{
 		RECT line_t = header;
-		line_t.x += abs(125.0f - gfx_text_width(0, header.h * 0.8f, "Score", -1)) / 2.0f;
-		ui_do_label(&line_t, "Score", header.h * 0.8f, -1);
+		line_t.x += abs(125.0f - gfx_text_width(0, header.h * 0.8f, _t("Score"), -1)) / 2.0f;
+		ui_do_label(&line_t, _t("Score"), header.h * 0.8f, -1);
 	}
 
 	ui_vsplit_l(&header, 125.0f, 0, &header);
 
 	{
 		RECT line_t = header;
-		line_t.x += abs(75.0f - gfx_text_width(0, header.h * 0.8f, "Ping", -1)) / 2.0f;
-		ui_do_label(&line_t, "Ping", header.h * 0.8f, -1);
+		line_t.x += abs(75.0f - gfx_text_width(0, header.h * 0.8f, _t("Ping"), -1)) / 2.0f;
+		ui_do_label(&line_t, _t("Ping"), header.h * 0.8f, -1);
 	}
 
 	ui_vsplit_l(&header, 75.0f, 0, &header);
@@ -509,9 +509,9 @@ void SCOREBOARD::render_new()
 				ui_vsplit_l(&line, (header_width / 2) / 5, 0, &line);
 
 				if (team == 0)
-					ui_do_label(&line, "Red", line_height * 0.8f * 2.0f, -1);
+					ui_do_label(&line, _t("Red"), line_height * 0.8f * 2.0f, -1);
 				else if (team == 1)
-					ui_do_label(&line, "Blue", line_height * 0.8f * 2.0f, -1);
+					ui_do_label(&line, _t("Blue"), line_height * 0.8f * 2.0f, -1);
 
 				line.x = x + w - 25.0f;
 				line.w = 500.0f;
@@ -544,7 +544,7 @@ void SCOREBOARD::render_new()
 			{
 				RECT line = main_view;
 				ui_vsplit_l(&line, (header_width / 2) / 5, 0, &line);
-				ui_do_label(&line, "Players", line_height * 0.8f * 2.0f, -1);
+				ui_do_label(&line, _t("Players"), line_height * 0.8f * 2.0f, -1);
 
 				line.x = x + w - 25.0f;
 				line.w = 500.0f;
@@ -573,7 +573,7 @@ void SCOREBOARD::render_new()
 
 			RECT line = main_view;
 			ui_vsplit_l(&line, (header_width / 2) / 5, 0, &line);
-			ui_do_label(&line, "Spectators", line_height * 0.8f * 2.0f, -1);
+			ui_do_label(&line, _t("Spectators"), line_height * 0.8f * 2.0f, -1);
 
 			line.x = x + w - 25.0f;
 			line.w = 500.0f;
@@ -657,7 +657,7 @@ void SCOREBOARD::render_new()
 					RECT line_t = line;
 					
 					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
-						str_format(buf, sizeof(buf), "---");
+						str_format(buf, sizeof(buf), _t("---"));
 					else
 						str_format(buf, sizeof(buf), "%d/%.1f", gameclient.clients[info->cid].stats.total_kills - gameclient.clients[info->cid].stats.total_killed, (float)gameclient.clients[info->cid].stats.total_kills / (float)(gameclient.clients[info->cid].stats.total_killed == 0 ? 1 : gameclient.clients[info->cid].stats.total_killed));
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
@@ -668,7 +668,7 @@ void SCOREBOARD::render_new()
 				{
 					RECT line_t = line;
 					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
-						str_format(buf, sizeof(buf), "---");
+						str_format(buf, sizeof(buf), _t("---"));
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.total_kills, gameclient.clients[info->cid].stats.total_killed);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
@@ -682,7 +682,7 @@ void SCOREBOARD::render_new()
 					if (!active_weapons[i]) continue;
 					RECT line_t = line;
 					if (gameclient.clients[info->cid].stats.kills[i] == 0 && gameclient.clients[info->cid].stats.killed[i] == 0)
-						str_format(buf, sizeof(buf), "---");
+						str_format(buf, sizeof(buf), _t("---"));
 					else
 						str_format(buf, sizeof(buf), "%d/%d", gameclient.clients[info->cid].stats.kills[i], gameclient.clients[info->cid].stats.killed[i]);
 					line_t.x += abs(spacing - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
@@ -695,7 +695,7 @@ void SCOREBOARD::render_new()
 				{
 					RECT line_t = line;
 					if (gameclient.clients[info->cid].stats.flag_carried == 0 && gameclient.clients[info->cid].stats.flag_lost == 0 && gameclient.clients[info->cid].stats.flag_killed == 0)
-						str_format(buf, sizeof(buf), "---");
+						str_format(buf, sizeof(buf), _t("---"));
 					else
 						str_format(buf, sizeof(buf), "%d/%d/%d", gameclient.clients[info->cid].stats.flag_carried, gameclient.clients[info->cid].stats.flag_killed, gameclient.clients[info->cid].stats.flag_lost);
 					line_t.x += abs(spacing * 2.0f - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
@@ -756,18 +756,18 @@ void SCOREBOARD::on_render()
 			
 		if(gameclient.snap.gameobj && gameclient.snap.gameobj->game_over)
 		{
-			const char *text = "DRAW!";
+			const char *text = _t("DRAW!");
 			if(gameclient.snap.gameobj->teamscore_red > gameclient.snap.gameobj->teamscore_blue)
-				text = "Red Team Wins!";
+				text = _t("Red Team Wins!");
 			else if(gameclient.snap.gameobj->teamscore_blue > gameclient.snap.gameobj->teamscore_red)
-				text = "Blue Team Wins!";
+				text = _t("Blue Team Wins!");
 				
 			float w = gfx_text_width(0, 92.0f, text, -1);
 			gfx_text(0, width/2-w/2, 45, 92.0f, text, -1);
 		}
 		
-		render_scoreboard(width/2-w-20, 150.0f, w, 0, "Red Team");
-		render_scoreboard(width/2 + 20, 150.0f, w, 1, "Blue Team");
+		render_scoreboard(width/2-w-20, 150.0f, w, 0, _t("Red Team"));
+		render_scoreboard(width/2 + 20, 150.0f, w, 1, _t("Blue Team"));
 	}
 
 	render_goals(width/2-w/2, 150+750+25, w);

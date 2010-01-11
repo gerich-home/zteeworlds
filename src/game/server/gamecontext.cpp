@@ -326,7 +326,7 @@ void GAMECONTEXT::tick()
 		// abort the kick-vote on player-leave
 		if(vote_closetime == -1)
 		{
-			send_chat(-1, GAMECONTEXT::CHAT_ALL, "Vote aborted");
+			send_chat(-1, GAMECONTEXT::CHAT_ALL, _t("Vote aborted"));
 			end_vote();
 		}
 		else
@@ -349,7 +349,7 @@ void GAMECONTEXT::tick()
 			{
 				console_execute_line(vote_command);
 				end_vote();
-				send_chat(-1, GAMECONTEXT::CHAT_ALL, "Vote passed");
+				send_chat(-1, GAMECONTEXT::CHAT_ALL, _t("Vote passed"));
 			
 				if(players[vote_creator])
 					players[vote_creator]->last_votecall = 0;
@@ -357,7 +357,7 @@ void GAMECONTEXT::tick()
 			else if(vote_enforce == VOTE_ENFORCE_NO || time_get() > vote_closetime || no >= total/2+1 || yes+no == total)
 			{
 				end_vote();
-				send_chat(-1, GAMECONTEXT::CHAT_ALL, "Vote failed");
+				send_chat(-1, GAMECONTEXT::CHAT_ALL, _t("Vote failed"));
 			}
 		}
 	}

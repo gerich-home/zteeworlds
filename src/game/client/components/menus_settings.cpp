@@ -17,6 +17,7 @@
 #include "binds.hpp"
 #include "menus.hpp"
 #include "skins.hpp"
+#include "languages.hpp"
 
 MENUS_KEYBINDER MENUS::binder;
 
@@ -54,7 +55,7 @@ void MENUS::render_settings_player(RECT main_view)
 	// render settings
 	{	
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		ui_do_label(&button, "Name:", 14.0, -1);
+		ui_do_label(&button, _t("Name:"), 14.0, -1);
 		ui_vsplit_l(&button, 80.0f, 0, &button);
 		ui_vsplit_l(&button, 180.0f, &button, 0);
 		if(ui_do_edit_box(config.player_name, &button, config.player_name, sizeof(config.player_name), 14.0f))
@@ -62,7 +63,7 @@ void MENUS::render_settings_player(RECT main_view)
 
 		static int dynamic_camera_button = 0;
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if(ui_do_button(&dynamic_camera_button, "Dynamic Camera", config.cl_mouse_deadzone != 0, &button, ui_draw_checkbox, 0))
+		if(ui_do_button(&dynamic_camera_button, _t("Dynamic Camera"), config.cl_mouse_deadzone != 0, &button, ui_draw_checkbox, 0))
 		{
 			
 			if(config.cl_mouse_deadzone)
@@ -80,25 +81,25 @@ void MENUS::render_settings_player(RECT main_view)
 		}
 
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.cl_autoswitch_weapons, "Switch weapon on pickup", config.cl_autoswitch_weapons, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.cl_autoswitch_weapons, _t("Switch weapon on pickup"), config.cl_autoswitch_weapons, &button, ui_draw_checkbox, 0))
 			config.cl_autoswitch_weapons ^= 1;
 			
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.cl_nameplates, "Show name plates", config.cl_nameplates, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.cl_nameplates, _t("Show name plates"), config.cl_nameplates, &button, ui_draw_checkbox, 0))
 			config.cl_nameplates ^= 1;
 
 		//if(config.cl_nameplates)
 		{
 			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 			ui_vsplit_l(&button, 15.0f, 0, &button);
-			if (ui_do_button(&config.cl_nameplates_always, "Always show name plates", config.cl_nameplates_always, &button, ui_draw_checkbox, 0))
+			if (ui_do_button(&config.cl_nameplates_always, _t("Always show name plates"), config.cl_nameplates_always, &button, ui_draw_checkbox, 0))
 				config.cl_nameplates_always ^= 1;
 		}
 			
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.player_color_body, "Custom colors", config.player_use_custom_color, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.player_color_body, _t("Custom colors"), config.player_use_custom_color, &button, ui_draw_checkbox, 0))
 		{
 			config.player_use_custom_color = config.player_use_custom_color?0:1;
 			need_sendinfo = true;
@@ -111,7 +112,13 @@ void MENUS::render_settings_player(RECT main_view)
 			colors[1] = &config.player_color_feet;
 			
 			const char *parts[] = {"Body", "Feet"};
+			parts[0] = _t("Body");
+			parts[1] = _t("Feet");
+			
 			const char *labels[] = {"Hue", "Sat.", "Lht."};
+			labels[0] = _t("Hue");
+			labels[1] = _t("Sat.");
+			labels[2] = _t("Lht.");
 			static int color_slider[2][3] = {{0}};
 			//static float v[2][3] = {{0, 0.5f, 0.25f}, {0, 0.5f, 0.25f}};
 				
@@ -152,7 +159,7 @@ void MENUS::render_settings_player(RECT main_view)
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.cl_default_skin_only, "Default skin only", config.cl_default_skin_only, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.cl_default_skin_only, _t("Default skin only"), config.cl_default_skin_only, &button, ui_draw_checkbox, 0))
 		{
 			config.cl_default_skin_only = config.cl_default_skin_only?0:1;
 			if (!gameclient.skins->all_skins_loaded)
@@ -160,25 +167,90 @@ void MENUS::render_settings_player(RECT main_view)
 		}
 		
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.zpack2_compatible_cyrillic, "Z-Team Pack 2 compatible cyrillic", config.zpack2_compatible_cyrillic, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.zpack2_compatible_cyrillic, _t("Z-Team Pack 2 compatible cyrillic"), config.zpack2_compatible_cyrillic, &button, ui_draw_checkbox, 0))
 			config.zpack2_compatible_cyrillic ^= 1;
 			
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.cl_autorecord, "Auto demo recording", config.cl_autorecord, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.cl_autorecord, _t("Auto demo recording"), config.cl_autorecord, &button, ui_draw_checkbox, 0))
 		{
 			config.cl_autorecord = config.cl_autorecord?0:1;
 		}
 
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.cl_gameover_screenshot, "Make screenshot after game over", config.cl_gameover_screenshot, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.cl_gameover_screenshot, _t("Make screenshot after game over"), config.cl_gameover_screenshot, &button, ui_draw_checkbox, 0))
 		{
 			config.cl_gameover_screenshot = config.cl_gameover_screenshot?0:1;
 		}
 		
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.cl_new_scoreboard, "New detailed scoreboard", config.cl_new_scoreboard, &button, ui_draw_checkbox, 0))
+		if (ui_do_button(&config.cl_new_scoreboard, _t("New detailed scoreboard"), config.cl_new_scoreboard, &button, ui_draw_checkbox, 0))
 		{
 			config.cl_new_scoreboard = config.cl_new_scoreboard?0:1;
+		}
+		
+		{
+			RECT langlist = main_view;
+			ui_vmargin(&langlist, 5.0f, &langlist);
+			
+			RECT header, footer;
+			ui_hsplit_t(&langlist, 20, &button, &langlist);
+			
+			// draw header
+			ui_hsplit_t(&langlist, 20, &header, &langlist);
+			ui_draw_rect(&header, vec4(1,1,1,0.25f), CORNER_T, 5.0f); 
+			ui_do_label(&header, _t("Language"), 14.0f, 0);
+			
+			char buf[1024];
+
+			// draw footers	
+			ui_hsplit_b(&langlist, 20, &langlist, &footer);
+			buf[0] = 0;
+			for (int i = 0; i < gameclient.languages->languages.size(); i++)
+				if (str_comp_nocase(config.language, (const char *)gameclient.languages->languages[i]->filename) == 0)
+				{
+					str_format(buf, sizeof(buf), _t("Current: %s"), gameclient.languages->languages[i]->name);
+					break;
+				}
+			if (!buf[0])
+				str_format(buf, sizeof(buf), _t("Current: %s"), "---");
+			ui_draw_rect(&footer, vec4(1,1,1,0.25f), CORNER_B, 5.0f); 
+			ui_vsplit_l(&footer, 10.0f, 0, &footer);
+			ui_do_label(&footer, buf, 14.0f, -1);
+						
+			ui_draw_rect(&langlist, vec4(0,0,0,0.15f), 0, 0);
+
+			RECT scroll;
+			ui_vsplit_r(&langlist, 15, &langlist, &scroll);
+
+			RECT list = langlist;
+			ui_hsplit_t(&list, 20, &button, &list);
+			
+			int num = (int)(langlist.h/button.h);
+			static float scrollvalue = 0;
+			static int scrollbar = 0;
+			ui_hmargin(&scroll, 5.0f, &scroll);
+			scrollvalue = ui_do_scrollbar_v(&scrollbar, &scroll, scrollvalue);
+
+			int num_langs = gameclient.languages->languages.size();
+			int start = (int)((num_langs-num)*scrollvalue);
+			if(start < 0)
+				start = 0;
+				
+			for(int i = start; i < start+num && i < num_langs; i++)
+			{					
+				int selected = 0;
+				selected = str_comp_nocase(config.language, (const char *)gameclient.languages->languages[i]->filename) == 0;
+				
+				ui_do_label(&button, (const char *)gameclient.languages->languages[i]->name, 14.0f, 0);
+				
+				if(ui_do_button(gameclient.languages->languages[i], "", selected, &button, ui_draw_list_row, 0))
+				{
+					mem_copy(config.language, (const char *)gameclient.languages->languages[i]->filename, sizeof(config.language));
+					lang_load(config.language);
+				}
+					
+				ui_hsplit_t(&list, 20, &button, &list);
+			}
 		}
 	}
 		
@@ -186,7 +258,7 @@ void MENUS::render_settings_player(RECT main_view)
 	RECT header, footer;
 	ui_hsplit_t(&skinselection, 20, &header, &skinselection);
 	ui_draw_rect(&header, vec4(1,1,1,0.25f), CORNER_T, 5.0f); 
-	ui_do_label(&header, "Skins", 18.0f, 0);
+	ui_do_label(&header, _t("Skins"), 18.0f, 0);
 
 	// draw footers	
 	ui_hsplit_b(&skinselection, 20, &skinselection, &footer);
@@ -322,7 +394,7 @@ void MENUS::ui_do_getbuttons(int start, int stop, RECT view)
 		ui_hsplit_t(&view, 20.0f, &button, &view);
 		ui_vsplit_l(&button, 130.0f, &label, &button);
 	
-		ui_do_label(&label, key.name, 14.0f, -1);
+		ui_do_label(&label, _t(key.name), 14.0f, -1);
 		int oldid = key.keyid;
 		int newid = ui_do_key_reader((void *)keys[i].name, &button, oldid);
 		if(newid != oldid)
@@ -363,7 +435,7 @@ void MENUS::render_settings_controls(RECT main_view)
 		ui_draw_rect(&movement_settings, vec4(1,1,1,0.25f), CORNER_ALL, 10.0f);
 		ui_margin(&movement_settings, 10.0f, &movement_settings);
 		
-		gfx_text(0, movement_settings.x, movement_settings.y, 14, "Movement", -1);
+		gfx_text(0, movement_settings.x, movement_settings.y, 14, _t("Movement"), -1);
 		
 		ui_hsplit_t(&movement_settings, 14.0f+5.0f+10.0f, 0, &movement_settings);
 		
@@ -371,7 +443,7 @@ void MENUS::render_settings_controls(RECT main_view)
 			RECT button, label;
 			ui_hsplit_t(&movement_settings, 20.0f, &button, &movement_settings);
 			ui_vsplit_l(&button, 130.0f, &label, &button);
-			ui_do_label(&label, "Mouse sens.", 14.0f, -1);
+			ui_do_label(&label, _t("Mouse sens."), 14.0f, -1);
 			ui_hmargin(&button, 2.0f, &button);
 			config.inp_mousesens = (int)(ui_do_scrollbar_h(&config.inp_mousesens, &button, (config.inp_mousesens-5)/500.0f)*500.0f)+5;
 			//*key.key = ui_do_key_reader(key.key, &button, *key.key);
@@ -389,7 +461,7 @@ void MENUS::render_settings_controls(RECT main_view)
 		ui_draw_rect(&weapon_settings, vec4(1,1,1,0.25f), CORNER_ALL, 10.0f);
 		ui_margin(&weapon_settings, 10.0f, &weapon_settings);
 
-		gfx_text(0, weapon_settings.x, weapon_settings.y, 14, "Weapon", -1);
+		gfx_text(0, weapon_settings.x, weapon_settings.y, 14, _t("Weapon"), -1);
 		
 		ui_hsplit_t(&weapon_settings, 14.0f+5.0f+10.0f, 0, &weapon_settings);
 		ui_do_getbuttons(5, 12, weapon_settings);
@@ -402,7 +474,7 @@ void MENUS::render_settings_controls(RECT main_view)
 		ui_draw_rect(&voting_settings, vec4(1,1,1,0.25f), CORNER_ALL, 10.0f);
 		ui_margin(&voting_settings, 10.0f, &voting_settings);
 	
-		gfx_text(0, voting_settings.x, voting_settings.y, 14, "Voting", -1);
+		gfx_text(0, voting_settings.x, voting_settings.y, 14, _t("Voting"), -1);
 		
 		ui_hsplit_t(&voting_settings, 14.0f+5.0f+10.0f, 0, &voting_settings);
 		ui_do_getbuttons(12, 14, voting_settings);
@@ -415,7 +487,7 @@ void MENUS::render_settings_controls(RECT main_view)
 		ui_draw_rect(&chat_settings, vec4(1,1,1,0.25f), CORNER_ALL, 10.0f);
 		ui_margin(&chat_settings, 10.0f, &chat_settings);
 	
-		gfx_text(0, chat_settings.x, chat_settings.y, 14, "Chat", -1);
+		gfx_text(0, chat_settings.x, chat_settings.y, 14, _t("Chat"), -1);
 		
 		ui_hsplit_t(&chat_settings, 14.0f+5.0f+10.0f, 0, &chat_settings);
 		ui_do_getbuttons(14, 16, chat_settings);
@@ -428,7 +500,7 @@ void MENUS::render_settings_controls(RECT main_view)
 		ui_draw_rect(&misc_settings, vec4(1,1,1,0.25f), CORNER_ALL, 10.0f);
 		ui_margin(&misc_settings, 10.0f, &misc_settings);
 	
-		gfx_text(0, misc_settings.x, misc_settings.y, 14, "Miscellaneous", -1);
+		gfx_text(0, misc_settings.x, misc_settings.y, 14, _t("Miscellaneous"), -1);
 		
 		ui_hsplit_t(&misc_settings, 14.0f+5.0f+10.0f, 0, &misc_settings);
 		ui_do_getbuttons(16, 22, misc_settings);
@@ -437,7 +509,7 @@ void MENUS::render_settings_controls(RECT main_view)
 	// defaults
 	ui_hsplit_t(&reset_button, 10.0f, 0, &reset_button);
 	static int default_button = 0;
-	if (ui_do_button((void*)&default_button, "Reset to defaults", 0, &reset_button, ui_draw_menu_button, 0))
+	if (ui_do_button((void*)&default_button, _t("Reset to defaults"), 0, &reset_button, ui_draw_menu_button, 0))
 		gameclient.binds->set_defaults();
 }
 
@@ -459,7 +531,7 @@ void MENUS::render_settings_graphics(RECT main_view)
 	// draw allmodes switch
 	RECT header, footer;
 	ui_hsplit_t(&modelist, 20, &button, &modelist);
-	if (ui_do_button(&config.gfx_display_all_modes, "Show only supported", config.gfx_display_all_modes^1, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_display_all_modes, _t("Show only supported"), config.gfx_display_all_modes^1, &button, ui_draw_checkbox, 0))
 	{
 		config.gfx_display_all_modes ^= 1;
 		num_modes = gfx_get_video_modes(modes, MAX_RESOLUTIONS);
@@ -468,11 +540,11 @@ void MENUS::render_settings_graphics(RECT main_view)
 	// draw header
 	ui_hsplit_t(&modelist, 20, &header, &modelist);
 	ui_draw_rect(&header, vec4(1,1,1,0.25f), CORNER_T, 5.0f); 
-	ui_do_label(&header, "Display Modes", 14.0f, 0);
+	ui_do_label(&header, _t("Display Modes"), 14.0f, 0);
 
 	// draw footers	
 	ui_hsplit_b(&modelist, 20, &modelist, &footer);
-	str_format(buf, sizeof(buf), "Current: %dx%d %d bit", config.gfx_screen_width, config.gfx_screen_height, config.gfx_color_depth);
+	str_format(buf, sizeof(buf), _t("Current: %dx%d %d bit"), config.gfx_screen_width, config.gfx_screen_height, config.gfx_color_depth);
 	ui_draw_rect(&footer, vec4(1,1,1,0.25f), CORNER_B, 5.0f); 
 	ui_vsplit_l(&footer, 10.0f, 0, &footer);
 	ui_do_label(&footer, buf, 14.0f, -1);
@@ -512,7 +584,7 @@ void MENUS::render_settings_graphics(RECT main_view)
 			selected = 1;
 		}
 		
-		str_format(buf, sizeof(buf), "  %dx%d %d bit", modes[i].width, modes[i].height, depth);
+		str_format(buf, sizeof(buf), _t("  %dx%d %d bit"), modes[i].width, modes[i].height, depth);
 		if(ui_do_button(&modes[i], buf, selected, &button, ui_draw_list_row, 0))
 		{
 			config.gfx_color_depth = depth;
@@ -528,21 +600,21 @@ void MENUS::render_settings_graphics(RECT main_view)
 	
 	// switches
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_fullscreen, "Fullscreen", config.gfx_fullscreen, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_fullscreen, _t("Fullscreen"), config.gfx_fullscreen, &button, ui_draw_checkbox, 0))
 	{
 		config.gfx_fullscreen ^= 1;
 		need_restart = true;
 	}
 
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_vsync, "V-Sync", config.gfx_vsync, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_vsync, _t("V-Sync"), config.gfx_vsync, &button, ui_draw_checkbox, 0))
 	{
 		config.gfx_vsync ^= 1;
 		need_restart = true;
 	}
 
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_fsaa_samples, "FSAA samples", config.gfx_fsaa_samples, &button, ui_draw_checkbox_number, 0))
+	if (ui_do_button(&config.gfx_fsaa_samples, _t("FSAA samples"), config.gfx_fsaa_samples, &button, ui_draw_checkbox_number, 0))
 	{
 		config.gfx_fsaa_samples = (config.gfx_fsaa_samples+1)%17;
 		need_restart = true;
@@ -550,21 +622,21 @@ void MENUS::render_settings_graphics(RECT main_view)
 		
 	ui_hsplit_t(&main_view, 40.0f, &button, &main_view);
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_texture_quality, "Quality Textures", config.gfx_texture_quality, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_texture_quality, _t("Quality Textures"), config.gfx_texture_quality, &button, ui_draw_checkbox, 0))
 	{
 		config.gfx_texture_quality ^= 1;
 		need_restart = true;
 	}
 
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_texture_compression, "Texture Compression", config.gfx_texture_compression, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_texture_compression, _t("Texture Compression"), config.gfx_texture_compression, &button, ui_draw_checkbox, 0))
 	{
 		config.gfx_texture_compression ^= 1;
 		need_restart = true;
 	}
 
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_high_detail, "High Detail", config.gfx_high_detail, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_high_detail, _t("High Detail"), config.gfx_high_detail, &button, ui_draw_checkbox, 0))
 		config.gfx_high_detail ^= 1;
 
 	//
@@ -573,9 +645,13 @@ void MENUS::render_settings_graphics(RECT main_view)
 	ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
 	ui_hsplit_t(&main_view, 20.0f, &text, &main_view);
 	//ui_vsplit_l(&text, 15.0f, 0, &text);
-	ui_do_label(&text, "UI Color", 14.0f, -1);
+	ui_do_label(&text, _t("UI Color"), 14.0f, -1);
 	
 	const char *labels[] = {"Hue", "Sat.", "Lht.", "Alpha"};
+	labels[0] = _t("Hue");
+	labels[1] = _t("Sat.");
+	labels[2] = _t("Lht.");
+	labels[3] = _t("Alpha");
 	int *color_slider[4] = {&config.ui_color_hue, &config.ui_color_sat, &config.ui_color_lht, &config.ui_color_alpha};
 	for(int s = 0; s < 4; s++)
 	{
@@ -594,35 +670,35 @@ void MENUS::render_settings_graphics(RECT main_view)
 	
 	ui_hsplit_t(&main_view, 40.0f, &button, &main_view);
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.ui_new_background, "New background", config.ui_new_background, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.ui_new_background, _t("New background"), config.ui_new_background, &button, ui_draw_checkbox, 0))
 		config.ui_new_background ^= 1;
 	if (config.ui_new_background)
 	{
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.ui_new_background_type, "New background type", config.ui_new_background_type + 1, &button, ui_draw_checkbox_number, 0))
+		if (ui_do_button(&config.ui_new_background_type, _t("New background type"), config.ui_new_background_type + 1, &button, ui_draw_checkbox_number, 0))
 		{
 			config.ui_new_background_type = (config.ui_new_background_type + 1)%4;
 		}
 	}
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_freetype_font, "Use FreeType for displaying text", config.gfx_freetype_font, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_freetype_font, _t("Use FreeType for displaying text"), config.gfx_freetype_font, &button, ui_draw_checkbox, 0))
 		config.gfx_freetype_font ^= 1;
 		
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_smileys, "Smileys", config.gfx_smileys, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_smileys, _t("Smileys"), config.gfx_smileys, &button, ui_draw_checkbox, 0))
 		config.gfx_smileys ^= 1;
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_text_shadows, "Shadows for text", config.gfx_text_shadows, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_text_shadows, _t("Shadows for text"), config.gfx_text_shadows, &button, ui_draw_checkbox, 0))
 		config.gfx_text_shadows ^= 1;
 		
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_shadows, "Shadows", config.gfx_shadows, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_shadows, _t("Shadows"), config.gfx_shadows, &button, ui_draw_checkbox, 0))
 		config.gfx_shadows ^= 1;
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_outlines, "Outlines", config.gfx_outlines, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.gfx_outlines, _t("Outlines"), config.gfx_outlines, &button, ui_draw_checkbox, 0))
 		config.gfx_outlines ^= 1;
 }
 
@@ -632,7 +708,7 @@ void MENUS::render_settings_sound(RECT main_view)
 	ui_vsplit_l(&main_view, 300.0f, &main_view, 0);
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.snd_enable, "Use Sounds", config.snd_enable, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.snd_enable, _t("Use Sounds"), config.snd_enable, &button, ui_draw_checkbox, 0))
 	{
 		config.snd_enable ^= 1;
 		need_restart = true;
@@ -642,7 +718,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		return;
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.snd_nonactive_mute, "Mute when not active", config.snd_nonactive_mute, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.snd_nonactive_mute, _t("Mute when not active"), config.snd_nonactive_mute, &button, ui_draw_checkbox, 0))
 		config.snd_nonactive_mute ^= 1;
 		
 	// sample rate box
@@ -650,7 +726,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		char buf[64];
 		str_format(buf, sizeof(buf), "%d", config.snd_rate);
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		ui_do_label(&button, "Sample Rate", 14.0f, -1);
+		ui_do_label(&button, _t("Sample Rate"), 14.0f, -1);
 		ui_vsplit_l(&button, 110.0f, 0, &button);
 		ui_vsplit_l(&button, 180.0f, &button, 0);
 		ui_do_edit_box(&config.snd_rate, &button, buf, sizeof(buf), 14.0f);
@@ -671,7 +747,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		ui_vsplit_l(&button, 110.0f, &label, &button);
 		ui_hmargin(&button, 2.0f, &button);
-		ui_do_label(&label, "Sound Volume", 14.0f, -1);
+		ui_do_label(&label, _t("Sound Volume"), 14.0f, -1);
 		config.snd_volume = (int)(ui_do_scrollbar_h(&config.snd_volume, &button, config.snd_volume/100.0f)*100.0f);
 		ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
 	}
@@ -682,7 +758,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		ui_vsplit_l(&button, 110.0f, &label, &button);
 		ui_hmargin(&button, 2.0f, &button);
-		ui_do_label(&label, "Music Volume", 14.0f, -1);
+		ui_do_label(&label, _t("Music Volume"), 14.0f, -1);
 		config.music_volume = (int)(ui_do_scrollbar_h(&config.music_volume, &button, config.music_volume/100.0f)*100.0f);
 		ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
 	}
@@ -697,7 +773,7 @@ static void menu2_render_settings_network(RECT main_view)
 	
 	{
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		ui_do_label(&button, "Rcon Password", 14.0, -1);
+		ui_do_label(&button, _t("Rcon Password"), 14.0, -1);
 		ui_vsplit_l(&button, 110.0f, 0, &button);
 		ui_vsplit_l(&button, 180.0f, &button, 0);
 		ui_do_edit_box(&config.rcon_password, &button, config.rcon_password, sizeof(config.rcon_password), true);
@@ -720,6 +796,10 @@ void MENUS::render_settings(RECT main_view)
 	RECT button;
 	
 	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound"};
+	tabs[0] = _t("Player");
+	tabs[1] = _t("Controls");
+	tabs[2] = _t("Graphics");
+	tabs[3] = _t("Sound");
 	int num_tabs = (int)(sizeof(tabs)/sizeof(*tabs));
 
 	for(int i = 0; i < num_tabs; i++)
@@ -745,6 +825,6 @@ void MENUS::render_settings(RECT main_view)
 	{
 		RECT restart_warning;
 		ui_hsplit_b(&main_view, 40, &main_view, &restart_warning);
-		ui_do_label(&restart_warning, "You must restart the game for all settings to take effect.", 15.0f, -1, 220);
+		ui_do_label(&restart_warning, _t("You must restart the game for all settings to take effect."), 15.0f, -1, 220);
 	}
 }

@@ -528,7 +528,7 @@ int MENUS::render_menubar(RECT r)
 		{
 			ui_vsplit_l(&box, 90.0f, &button, &box);
 			static int news_button=0;
-			if (ui_do_button(&news_button, "News", active_page==PAGE_NEWS, &button, ui_draw_menu_tab_button, 0))
+			if (ui_do_button(&news_button, _t("News"), active_page==PAGE_NEWS, &button, ui_draw_menu_tab_button, 0))
 				new_page = PAGE_NEWS;
 			ui_vsplit_l(&box, 30.0f, 0, &box); 
 		}
@@ -536,7 +536,7 @@ int MENUS::render_menubar(RECT r)
 		ui_vsplit_l(&box, 100.0f, &button, &box);
 		static int internet_button=0;
 		int corners = CORNER_TL;
-		if (ui_do_button(&internet_button, "Internet", active_page==PAGE_INTERNET, &button, ui_draw_menu_tab_button, &corners))
+		if (ui_do_button(&internet_button, _t("Internet"), active_page==PAGE_INTERNET, &button, ui_draw_menu_tab_button, &corners))
 		{
 			if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_INTERNET) client_serverbrowse_refresh(BROWSETYPE_INTERNET);
 			last_servers_page = PAGE_INTERNET;
@@ -547,7 +547,7 @@ int MENUS::render_menubar(RECT r)
 		ui_vsplit_l(&box, 80.0f, &button, &box);
 		static int lan_button=0;
 		corners = 0;
-		if (ui_do_button(&lan_button, "LAN", active_page==PAGE_LAN, &button, ui_draw_menu_tab_button, &corners))
+		if (ui_do_button(&lan_button, _t("LAN"), active_page==PAGE_LAN, &button, ui_draw_menu_tab_button, &corners))
 		{
 			if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_LAN) client_serverbrowse_refresh(BROWSETYPE_LAN);
 			last_servers_page = PAGE_LAN;
@@ -558,7 +558,7 @@ int MENUS::render_menubar(RECT r)
 		ui_vsplit_l(&box, 110.0f, &button, &box);
 		static int favorites_button=0;
 		corners = CORNER_TR;
-		if (ui_do_button(&favorites_button, "Favorites", active_page==PAGE_FAVORITES, &button, ui_draw_menu_tab_button, &corners))
+		if (ui_do_button(&favorites_button, _t("Favorites"), active_page==PAGE_FAVORITES, &button, ui_draw_menu_tab_button, &corners))
 		{
 			if (prev_page != PAGE_SETTINGS || last_servers_page != PAGE_FAVORITES) client_serverbrowse_refresh(BROWSETYPE_FAVORITES);
 			last_servers_page = PAGE_FAVORITES;
@@ -568,7 +568,7 @@ int MENUS::render_menubar(RECT r)
 		ui_vsplit_l(&box, 4.0f*5, 0, &box);
 		ui_vsplit_l(&box, 100.0f, &button, &box);
 		static int demos_button=0;
-		if (ui_do_button(&demos_button, "Demos", active_page==PAGE_DEMOS, &button, ui_draw_menu_tab_button, 0))
+		if (ui_do_button(&demos_button, _t("Demos"), active_page==PAGE_DEMOS, &button, ui_draw_menu_tab_button, 0))
 		{
 			demolist_populate();
 			new_page  = PAGE_DEMOS;
@@ -579,25 +579,25 @@ int MENUS::render_menubar(RECT r)
 		/* online menus */
 		ui_vsplit_l(&box, 90.0f, &button, &box);
 		static int game_button=0;
-		if (ui_do_button(&game_button, "Game", active_page==PAGE_GAME, &button, ui_draw_menu_tab_button, 0))
+		if (ui_do_button(&game_button, _t("Game"), active_page==PAGE_GAME, &button, ui_draw_menu_tab_button, 0))
 			new_page = PAGE_GAME;
 
 		ui_vsplit_l(&box, 4.0f, 0, &box);
 		ui_vsplit_l(&box, 140.0f, &button, &box);
 		static int server_info_button=0;
-		if (ui_do_button(&server_info_button, "Server Info", active_page==PAGE_SERVER_INFO, &button, ui_draw_menu_tab_button, 0))
+		if (ui_do_button(&server_info_button, _t("Server Info"), active_page==PAGE_SERVER_INFO, &button, ui_draw_menu_tab_button, 0))
 			new_page = PAGE_SERVER_INFO;
 
 		ui_vsplit_l(&box, 4.0f, 0, &box);
 		ui_vsplit_l(&box, 140.0f, &button, &box);
 		static int callvote_button=0;
-		if (ui_do_button(&callvote_button, "Call Vote", active_page==PAGE_CALLVOTE, &button, ui_draw_menu_tab_button, 0))
+		if (ui_do_button(&callvote_button, _t("Call Vote"), active_page==PAGE_CALLVOTE, &button, ui_draw_menu_tab_button, 0))
 			new_page = PAGE_CALLVOTE;
 			
 		ui_vsplit_l(&box, 4.0f*5, 0, &box);
 		ui_vsplit_l(&box, 100.0f, &button, &box);
 		static int ingame_browser_button=0;
-		if (ui_do_button(&ingame_browser_button, "Browser", active_page==PAGE_BROWSER, &button, ui_draw_menu_tab_button, 0))
+		if (ui_do_button(&ingame_browser_button, _t("Browser"), active_page==PAGE_BROWSER, &button, ui_draw_menu_tab_button, 0))
 			new_page = PAGE_BROWSER;
 			
 		ui_vsplit_l(&box, 30.0f, 0, &box);
@@ -606,7 +606,7 @@ int MENUS::render_menubar(RECT r)
 	/*
 	ui_vsplit_r(&box, 110.0f, &box, &button);
 	static int system_button=0;
-	if (ui_do_button(&system_button, "System", config.ui_page==PAGE_SYSTEM, &button, ui_draw_menu_tab_button, 0))
+	if (ui_do_button(&system_button, _t("System"), config.ui_page==PAGE_SYSTEM, &button, ui_draw_menu_tab_button, 0))
 		config.ui_page = PAGE_SYSTEM;
 		
 	ui_vsplit_r(&box, 30.0f, &box, 0);
@@ -614,13 +614,13 @@ int MENUS::render_menubar(RECT r)
 	
 	ui_vsplit_r(&box, 90.0f, &box, &button);
 	static int quit_button=0;
-	if (ui_do_button(&quit_button, "Quit", 0, &button, ui_draw_menu_tab_button, 0))
+	if (ui_do_button(&quit_button, _t("Quit"), 0, &button, ui_draw_menu_tab_button, 0))
 		popup = POPUP_QUIT;
 
 	ui_vsplit_r(&box, 10.0f, &box, &button);
 	ui_vsplit_r(&box, 120.0f, &box, &button);
 	static int settings_button=0;
-	if (ui_do_button(&settings_button, "Settings", active_page==PAGE_SETTINGS, &button, ui_draw_menu_tab_button, 0))
+	if (ui_do_button(&settings_button, _t("Settings"), active_page==PAGE_SETTINGS, &button, ui_draw_menu_tab_button, 0))
 		new_page = PAGE_SETTINGS;
 	
 	if(new_page != -1)
@@ -663,7 +663,7 @@ void MENUS::render_loading(float percent)
 	gfx_quads_end();
 
 
-	const char *caption = "Loading";
+	const char *caption = _t("Loading");
 
 	tw = gfx_text_width(0, 48.0f, caption, -1);
 	RECT r;
@@ -827,25 +827,25 @@ int MENUS::render()
 		}
 		else if(popup == POPUP_CONNECTING)
 		{
-			title = "Connecting to";
+			title = _t("Connecting to");
 			extra_text = config.ui_server_address;  // TODO: query the client about the address
-			button_text = "Abort";
+			button_text = _t("Abort");
 			if(client_mapdownload_totalsize() > 0)
 			{
-				title = "Downloading map";
-				str_format(buf, sizeof(buf), "%d/%d KiB", client_mapdownload_amount()/1024, client_mapdownload_totalsize()/1024);
+				title = _t("Downloading map");
+				str_format(buf, sizeof(buf), _t("%d/%d KiB"), client_mapdownload_amount()/1024, client_mapdownload_totalsize()/1024);
 				extra_text = buf;
 			}
 		}
 		else if(popup == POPUP_DISCONNECTED)
 		{
-			title = "Disconnected";
+			title = _t("Disconnected");
 			extra_text = client_error_string();
-			button_text = "Ok";
+			button_text = _t("Ok");
 			#ifndef CONF_TRUNC
 			if (config.cl_reconnect_time > 0)
 			{
-				str_format(buf, sizeof(buf), "Ok (%d)", reconnection_time - (int)time(0));
+				str_format(buf, sizeof(buf), _t("Ok (%d)"), reconnection_time - (int)time(0));
 				button_text = buf;
 			}
 			#endif
@@ -853,30 +853,30 @@ int MENUS::render()
 		}
 		else if(popup == POPUP_PURE)
 		{
-			title = "Disconnected";
-			extra_text = "The server is running a non-standard tuning on a pure game mode.";
-			button_text = "Ok";
+			title = _t("Disconnected");
+			extra_text = _t("The server is running a non-standard tuning on a pure game mode.");
+			button_text = _t("Ok");
 			extra_align = -1;
 		}
 		else if(popup == POPUP_PASSWORD)
 		{
-			title = "Password Error";
+			title = _t("Password Error");
 			extra_text = client_error_string();
-			button_text = "Try Again";
+			button_text = _t("Try Again");
 		}
 		else if(popup == POPUP_QUIT)
 		{
-			title = "Quit";
-			extra_text = "Are you sure that you want to quit?";
+			title = _t("Quit");
+			extra_text = _t("Are you sure that you want to quit?");
 		}
 		else if(popup == POPUP_FIRST_LAUNCH)
 		{
-			title = "Welcome to Teeworlds";
+			title = _t("Welcome to Teeworlds");
 			extra_text =
-			"As this is the first time you launch the game, please enter your nick name below. "
+			_t("As this is the first time you launch the game, please enter your nick name below. "
 			"It's recommended that you check the settings to adjust them to your liking "
-			"before joining a server.";
-			button_text = "Ok";
+			"before joining a server.");
+			button_text = _t("Ok");
 			extra_align = -1;
 		}
 		
@@ -913,11 +913,11 @@ int MENUS::render()
 			ui_vmargin(&no, 20.0f, &no);
 
 			static int button_abort = 0;
-			if(ui_do_button(&button_abort, "No", 0, &no, ui_draw_menu_button, 0) || escape_pressed)
+			if(ui_do_button(&button_abort, _t("No"), 0, &no, ui_draw_menu_button, 0) || escape_pressed)
 				popup = POPUP_NONE;
 
 			static int button_tryagain = 0;
-			if(ui_do_button(&button_tryagain, "Yes", 0, &yes, ui_draw_menu_button, 0) || enter_pressed)
+			if(ui_do_button(&button_tryagain, _t("Yes"), 0, &yes, ui_draw_menu_button, 0) || enter_pressed)
 				client_quit();
 		}
 		else if(popup == POPUP_PASSWORD)
@@ -934,11 +934,11 @@ int MENUS::render()
 			ui_vmargin(&abort, 20.0f, &abort);
 			
 			static int button_abort = 0;
-			if(ui_do_button(&button_abort, "Abort", 0, &abort, ui_draw_menu_button, 0) || escape_pressed)
+			if(ui_do_button(&button_abort, _t("Abort"), 0, &abort, ui_draw_menu_button, 0) || escape_pressed)
 				popup = POPUP_NONE;
 
 			static int button_tryagain = 0;
-			if(ui_do_button(&button_tryagain, "Try again", 0, &tryagain, ui_draw_menu_button, 0) || enter_pressed)
+			if(ui_do_button(&button_tryagain, _t("Try again"), 0, &tryagain, ui_draw_menu_button, 0) || enter_pressed)
 			{
 				client_connect(config.ui_server_address);
 			}
@@ -950,7 +950,7 @@ int MENUS::render()
 			ui_vsplit_l(&label, 100.0f, 0, &textbox);
 			ui_vsplit_l(&textbox, 20.0f, 0, &textbox);
 			ui_vsplit_r(&textbox, 60.0f, &textbox, 0);
-			ui_do_label(&label, "Password:", 20, -1);
+			ui_do_label(&label, _t("Password:"), 20, -1);
 			ui_do_edit_box(&config.password, &textbox, config.password, sizeof(config.password), 14.0f, true);
 		}
 		else if(popup == POPUP_FIRST_LAUNCH)
@@ -962,7 +962,7 @@ int MENUS::render()
 			ui_vmargin(&part, 80.0f, &part);
 			
 			static int enter_button = 0;
-			if(ui_do_button(&enter_button, "Enter", 0, &part, ui_draw_menu_button, 0) || enter_pressed)
+			if(ui_do_button(&enter_button, _t("Enter"), 0, &part, ui_draw_menu_button, 0) || enter_pressed)
 				popup = POPUP_NONE;
 			
 			ui_hsplit_b(&box, 40.f, &box, &part);
@@ -972,7 +972,7 @@ int MENUS::render()
 			ui_vsplit_l(&label, 100.0f, 0, &textbox);
 			ui_vsplit_l(&textbox, 20.0f, 0, &textbox);
 			ui_vsplit_r(&textbox, 60.0f, &textbox, 0);
-			ui_do_label(&label, "Nickname:", 20, -1);
+			ui_do_label(&label, _t("Nickname:"), 20, -1);
 			ui_do_edit_box(&config.player_name, &textbox, config.player_name, sizeof(config.player_name), 14.0f);
 		}
 		else

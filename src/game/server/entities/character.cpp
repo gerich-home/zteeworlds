@@ -532,7 +532,7 @@ void CHARACTER::tick()
 	if(player->force_balanced)
 	{
 		char buf[128];
-		str_format(buf, sizeof(buf), "You were moved to %s due to team balancing", game.controller->get_team_name(team));
+		str_format(buf, sizeof(buf), _t("You were moved to %s due to team balancing"), game.controller->get_team_name(team));
 		game.send_broadcast(buf, player->client_id);
 		
 		player->force_balanced = false;
@@ -659,7 +659,7 @@ void CHARACTER::die(int killer, int weapon)
 		return;*/
 	int mode_special = game.controller->on_character_death(this, game.players[killer], weapon);
 
-	dbg_msg("game", "kill killer='%d:%s' victim='%d:%s' weapon=%d special=%d",
+	dbg_msg("game", _t("kill killer='%d:%s' victim='%d:%s' weapon=%d special=%d"),
 		killer, server_clientname(killer),
 		player->client_id, server_clientname(player->client_id), weapon, mode_special);
 

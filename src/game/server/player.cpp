@@ -93,10 +93,10 @@ void PLAYER::on_disconnect()
 	//game.controller->on_player_death(&game.players[client_id], 0, -1);
 		
 	char buf[512];
-	str_format(buf, sizeof(buf),  "%s has left the game", server_clientname(client_id));
+	str_format(buf, sizeof(buf),  _t("%s has left the game"), server_clientname(client_id));
 	game.send_chat(-1, GAMECONTEXT::CHAT_ALL, buf);
 
-	dbg_msg("game", "leave player='%d:%s'", client_id, server_clientname(client_id));
+	dbg_msg("game", _t("leave player='%d:%s'"), client_id, server_clientname(client_id));
 }
 
 void PLAYER::on_predicted_input(NETOBJ_PLAYER_INPUT *new_input)
@@ -151,13 +151,13 @@ void PLAYER::set_team(int new_team)
 		return;
 		
 	char buf[512];
-	str_format(buf, sizeof(buf), "%s joined the %s", server_clientname(client_id), game.controller->get_team_name(new_team));
+	str_format(buf, sizeof(buf), _t("%s joined the %s"), server_clientname(client_id), game.controller->get_team_name(new_team));
 	game.send_chat(-1, GAMECONTEXT::CHAT_ALL, buf); 
 	
 	kill_character(WEAPON_GAME);
 	team = new_team;
 	score = 0;
-	dbg_msg("game", "team_join player='%d:%s' team=%d", client_id, server_clientname(client_id), team);
+	dbg_msg("game", _t("team_join player='%d:%s' team=%d"), client_id, server_clientname(client_id), team);
 	
 	game.controller->on_player_info_change(game.players[client_id]);
 }

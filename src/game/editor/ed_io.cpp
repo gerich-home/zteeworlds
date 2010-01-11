@@ -195,11 +195,11 @@ int EDITOR::save(const char *filename)
 
 int MAP::save(const char *filename)
 {
-	dbg_msg("editor", "saving to '%s'...", filename);
+	dbg_msg("editor", _t("saving to '%s'..."), filename);
 	DATAFILE_OUT *df = datafile_create(filename);
 	if(!df)
 	{
-		dbg_msg("editor", "failed to open file '%s'...", filename);
+		dbg_msg("editor", _t("failed to open file '%s'..."), filename);
 		return 0;
 	}
 		
@@ -257,7 +257,7 @@ int MAP::save(const char *filename)
 		{
 			if(group->layers[l]->type == LAYERTYPE_TILES)
 			{
-				dbg_msg("editor", "saving tiles layer");
+				dbg_msg("editor", _t("saving tiles layer"));
 				LAYER_TILES *layer = (LAYER_TILES *)group->layers[l];
 				layer->prepare_for_save();
 				
@@ -286,7 +286,7 @@ int MAP::save(const char *filename)
 			}
 			else if(group->layers[l]->type == LAYERTYPE_QUADS)
 			{
-				dbg_msg("editor", "saving quads layer");
+				dbg_msg("editor", _t("saving quads layer"));
 				LAYER_QUADS *layer = (LAYER_QUADS *)group->layers[l];
 				if(layer->quads.len())
 				{
@@ -344,7 +344,7 @@ int MAP::save(const char *filename)
 	
 	// finish the data file
 	datafile_finish(df);
-	dbg_msg("editor", "done");
+	dbg_msg("editor", _t("done"));
 	
 	// send rcon.. if we can
 	if(client_rcon_authed())

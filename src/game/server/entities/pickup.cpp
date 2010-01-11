@@ -124,7 +124,7 @@ void PICKUP::tick()
 
 		if(respawntime >= 0)
 		{
-			dbg_msg("game", "pickup player='%d:%s' item=%d/%d",
+			dbg_msg("game", _t("pickup player='%d:%s' item=%d/%d"),
 				chr->player->client_id, server_clientname(chr->player->client_id), type, subtype);
 			spawntick = server_tick() + server_tickspeed() * respawntime;
 		}

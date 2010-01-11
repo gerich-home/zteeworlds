@@ -176,6 +176,7 @@ public:
 	class FASTMENU *fastmenu;
 	class EMOTICON *emoticon;
 	class SCOREBOARD *scoreboard;
+	class LANGUAGES *languages;
 };
 
 extern GAMECLIENT gameclient;

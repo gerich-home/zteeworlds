@@ -106,11 +106,13 @@ void engine_init(const char *appname)
 	/* reset the config */
 	config_init();
 	config_reset();
+	lang_init();
 }
 
 void engine_finish()
 {
 	CloseLua();
+	lang_free();
 }
 
 

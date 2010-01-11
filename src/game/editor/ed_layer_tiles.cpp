@@ -212,7 +212,7 @@ int LAYER_TILES::render_properties(RECT *toolbox)
 	if(editor.map.game_layer == this)
 		in_gamegroup = false;
 	static int colcl_button = 0;
-	if(do_editor_button(&colcl_button, "Clear Collision", in_gamegroup?0:-1, &button, draw_editor_button, 0, "Removes collision from this layer"))
+	if(do_editor_button(&colcl_button, _t("Clear Collision"), in_gamegroup?0:-1, &button, draw_editor_button, 0, _t("Removes collision from this layer")))
 	{
 		LAYER_TILES *gl = editor.map.game_layer;
 		int w = min(gl->width, width);
@@ -230,7 +230,7 @@ int LAYER_TILES::render_properties(RECT *toolbox)
 	static int col_button = 0;
 	ui_hsplit_b(toolbox, 5.0f, toolbox, &button);
 	ui_hsplit_b(toolbox, 12.0f, toolbox, &button);
-	if(do_editor_button(&col_button, "Make Collision", in_gamegroup?0:-1, &button, draw_editor_button, 0, "Constructs collision from this layer"))
+	if(do_editor_button(&col_button, _t("Make Collision"), in_gamegroup?0:-1, &button, draw_editor_button, 0, _t("Constructs collision from this layer")))
 	{
 		LAYER_TILES *gl = editor.map.game_layer;
 		int w = min(gl->width, width);
@@ -259,6 +259,9 @@ int LAYER_TILES::render_properties(RECT *toolbox)
 		{"Image", image, PROPTYPE_IMAGE, 0, 0},
 		{0},
 	};
+	props[0].name = _t("Width");
+	props[1].name = _t("Height");
+	props[2].name = _t("Image");
 	
 	if(editor.map.game_layer == this) // remove the image from the selection if this is the game layer
 		props[2].name = 0;

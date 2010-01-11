@@ -135,7 +135,7 @@ static int _lua_bind(lua_State * L)
 	
 		if(!id)
 		{
-			dbg_msg("binds", "key %s not found", key_name);
+			dbg_msg("binds", _t("key %s not found"), key_name);
 			return 0;
 		}
 	
@@ -156,7 +156,7 @@ static int _lua_unbind(lua_State * L)
 	
 		if(!id)
 		{
-			dbg_msg("binds", "key %s not found", key_name);
+			dbg_msg("binds", _t("key %s not found"), key_name);
 			return 0;
 		}
 	
@@ -189,7 +189,7 @@ void con_inc_spectator_zoom(void *result, void *user_data)
 {
 	config.cl_spectator_zoom += 5;
 	char buf[128];
-	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
 }
 
@@ -197,7 +197,7 @@ void con_dec_spectator_zoom(void *result, void *user_data)
 {
 	config.cl_spectator_zoom -= 5;
 	char buf[128];
-	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
 }
 
@@ -205,7 +205,7 @@ static int _lua_inc_spectator_zoom(lua_State * L)
 {
 	config.cl_spectator_zoom += 5;
 	char buf[128];
-	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
 	return 0;
 }
@@ -214,7 +214,7 @@ static int _lua_dec_spectator_zoom(lua_State * L)
 {
 	config.cl_spectator_zoom -= 5;
 	char buf[128];
-	str_format(buf, sizeof(buf), "Spectator zoom: %d", config.cl_spectator_zoom);
+	str_format(buf, sizeof(buf), _t("Spectator zoom: %d"), config.cl_spectator_zoom);
 	gameclient.infopan->add_line(buf);
 	return 0;
 }
@@ -252,7 +252,7 @@ void BINDS::con_bind(void *result, void *user_data)
 	
 	if(!id)
 	{
-		dbg_msg("binds", "key %s not found", key_name);
+		dbg_msg("binds", _t("key %s not found"), key_name);
 		return;
 	}
 	
@@ -268,7 +268,7 @@ void BINDS::con_unbind(void *result, void *user_data)
 	
 	if(!id)
 	{
-		dbg_msg("binds", "key %s not found", key_name);
+		dbg_msg("binds", _t("key %s not found"), key_name);
 		return;
 	}
 	

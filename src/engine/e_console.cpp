@@ -4,6 +4,7 @@
 #include "e_config.h"
 #include "e_engine.h"
 #include "e_linereader.h"
+#include "e_language.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -342,7 +343,7 @@ static void console_execute_file_real(const char *filename)
 		char *line;
 		LINEREADER lr;
 		
-		dbg_msg("console", "executing '%s'", filename);
+		dbg_msg("console", _t("executing '%s'"), filename);
 		linereader_init(&lr, file);
 
 		while((line = linereader_get(&lr)))
@@ -351,7 +352,7 @@ static void console_execute_file_real(const char *filename)
 		io_close(file);
 	}
 	else
-		dbg_msg("console", "failed to open '%s'", filename);
+		dbg_msg("console", _t("failed to open '%s'"), filename);
 }
 
 struct EXECFILE

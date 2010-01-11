@@ -78,7 +78,7 @@ int popup_group(RECT view)
 	
 	// don't allow deletion of game group
 	if(editor.map.game_group != editor.get_selected_group() &&
-		do_editor_button(&delete_button, "Delete Group", 0, &button, draw_editor_button, 0, "Delete group"))
+		do_editor_button(&delete_button, _t("Delete Group"), 0, &button, draw_editor_button, 0, _t("Delete group")))
 	{
 		editor.map.delete_group(editor.selected_group);
 		return 1;
@@ -88,7 +88,7 @@ int popup_group(RECT view)
 	ui_hsplit_b(&view, 10.0f, &view, &button);
 	ui_hsplit_b(&view, 12.0f, &view, &button);
 	static int new_quad_layer_button = 0;
-	if(do_editor_button(&new_quad_layer_button, "Add Quads Layer", 0, &button, draw_editor_button, 0, "Creates a new quad layer"))
+	if(do_editor_button(&new_quad_layer_button, _t("Add Quads Layer"), 0, &button, draw_editor_button, 0, _t("Creates a new quad layer")))
 	{
 		LAYER *l = new LAYER_QUADS;
 		editor.map.groups[editor.selected_group]->add_layer(l);
@@ -100,7 +100,7 @@ int popup_group(RECT view)
 	ui_hsplit_b(&view, 5.0f, &view, &button);
 	ui_hsplit_b(&view, 12.0f, &view, &button);
 	static int new_tile_layer_button = 0;
-	if(do_editor_button(&new_tile_layer_button, "Add Tile Layer", 0, &button, draw_editor_button, 0, "Creates a new tile layer"))
+	if(do_editor_button(&new_tile_layer_button, _t("Add Tile Layer"), 0, &button, draw_editor_button, 0, _t("Creates a new tile layer")))
 	{
 		LAYER *l = new LAYER_TILES(50, 50);
 		editor.map.groups[editor.selected_group]->add_layer(l);
@@ -137,6 +137,16 @@ int popup_group(RECT view)
 		{"Clip H", editor.map.groups[editor.selected_group]->clip_h, PROPTYPE_INT_SCROLL, -1000000, 1000000},
 		{0},
 	};
+	props[0].name = _t("Order");
+	props[1].name = _t("Pos X");
+	props[2].name = _t("Pos Y");
+	props[3].name = _t("Para X");
+	props[4].name = _t("Para Y");
+	props[5].name = _t("Use Clipping");
+	props[6].name = _t("Clip X");
+	props[7].name = _t("Clip Y");
+	props[8].name = _t("Clip W");
+	props[9].name = _t("Clip H");
 	
 	static int ids[NUM_PROPS] = {0};
 	int new_val = 0;
@@ -236,7 +246,7 @@ int popup_quad(RECT view)
 	// delete button
 	ui_hsplit_b(&view, 12.0f, &view, &button);
 	static int delete_button = 0;
-	if(do_editor_button(&delete_button, "Delete", 0, &button, draw_editor_button, 0, "Deletes the current quad"))
+	if(do_editor_button(&delete_button, _t("Delete"), 0, &button, draw_editor_button, 0, _t("Deletes the current quad")))
 	{
 		LAYER_QUADS *layer = (LAYER_QUADS *)editor.get_selected_layer_type(0, LAYERTYPE_QUADS);
 		if(layer)
@@ -251,7 +261,7 @@ int popup_quad(RECT view)
 	ui_hsplit_b(&view, 10.0f, &view, &button);
 	ui_hsplit_b(&view, 12.0f, &view, &button);
 	static int sq_button = 0;
-	if(do_editor_button(&sq_button, "Square", 0, &button, draw_editor_button, 0, "Squares the current quad"))
+	if(do_editor_button(&sq_button, _t("Square"), 0, &button, draw_editor_button, 0, _t("Squares the current quad")))
 	{
 		int top = quad->points[0].y;
 		int left = quad->points[0].x;
@@ -291,6 +301,10 @@ int popup_quad(RECT view)
 		
 		{0},
 	};
+	props[0].name = _t("Pos. Env");
+	props[1].name = _t("Pos. TO");
+	props[2].name = _t("Color Env");
+	props[3].name = _t("Color TO");
 	
 	static int ids[NUM_PROPS] = {0};
 	int new_val = 0;
@@ -379,7 +393,7 @@ int popup_select_image(RECT view)
 			
 		if(i == -1)
 		{
-			if(do_editor_button(&editor.map.images[i], "None", i==select_image_current, &button, draw_editor_button_menuitem, 0, 0))
+			if(do_editor_button(&editor.map.images[i], _t("None"), i==select_image_current, &button, draw_editor_button_menuitem, 0, 0))
 				select_image_selected = -1;
 		}
 		else

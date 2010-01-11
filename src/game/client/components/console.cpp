@@ -371,10 +371,10 @@ void CONSOLE::on_render()
 				if(client_rcon_authed())
 					prompt = "rcon> ";
 				else
-					prompt = "ENTER PASSWORD> ";
+					prompt = _t("ENTER PASSWORD> ");
 			}
 			else
-				prompt = "NOT CONNECTED> ";
+				prompt = _t("NOT CONNECTED> ");
 		}
 
 		gfx_text_ex(&cursor, prompt, -1);
@@ -402,10 +402,10 @@ void CONSOLE::on_render()
 				{
 					
 					char buf[512];
-					str_format(buf, sizeof(buf), "Help: %s ", console->command->help);
+					str_format(buf, sizeof(buf), _t("Help: %s "), _t(console->command->help));
 					gfx_text_ex(&info.cursor, buf, -1);
 					gfx_text_color(0.75f, 0.75f, 0.75f, 1);
-					str_format(buf, sizeof(buf), "Syntax: %s %s", console->command->name, console->command->params);
+					str_format(buf, sizeof(buf), _t("Syntax: %s %s"), console->command->name, console->command->params);
 					gfx_text_ex(&info.cursor, buf, -1);
 				}
 			}

@@ -175,17 +175,17 @@ const char *GAMECONTROLLER::get_team_name(int team)
 	if(is_teamplay())
 	{
 		if(team == 0)
-			return "red team";
+			return _t("red team");
 		else if(team == 1)
-			return "blue team";
+			return _t("blue team");
 	}
 	else
 	{
 		if(team == 0)
-			return "game";
+			return _t("game");
 	}
 	
-	return "spectators";
+	return _t("spectators");
 }
 
 static bool is_separator(char c) { return c == ';' || c == ' ' || c == ',' || c == '\t'; }
@@ -202,7 +202,7 @@ void GAMECONTROLLER::startround()
 	teamscore[1] = 0;
 	unbalanced_tick = -1;
 	force_balanced = false;
-	dbg_msg("game","start round type='%s' teamplay='%d'", gametype, game_flags&GAMEFLAG_TEAMS);
+	dbg_msg("game",_t("start round type='%s' teamplay='%d'"), gametype, game_flags&GAMEFLAG_TEAMS);
 }
 
 void GAMECONTROLLER::change_map(const char *to_map)
@@ -215,7 +215,7 @@ void GAMECONTROLLER::cyclemap()
 {
 	if(map_wish[0] != 0)
 	{
-		dbg_msg("game", "rotating map to %s", map_wish);
+		dbg_msg("game", _t("rotating map to %s"), map_wish);
 		str_copy(config.sv_map, map_wish, sizeof(config.sv_map));
 		map_wish[0] = 0;
 		round_count = 0;
@@ -275,7 +275,7 @@ void GAMECONTROLLER::cyclemap()
 	
 	round_count = 0;
 	
-	dbg_msg("game", "rotating map to %s", &buf[i]);
+	dbg_msg("game", _t("rotating map to %s"), &buf[i]);
 	str_copy(config.sv_map, &buf[i], sizeof(config.sv_map));
 }
 
@@ -392,7 +392,7 @@ void GAMECONTROLLER::tick()
 	// do team-balancing
 	if (is_teamplay() && unbalanced_tick != -1 && server_tick() > unbalanced_tick+config.sv_teambalance_time*server_tickspeed()*60)
 	{
-		dbg_msg("game", "Balancing teams");
+		dbg_msg("game", _t("Balancing teams"));
 		
 		int t[2] = {0,0};
 		int tscore[2] = {0,0};
@@ -565,14 +565,14 @@ bool GAMECONTROLLER::check_team_balance()
 	
 	if(abs(t[0]-t[1]) >= 2)
 	{
-		dbg_msg("game", "Team is NOT balanced (red=%d blue=%d)", t[0], t[1]);
+		dbg_msg("game", _t("Team is NOT balanced (red=%d blue=%d)"), t[0], t[1]);
 		if (game.controller->unbalanced_tick == -1)
 			game.controller->unbalanced_tick = server_tick();
 		return false;
 	}
 	else
 	{
-		dbg_msg("game", "Team is balanced (red=%d blue=%d)", t[0], t[1]);
+		dbg_msg("game", _t("Team is balanced (red=%d blue=%d)"), t[0], t[1]);
 		game.controller->unbalanced_tick = -1;
 		return true;
 	}

@@ -37,7 +37,7 @@ static void check_pure_tuning()
 		TUNING_PARAMS p;
 		if(memcmp(&p, &tuning, sizeof(TUNING_PARAMS)) != 0)
 		{
-			dbg_msg("server", "resetting tuning due to pure server");
+			dbg_msg("server", _t("resetting tuning due to pure server"));
 			tuning = p;
 		}
 	}	
@@ -108,14 +108,14 @@ void mods_client_enter(int client_id)
 {
 	//game.world.insert_entity(&game.players[client_id]);
 	game.players[client_id]->respawn();
-	dbg_msg("game", "join player='%d:%s'", client_id, server_clientname(client_id));
+	dbg_msg("game", _t("join player='%d:%s'"), client_id, server_clientname(client_id));
 
 
 	char buf[512];
-	str_format(buf, sizeof(buf), "%s entered and joined the %s", server_clientname(client_id), game.controller->get_team_name(game.players[client_id]->team));
+	str_format(buf, sizeof(buf), _t("%s entered and joined the %s"), server_clientname(client_id), game.controller->get_team_name(game.players[client_id]->team));
 	game.send_chat(-1, GAMECONTEXT::CHAT_ALL, buf); 
 
-	dbg_msg("game", "team_join player='%d:%s' team=%d", client_id, server_clientname(client_id), game.players[client_id]->team);
+	dbg_msg("game", _t("team_join player='%d:%s' team=%d"), client_id, server_clientname(client_id), game.players[client_id]->team);
 }
 
 void mods_connected(int client_id)
@@ -176,7 +176,6 @@ void mods_message(int msgtype, int client_id)
 	
 	if(!rawmsg)
 	{
-		dbg_msg("server", "dropped weird message '%s' (%d), failed on '%s'", netmsg_get_name(msgtype), msgtype, netmsg_failed_on());
 		return;
 	}
 	
@@ -201,7 +200,7 @@ void mods_message(int msgtype, int client_id)
 		int64 now = time_get();
 		if(game.vote_closetime)
 		{
-			game.send_chat_target(client_id, "Wait for current vote to end before calling a new one.");
+			game.send_chat_target(client_id, _t("Wait for current vote to end before calling a new one."));
 			return;
 		}
 		
@@ -209,7 +208,7 @@ void mods_message(int msgtype, int client_id)
 		if(timeleft > 0)
 		{
 			char chatmsg[512] = {0};
-			str_format(chatmsg, sizeof(chatmsg), "You must wait %d seconds before making another vote", (timeleft/time_freq())+1);
+			str_format(chatmsg, sizeof(chatmsg), _t("You must wait %d seconds before making another vote"), (timeleft/time_freq())+1);
 			game.send_chat_target(client_id, chatmsg);
 			return;
 		}
@@ -225,7 +224,7 @@ void mods_message(int msgtype, int client_id)
 			{
 				if(str_comp_nocase(msg->value, option->command) == 0)
 				{
-					str_format(chatmsg, sizeof(chatmsg), "%s called vote to change server option '%s'", server_clientname(client_id), option->command);
+					str_format(chatmsg, sizeof(chatmsg), _t("%s called vote to change server option '%s'"), server_clientname(client_id), option->command);
 					str_format(desc, sizeof(desc), "%s", option->command);
 					str_format(cmd, sizeof(cmd), "%s", option->command);
 					break;
@@ -236,7 +235,7 @@ void mods_message(int msgtype, int client_id)
 			
 			if(!option)
 			{
-				str_format(chatmsg, sizeof(chatmsg), "'%s' isn't an option on this server", msg->value);
+				str_format(chatmsg, sizeof(chatmsg), _t("'%s' isn't an option on this server"), msg->value);
 				game.send_chat_target(client_id, chatmsg);
 				return;
 			}
@@ -245,19 +244,19 @@ void mods_message(int msgtype, int client_id)
 		{
 			if(!config.sv_vote_kick)
 			{
-				game.send_chat_target(client_id, "Server does not allow voting to kick players");
+				game.send_chat_target(client_id, _t("Server does not allow voting to kick players"));
 				return;
 			}
 			
 			int kick_id = atoi(msg->value);
 			if(kick_id < 0 || kick_id >= MAX_CLIENTS || !game.players[kick_id])
 			{
-				game.send_chat_target(client_id, "Invalid client id to kick");
+				game.send_chat_target(client_id, _t("Invalid client id to kick"));
 				return;
 			}
 			
-			str_format(chatmsg, sizeof(chatmsg), "Vote called to kick '%s'", server_clientname(kick_id));
-			str_format(desc, sizeof(desc), "Kick '%s'", server_clientname(kick_id));
+			str_format(chatmsg, sizeof(chatmsg), _t("Vote called to kick '%s'"), server_clientname(kick_id));
+			str_format(desc, sizeof(desc), _t("Kick '%s'"), server_clientname(kick_id));
 			str_format(cmd, sizeof(cmd), "kick %d", kick_id);
 			if (!config.sv_vote_kick_bantime)
 				str_format(cmd, sizeof(cmd), "kick %d", kick_id);
@@ -304,12 +303,12 @@ void mods_message(int msgtype, int client_id)
 				(void) game.controller->check_team_balance();
 			}
 			else
-				game.send_broadcast("Teams must be balanced, please join other team", client_id);
+				game.send_broadcast(_t("Teams must be balanced, please join other team"), client_id);
 		}
 		else
 		{
 			char buf[128];
-			str_format(buf, sizeof(buf), "Only %d active players are allowed", config.sv_max_clients-config.sv_spectator_slots);
+			str_format(buf, sizeof(buf), _t("Only %d active players are allowed"), config.sv_max_clients-config.sv_spectator_slots);
 			game.send_broadcast(buf, client_id);
 		}
 	}
@@ -343,7 +342,7 @@ void mods_message(int msgtype, int client_id)
 		if(msgtype == NETMSGTYPE_CL_CHANGEINFO && strcmp(oldname, server_clientname(client_id)) != 0)
 		{
 			char chattext[256];
-			str_format(chattext, sizeof(chattext), "%s changed name to %s", oldname, server_clientname(client_id));
+			str_format(chattext, sizeof(chattext), _t("%s changed name to %s"), oldname, server_clientname(client_id));
 			game.send_chat(-1, GAMECONTEXT::CHAT_ALL, chattext);
 		}
 		
@@ -409,11 +408,11 @@ static int _lua_tune(lua_State * L)
 
 		if(tuning.set(param_name, new_value))
 		{
-			dbg_msg("tuning", "%s changed to %.2f", param_name, new_value);
+			dbg_msg("tuning", _t("%s changed to %.2f"), param_name, new_value);
 			send_tuning_params(-1);
 		}
 		else
-			console_print("No such tuning parameter");
+			console_print(_t("No such tuning parameter"));
 	}
 	return 0;
 }
@@ -437,7 +436,7 @@ static int _lua_tune_reset(lua_State * L)
 	TUNING_PARAMS p;
 	tuning = p;
 	send_tuning_params(-1);
-	console_print("tuning reset");	
+	console_print(_t("tuning reset"));	
 	return 0;
 }
 
@@ -446,7 +445,7 @@ static void con_tune_reset(void *result, void *user_data)
 	TUNING_PARAMS p;
 	tuning = p;
 	send_tuning_params(-1);
-	console_print("tuning reset");
+	console_print(_t("tuning reset"));
 }
 
 static int _lua_tune_dump(lua_State * L)
@@ -588,7 +587,7 @@ static int _lua_addvote(lua_State * L)
 			voteoption_first = option;
 	
 		mem_copy(option->command, lua_tostring(L, 1), len+1);
-		dbg_msg("server", "added option '%s'", option->command);
+		dbg_msg("server", _t("added option '%s'"), option->command);
 	}
 	return 0;
 }
@@ -610,7 +609,7 @@ static void con_addvote(void *result, void *user_data)
 		voteoption_first = option;
 	
 	mem_copy(option->command, console_arg_string(result, 0), len+1);
-	dbg_msg("server", "added option '%s'", option->command);
+	dbg_msg("server", _t("added option '%s'"), option->command);
 }
 
 static int _lua_vote(lua_State * L)
@@ -624,7 +623,7 @@ static int _lua_vote(lua_State * L)
 				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_YES;
 			else if(str_comp_nocase(lua_tostring(L, 1), "no") == 0)
 				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_NO;
-			dbg_msg("server", "forcing vote %s", lua_tostring(L, 1));
+			dbg_msg("server", _t("forcing vote %s"), lua_tostring(L, 1));
 		} else
 		if (lua_isnumber(L, 1))
 		{
@@ -632,7 +631,7 @@ static int _lua_vote(lua_State * L)
 				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_YES;
 			if(lua_tointeger(L, 1) == 0)
 				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_NO;
-			dbg_msg("server", "forcing vote %s", lua_tointeger(L, 1) != 0 ? "yes" : "no");
+			dbg_msg("server", _t("forcing vote %s"), lua_tointeger(L, 1) != 0 ? _t("yes") : _t("no"));
 		} else
 		if (lua_isboolean(L, 1))
 		{
@@ -640,7 +639,7 @@ static int _lua_vote(lua_State * L)
 				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_YES;
 			if(lua_toboolean(L, 1) == 0)
 				game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_NO;
-			dbg_msg("server", "forcing vote %s", lua_toboolean(L, 1) != 0 ? "yes" : "no");
+			dbg_msg("server", _t("forcing vote %s"), lua_toboolean(L, 1) != 0 ? _t("yes") : _t("no"));
 		}
 	}
 	return 0;
@@ -652,7 +651,7 @@ static void con_vote(void *result, void *user_data)
 		game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_YES;
 	else if(str_comp_nocase(console_arg_string(result, 0), "no") == 0)
 		game.vote_enforce = GAMECONTEXT::VOTE_ENFORCE_NO;
-	dbg_msg("server", "forcing vote %s", console_arg_string(result, 0));
+	dbg_msg("server", _t("forcing vote %s"), console_arg_string(result, 0));
 }
 
 void mods_console_init()

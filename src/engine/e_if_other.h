@@ -8,6 +8,7 @@
 
 #include <base/system.h>
 #include "e_keys.h"
+#include "e_language.h"
 
 enum 
 {

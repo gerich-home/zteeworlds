@@ -95,7 +95,7 @@ void GAMECONTROLLER_CTF::tick()
 					teamscore[fi^1] += 100;
 					f->carrying_character->player->score += 5;
 
-					dbg_msg("game", "flag_capture player='%d:%s'",
+					dbg_msg("game", _t("flag_capture player='%d:%s'"),
 						f->carrying_character->player->client_id,
 						server_clientname(f->carrying_character->player->client_id));
 
@@ -103,11 +103,11 @@ void GAMECONTROLLER_CTF::tick()
 					float capture_time = (server_tick() - f->grab_tick)/(float)server_tickspeed();
 					if(capture_time <= 60)
 					{
-						str_format(buf, sizeof(buf), "the %s flag was captured by %s (%d.%s%d seconds)", fi ? "blue" : "red", server_clientname(f->carrying_character->player->client_id), (int)capture_time%60, ((int)(capture_time*100)%100)<10?"0":"", (int)(capture_time*100)%100);
+						str_format(buf, sizeof(buf), _t("the %s flag was captured by %s (%d.%s%d seconds)"), fi ? _t("blue") : _t("red"), server_clientname(f->carrying_character->player->client_id), (int)capture_time%60, ((int)(capture_time*100)%100)<10?"0":"", (int)(capture_time*100)%100);
 					}
 					else
 					{
-						str_format(buf, sizeof(buf), "the %s flag was captured by %s", fi ? "blue" : "red", server_clientname(f->carrying_character->player->client_id));
+						str_format(buf, sizeof(buf), _t("the %s flag was captured by %s"), fi ? _t("blue") : _t("red"), server_clientname(f->carrying_character->player->client_id));
 					}
 					game.send_chat(-1, -2, buf);
 					for(int i = 0; i < 2; i++)
@@ -134,7 +134,7 @@ void GAMECONTROLLER_CTF::tick()
 						CHARACTER *chr = close_characters[i];
 						chr->player->score += 1;
 
-						dbg_msg("game", "flag_return player='%d:%s'",
+						dbg_msg("game", _t("flag_return player='%d:%s'"),
 							chr->player->client_id,
 							server_clientname(chr->player->client_id));
 
@@ -154,7 +154,7 @@ void GAMECONTROLLER_CTF::tick()
 					f->carrying_character = close_characters[i];
 					f->carrying_character->player->score += 1;
 
-					dbg_msg("game", "flag_grab player='%d:%s'",
+					dbg_msg("game", _t("flag_grab player='%d:%s'"),
 						f->carrying_character->player->client_id,
 						server_clientname(f->carrying_character->player->client_id));
 					

@@ -631,16 +631,16 @@ static void do_toolbar(RECT toolbar)
 	
 	// ctrl+o to open
 	if(inp_key_down('o') && (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL)))
-		editor.invoke_file_dialog(LISTDIRTYPE_ALL, "Open Map", "Open", "maps/", "", callback_open_map);
+		editor.invoke_file_dialog(LISTDIRTYPE_ALL, _t("Open Map"), _t("Open"), "maps/", "", callback_open_map);
 	
 	// ctrl+s to save
 	if(inp_key_down('s') && (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL)))
-		editor.invoke_file_dialog(LISTDIRTYPE_SAVE, "Save Map", "Save", "maps/", "", callback_save_map);
+		editor.invoke_file_dialog(LISTDIRTYPE_SAVE, _t("Save Map"), _t("Save"), "maps/", "", callback_save_map);
 
 	// detail button
 	ui_vsplit_l(&toolbar, 30.0f, &button, &toolbar);
 	static int hq_button = 0;
-	if(do_editor_button(&hq_button, "Detail", editor.show_detail, &button, draw_editor_button, 0, "[ctrl+h] Toggle High Detail") ||
+	if(do_editor_button(&hq_button, _t("Detail"), editor.show_detail, &button, draw_editor_button, 0, _t("[ctrl+h] Toggle High Detail")) ||
 		(inp_key_down('h') && (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL))))
 	{
 		editor.show_detail = !editor.show_detail;
@@ -651,7 +651,7 @@ static void do_toolbar(RECT toolbar)
 	// animation button
 	ui_vsplit_l(&toolbar, 30.0f, &button, &toolbar);
 	static int animate_button = 0;
-	if(do_editor_button(&animate_button, "Anim", editor.animate, &button, draw_editor_button, 0, "[ctrl+m] Toggle animation") ||
+	if(do_editor_button(&animate_button, _t("Anim"), editor.animate, &button, draw_editor_button, 0, _t("[ctrl+m] Toggle animation")) ||
 		(inp_key_down('m') && (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL))))
 	{
 		editor.animate_start = time_get();
@@ -663,7 +663,7 @@ static void do_toolbar(RECT toolbar)
 	// proof button
 	ui_vsplit_l(&toolbar, 30.0f, &button, &toolbar);
 	static int proof_button = 0;
-	if(do_editor_button(&proof_button, "Proof", editor.proof_borders, &button, draw_editor_button, 0, "[ctrl-p] Toggles proof borders. These borders represent what a player maximum can see.") ||
+	if(do_editor_button(&proof_button, _t("Proof"), editor.proof_borders, &button, draw_editor_button, 0, _t("[ctrl-p] Toggles proof borders. These borders represent what a player maximum can see.")) ||
 		(inp_key_down('p') && (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL))))
 	{
 		editor.proof_borders = !editor.proof_borders;
@@ -674,12 +674,12 @@ static void do_toolbar(RECT toolbar)
 	// zoom group
 	ui_vsplit_l(&toolbar, 16.0f, &button, &toolbar);
 	static int zoom_out_button = 0;
-	if(do_editor_button(&zoom_out_button, "ZO", 0, &button, draw_editor_button_l, 0, "[NumPad-] Zoom out") || inp_key_down(KEY_KP_MINUS))
+	if(do_editor_button(&zoom_out_button, _t("ZO"), 0, &button, draw_editor_button_l, 0, _t("[NumPad-] Zoom out")) || inp_key_down(KEY_KP_MINUS))
 		editor.zoom_level += 50;
 		
 	ui_vsplit_l(&toolbar, 16.0f, &button, &toolbar);
 	static int zoom_normal_button = 0;
-	if(do_editor_button(&zoom_normal_button, "1:1", 0, &button, draw_editor_button_m, 0, "[NumPad*] Zoom to normal and remove editor offset") || inp_key_down(KEY_KP_MULTIPLY))
+	if(do_editor_button(&zoom_normal_button, _t("1:1"), 0, &button, draw_editor_button_m, 0, _t("[NumPad*] Zoom to normal and remove editor offset")) || inp_key_down(KEY_KP_MULTIPLY))
 	{
 		editor.editor_offset_x = 0;
 		editor.editor_offset_y = 0;
@@ -688,7 +688,7 @@ static void do_toolbar(RECT toolbar)
 		
 	ui_vsplit_l(&toolbar, 16.0f, &button, &toolbar);
 	static int zoom_in_button = 0;
-	if(do_editor_button(&zoom_in_button, "ZI", 0, &button, draw_editor_button_r, 0, "[NumPad+] Zoom in") || inp_key_down(KEY_KP_PLUS))
+	if(do_editor_button(&zoom_in_button, _t("ZI"), 0, &button, draw_editor_button_r, 0, _t("[NumPad+] Zoom in")) || inp_key_down(KEY_KP_PLUS))
 		editor.zoom_level -= 50;
 	
 	ui_vsplit_l(&toolbar, 15.0f, 0, &toolbar);
@@ -696,17 +696,17 @@ static void do_toolbar(RECT toolbar)
 	// animation speed
 	ui_vsplit_l(&toolbar, 16.0f, &button, &toolbar);
 	static int anim_faster_button = 0;
-	if(do_editor_button(&anim_faster_button, "A+", 0, &button, draw_editor_button_l, 0, "Increase animation speed"))
+	if(do_editor_button(&anim_faster_button, _t("A+"), 0, &button, draw_editor_button_l, 0, _t("Increase animation speed")))
 		editor.animate_speed += 0.5f;
 	
 	ui_vsplit_l(&toolbar, 16.0f, &button, &toolbar);
 	static int anim_normal_button = 0;
-	if(do_editor_button(&anim_normal_button, "1", 0, &button, draw_editor_button_m, 0, "Normal animation speed"))
+	if(do_editor_button(&anim_normal_button, _t("1"), 0, &button, draw_editor_button_m, 0, _t("Normal animation speed")))
 		editor.animate_speed = 1.0f;
 	
 	ui_vsplit_l(&toolbar, 16.0f, &button, &toolbar);
 	static int anim_slower_button = 0;
-	if(do_editor_button(&anim_slower_button, "A-", 0, &button, draw_editor_button_r, 0, "Decrease animation speed"))
+	if(do_editor_button(&anim_slower_button, _t("A-"), 0, &button, draw_editor_button_r, 0, _t("Decrease animation speed")))
 	{
 		if(editor.animate_speed > 0.5f)
 			editor.animate_speed -= 0.5f;
@@ -732,7 +732,7 @@ static void do_toolbar(RECT toolbar)
 		// flip buttons
 		ui_vsplit_l(&toolbar, 20.0f, &button, &toolbar);
 		static int flipx_button = 0;
-		if(do_editor_button(&flipx_button, "^X", enabled, &button, draw_editor_button_l, 0, "[N] Flip brush horizontal") || inp_key_down('n'))
+		if(do_editor_button(&flipx_button, _t("^X"), enabled, &button, draw_editor_button_l, 0, _t("[N] Flip brush horizontal")) || inp_key_down('n'))
 		{
 			for(int i = 0; i < brush.layers.len(); i++)
 				brush.layers[i]->brush_flip_x();
@@ -740,7 +740,7 @@ static void do_toolbar(RECT toolbar)
 			
 		ui_vsplit_l(&toolbar, 20.0f, &button, &toolbar);
 		static int flipy_button = 0;
-		if(do_editor_button(&flipy_button, "^Y", enabled, &button, draw_editor_button_r, 0, "[M] Flip brush vertical") || inp_key_down('m'))
+		if(do_editor_button(&flipy_button, _t("^Y"), enabled, &button, draw_editor_button_r, 0, _t("[M] Flip brush vertical")) || inp_key_down('m'))
 		{
 			for(int i = 0; i < brush.layers.len(); i++)
 				brush.layers[i]->brush_flip_y();
@@ -756,7 +756,7 @@ static void do_toolbar(RECT toolbar)
 		ui_vsplit_l(&toolbar, 5.0f, &button, &toolbar);
 		ui_vsplit_l(&toolbar, 30.0f, &button, &toolbar);
 		static int ccw_button = 0;
-		if(do_editor_button(&ccw_button, "CCW", enabled, &button, draw_editor_button_l, 0, "[R] Rotates the brush counter clockwise") || inp_key_down('r'))
+		if(do_editor_button(&ccw_button, _t("CCW"), enabled, &button, draw_editor_button_l, 0, _t("[R] Rotates the brush counter clockwise")) || inp_key_down('r'))
 		{
 			for(int i = 0; i < brush.layers.len(); i++)
 				brush.layers[i]->brush_rotate(-rotation_amount/360.0f*pi*2);
@@ -764,7 +764,7 @@ static void do_toolbar(RECT toolbar)
 			
 		ui_vsplit_l(&toolbar, 30.0f, &button, &toolbar);
 		static int cw_button = 0;
-		if(do_editor_button(&cw_button, "CW", enabled, &button, draw_editor_button_r, 0, "[T] Rotates the brush clockwise") || inp_key_down('t'))
+		if(do_editor_button(&cw_button, _t("CW"), enabled, &button, draw_editor_button_r, 0, _t("[T] Rotates the brush clockwise")) || inp_key_down('t'))
 		{
 			for(int i = 0; i < brush.layers.len(); i++)
 				brush.layers[i]->brush_rotate(rotation_amount/360.0f*pi*2);
@@ -780,7 +780,7 @@ static void do_toolbar(RECT toolbar)
 		
 		LAYER_QUADS *qlayer = (LAYER_QUADS *)editor.get_selected_layer_type(0, LAYERTYPE_QUADS);
 		//LAYER_TILES *tlayer = (LAYER_TILES *)editor.get_selected_layer_type(0, LAYERTYPE_TILES);
-		if(do_editor_button(&new_button, "Add Quad", qlayer?0:-1, &button, draw_editor_button, 0, "Adds a new quad"))
+		if(do_editor_button(&new_button, _t("Add Quad"), qlayer?0:-1, &button, draw_editor_button, 0, _t("Adds a new quad")))
 		{
 			if(qlayer)
 			{
@@ -904,7 +904,7 @@ static void do_quad(QUAD *q, int index)
 		ui_got_context = id;
 		
 		gfx_setcolor(1,1,1,1);
-		editor.tooltip = "Left mouse button to move. Hold shift to move pivot. Hold ctrl to rotate";
+		editor.tooltip = _t("Left mouse button to move. Hold shift to move pivot. Hold ctrl to rotate");
 		
 		if(ui_mouse_button(0))
 		{
@@ -1039,7 +1039,7 @@ static void do_quad_point(QUAD *q, int quad_index, int v)
 		ui_got_context = id;
 		
 		gfx_setcolor(1,1,1,1);
-		editor.tooltip = "Left mouse button to move. Hold shift to move the texture.";
+		editor.tooltip = _t("Left mouse button to move. Hold shift to move the texture.");
 		
 		if(ui_mouse_button(0))
 		{
@@ -1213,9 +1213,9 @@ static void do_map_editor(RECT view, RECT toolbar)
 		if(ui_hot_item() == editor_id)
 		{
 			if(brush.is_empty())
-				editor.tooltip = "Use left mouse button to drag and create a brush.";
+				editor.tooltip = _t("Use left mouse button to drag and create a brush.");
 			else
-				editor.tooltip = "Use left mouse button to paint with the brush. Right button clears the brush.";
+				editor.tooltip = _t("Use left mouse button to paint with the brush. Right button clears the brush.");
 
 			if(ui_active_item() == editor_id)
 			{
@@ -1253,7 +1253,6 @@ static void do_map_editor(RECT view, RECT toolbar)
 					if(!ui_mouse_button(0))
 					{
 						// grab brush
-						dbg_msg("editor", "grabbing %f %f %f %f", r.x, r.y, r.w, r.h);
 						
 						// TODO: do all layers
 						int grabs = 0;
@@ -1511,7 +1510,7 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 			ui_draw_rect(&shifter, vec4(1,1,1,0.5f), 0, 0.0f);
 			ui_do_label(&shifter, buf, 10.0f, 0, -1);
 			
-			if(do_editor_button(&ids[i], 0, 0, &dec, draw_dec_button, 0, "Decrease"))
+			if(do_editor_button(&ids[i], 0, 0, &dec, draw_dec_button, 0, _t("Decrease")))
 			{
 				if(inp_key_pressed(KEY_LSHIFT) || inp_key_pressed(KEY_RSHIFT))
 					*new_val = props[i].value-5;
@@ -1519,7 +1518,7 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 					*new_val = props[i].value-1;
 				change = i;
 			}
-			if(do_editor_button(((char *)&ids[i])+1, 0, 0, &inc, draw_inc_button, 0, "Increase"))
+			if(do_editor_button(((char *)&ids[i])+1, 0, 0, &inc, draw_inc_button, 0, _t("Increase")))
 			{
 				if(inp_key_pressed(KEY_LSHIFT) || inp_key_pressed(KEY_RSHIFT))
 					*new_val = props[i].value+5;
@@ -1532,12 +1531,12 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 		{
 			RECT no, yes;
 			ui_vsplit_mid(&shifter, &no, &yes);
-			if(do_editor_button(&ids[i], "No", !props[i].value, &no, draw_dec_button, 0, ""))
+			if(do_editor_button(&ids[i], _t("No"), !props[i].value, &no, draw_dec_button, 0, ""))
 			{
 				*new_val = 0;
 				change = i;
 			}
-			if(do_editor_button(((char *)&ids[i])+1, "Yes", props[i].value, &yes, draw_inc_button, 0, ""))
+			if(do_editor_button(((char *)&ids[i])+1, _t("Yes"), props[i].value, &yes, draw_inc_button, 0, ""))
 			{
 				*new_val = 1;
 				change = i;
@@ -1581,7 +1580,7 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 		{
 			char buf[64];
 			if(props[i].value < 0)
-				strcpy(buf, "None");
+				strcpy(buf, _t("None"));
 			else
 				sprintf(buf, "%s",  editor.map.images[props[i].value]->name);
 			
@@ -1625,12 +1624,12 @@ static void render_layers(RECT toolbox, RECT toolbar, RECT view)
 			RECT visible_toggle;
 			ui_hsplit_t(&layersbox, 12.0f, &slot, &layersbox);
 			ui_vsplit_l(&slot, 12, &visible_toggle, &slot);
-			if(do_editor_button(&editor.map.groups[g]->visible, editor.map.groups[g]->visible?"V":"H", 0, &visible_toggle, draw_editor_button_l, 0, "Toggle group visibility"))
+			if(do_editor_button(&editor.map.groups[g]->visible, editor.map.groups[g]->visible?"V":"H", 0, &visible_toggle, draw_editor_button_l, 0, _t("Toggle group visibility")))
 				editor.map.groups[g]->visible = !editor.map.groups[g]->visible;
 
 			sprintf(buf, "#%d %s", g, editor.map.groups[g]->name);
 			if(int result = do_editor_button(&editor.map.groups[g], buf, g==editor.selected_group, &slot, draw_editor_button_r,
-				BUTTON_CONTEXT, "Select group. Right click for properties."))
+				BUTTON_CONTEXT, _t("Select group. Right click for properties.")))
 			{
 				editor.selected_group = g;
 				editor.selected_layer = 0;
@@ -1650,12 +1649,12 @@ static void render_layers(RECT toolbox, RECT toolbar, RECT view)
 				ui_vsplit_l(&slot, 12.0f, 0, &button);
 				ui_vsplit_l(&button, 15, &visible_toggle, &button);
 
-				if(do_editor_button(&editor.map.groups[g]->layers[i]->visible, editor.map.groups[g]->layers[i]->visible?"V":"H", 0, &visible_toggle, draw_editor_button_l, 0, "Toggle layer visibility"))
+				if(do_editor_button(&editor.map.groups[g]->layers[i]->visible, editor.map.groups[g]->layers[i]->visible?"V":"H", 0, &visible_toggle, draw_editor_button_l, 0, _t("Toggle layer visibility")))
 					editor.map.groups[g]->layers[i]->visible = !editor.map.groups[g]->layers[i]->visible;
 
 				sprintf(buf, "#%d %s ", i, editor.map.groups[g]->layers[i]->type_name);
 				if(int result = do_editor_button(editor.map.groups[g]->layers[i], buf, g==editor.selected_group&&i==editor.selected_layer, &button, draw_editor_button_r,
-					BUTTON_CONTEXT, "Select layer. Right click for properties."))
+					BUTTON_CONTEXT, _t("Select layer. Right click for properties.")))
 				{
 					editor.selected_layer = i;
 					editor.selected_group = g;
@@ -1676,7 +1675,7 @@ static void render_layers(RECT toolbox, RECT toolbar, RECT view)
 		ui_hsplit_t(&layersbox, 12.0f, &slot, &layersbox);
 
 		static int new_group_button = 0;
-		if(do_editor_button(&new_group_button, "Add Group", 0, &slot, draw_editor_button, 0, "Adds a new group"))
+		if(do_editor_button(&new_group_button, _t("Add Group"), 0, &slot, draw_editor_button, 0, _t("Adds a new group")))
 		{
 			editor.map.new_group();
 			editor.selected_group = editor.map.groups.len()-1;
@@ -1769,7 +1768,7 @@ static int popup_image(RECT view)
 	static int external_button = 0;
 	if(img->external)
 	{
-		if(do_editor_button(&external_button, "Embedd", 0, &slot, draw_editor_button_menuitem, 0, "Embedds the image into the map file."))
+		if(do_editor_button(&external_button, _t("Embedd"), 0, &slot, draw_editor_button_menuitem, 0, _t("Embedds the image into the map file.")))
 		{
 			img->external = 0;
 			return 1;
@@ -1777,7 +1776,7 @@ static int popup_image(RECT view)
 	}
 	else
 	{		
-		if(do_editor_button(&external_button, "Make external", 0, &slot, draw_editor_button_menuitem, 0, "Removes the image from the map file."))
+		if(do_editor_button(&external_button, _t("Make external"), 0, &slot, draw_editor_button_menuitem, 0, _t("Removes the image from the map file.")))
 		{
 			img->external = 1;
 			return 1;
@@ -1786,15 +1785,15 @@ static int popup_image(RECT view)
 
 	ui_hsplit_t(&view, 10.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&replace_button, "Replace", 0, &slot, draw_editor_button_menuitem, 0, "Replaces the image with a new one"))
+	if(do_editor_button(&replace_button, _t("Replace"), 0, &slot, draw_editor_button_menuitem, 0, _t("Replaces the image with a new one")))
 	{
-		editor.invoke_file_dialog(LISTDIRTYPE_ALL, "Replace Image", "Replace", "mapres/", "", replace_image);
+		editor.invoke_file_dialog(LISTDIRTYPE_ALL, _t("Replace Image"), _t("Replace"), "mapres/", "", replace_image);
 		return 1;
 	}
 
 	ui_hsplit_t(&view, 10.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&remove_button, "Remove", 0, &slot, draw_editor_button_menuitem, 0, "Removes the image from the map"))
+	if(do_editor_button(&remove_button, _t("Remove"), 0, &slot, draw_editor_button_menuitem, 0, _t("Removes the image from the map")))
 	{
 		delete img;
 		editor.map.images.removebyindex(editor.selected_image);
@@ -1814,9 +1813,9 @@ static void render_images(RECT toolbox, RECT toolbar, RECT view)
 		RECT slot;
 		ui_hsplit_t(&toolbox, 15.0f, &slot, &toolbox);
 		if(e == 0)
-			ui_do_label(&slot, "Embedded", 12.0f, 0);
+			ui_do_label(&slot, _t("Embedded"), 12.0f, 0);
 		else
-			ui_do_label(&slot, "External", 12.0f, 0);
+			ui_do_label(&slot, _t("External"), 12.0f, 0);
 		
 		for(int i = 0; i < editor.map.images.len(); i++)
 		{
@@ -1831,7 +1830,7 @@ static void render_images(RECT toolbox, RECT toolbar, RECT view)
 			ui_hsplit_t(&toolbox, 12.0f, &slot, &toolbox);
 			
 			if(int result = do_editor_button(&editor.map.images[i], buf, editor.selected_image == i, &slot, draw_editor_button,
-				BUTTON_CONTEXT, "Select image"))
+				BUTTON_CONTEXT, _t("Select image")))
 			{
 				editor.selected_image = i;
 				
@@ -1868,8 +1867,8 @@ static void render_images(RECT toolbox, RECT toolbar, RECT view)
 	static int new_image_button = 0;
 	ui_hsplit_t(&toolbox, 10.0f, &slot, &toolbox);
 	ui_hsplit_t(&toolbox, 12.0f, &slot, &toolbox);
-	if(do_editor_button(&new_image_button, "Add", 0, &slot, draw_editor_button, 0, "Load a new image to use in the map"))
-		editor.invoke_file_dialog(LISTDIRTYPE_ALL, "Add Image", "Add", "mapres/", "", add_image);
+	if(do_editor_button(&new_image_button, _t("Add"), 0, &slot, draw_editor_button, 0, _t("Load a new image to use in the map")))
+		editor.invoke_file_dialog(LISTDIRTYPE_ALL, _t("Add Image"), _t("Add"), "mapres/", "", add_image);
 }
 
 
@@ -1947,7 +1946,7 @@ static void render_file_dialog()
 	ui_do_label(&title, file_dialog_title, 14.0f, -1, -1);
 	
 	// filebox
-	ui_do_label(&filebox_label, "Filename:", 10.0f, -1, -1);
+	ui_do_label(&filebox_label, _t("Filename:"), 10.0f, -1, -1);
 	
 	static int filebox_id = 0;
 	ui_do_edit_box(&filebox_id, &filebox, file_dialog_filename, sizeof(file_dialog_filename), 10.0f);
@@ -2008,7 +2007,7 @@ static void render_file_dialog()
 
 	ui_vsplit_r(&buttonbar, 40.0f, &buttonbar, &button);
 	ui_vsplit_r(&buttonbar, 50.0f, &buttonbar, &button);
-	if(do_editor_button(&cancel_button, "Cancel", 0, &button, draw_editor_button, 0, 0) || inp_key_pressed(KEY_ESCAPE))
+	if(do_editor_button(&cancel_button, _t("Cancel"), 0, &button, draw_editor_button, 0, 0) || inp_key_pressed(KEY_ESCAPE))
 		editor.dialog = DIALOG_NONE;
 }
 
@@ -2041,12 +2040,12 @@ static void render_modebar(RECT view)
 	{
 		ui_vsplit_l(&view, 40.0f, &button, &view);
 		static int tile_button = 0;
-		if(do_editor_button(&tile_button, "Layers", editor.mode == MODE_LAYERS, &button, draw_editor_button_m, 0, "Switch to edit layers."))
+		if(do_editor_button(&tile_button, _t("Layers"), editor.mode == MODE_LAYERS, &button, draw_editor_button_m, 0, _t("Switch to edit layers.")))
 			editor.mode = MODE_LAYERS;
 
 		ui_vsplit_l(&view, 40.0f, &button, &view);
 		static int img_button = 0;
-		if(do_editor_button(&img_button, "Images", editor.mode == MODE_IMAGES, &button, draw_editor_button_r, 0, "Switch to manage images."))
+		if(do_editor_button(&img_button, _t("Images"), editor.mode == MODE_IMAGES, &button, draw_editor_button_r, 0, _t("Switch to manage images.")))
 			editor.mode = MODE_IMAGES;
 	}
 
@@ -2061,7 +2060,7 @@ static void render_statusbar(RECT view)
 	RECT button;
 	ui_vsplit_r(&view, 60.0f, &view, &button);
 	static int envelope_button = 0;
-	if(do_editor_button(&envelope_button, "Envelopes", editor.show_envelope_editor, &button, draw_editor_button, 0, "Toggles the envelope editor."))
+	if(do_editor_button(&envelope_button, _t("Envelopes"), editor.show_envelope_editor, &button, draw_editor_button, 0, _t("Toggles the envelope editor.")))
 		editor.show_envelope_editor = (editor.show_envelope_editor+1)%4;
 	
 	if(editor.tooltip)
@@ -2069,7 +2068,7 @@ static void render_statusbar(RECT view)
 		if(ui_got_context && ui_got_context == ui_hot_item())
 		{
 			char buf[512];
-			sprintf(buf, "%s Right click for context menu.", editor.tooltip);
+			sprintf(buf, _t("%s Right click for context menu."), editor.tooltip);
 			ui_do_label(&view, buf, 10.0f, -1, -1);
 		}
 		else
@@ -2112,13 +2111,13 @@ static void render_envelopeeditor(RECT view)
 		
 		ui_vsplit_r(&toolbar, 50.0f, &toolbar, &button);
 		static int new_4d_button = 0;
-		if(do_editor_button(&new_4d_button, "Color+", 0, &button, draw_editor_button, 0, "Creates a new color envelope"))
+		if(do_editor_button(&new_4d_button, _t("Color+"), 0, &button, draw_editor_button, 0, _t("Creates a new color envelope")))
 			new_env = editor.map.new_envelope(4);
 
 		ui_vsplit_r(&toolbar, 5.0f, &toolbar, &button);
 		ui_vsplit_r(&toolbar, 50.0f, &toolbar, &button);
 		static int new_2d_button = 0;
-		if(do_editor_button(&new_2d_button, "Pos.+", 0, &button, draw_editor_button, 0, "Creates a new pos envelope"))
+		if(do_editor_button(&new_2d_button, _t("Pos.+"), 0, &button, draw_editor_button, 0, _t("Creates a new pos envelope")))
 			new_env = editor.map.new_envelope(3);
 		
 		if(new_env) // add the default points
@@ -2145,11 +2144,11 @@ static void render_envelopeeditor(RECT view)
 		ui_do_label(&shifter, buf, 10.0f, 0, -1);
 		
 		static int prev_button = 0;
-		if(do_editor_button(&prev_button, 0, 0, &dec, draw_dec_button, 0, "Previous Envelope"))
+		if(do_editor_button(&prev_button, 0, 0, &dec, draw_dec_button, 0, _t("Previous Envelope")))
 			editor.selected_envelope--;
 		
 		static int next_button = 0;
-		if(do_editor_button(&next_button, 0, 0, &inc, draw_inc_button, 0, "Next Envelope"))
+		if(do_editor_button(&next_button, 0, 0, &inc, draw_inc_button, 0, _t("Next Envelope")))
 			editor.selected_envelope++;
 			
 		if(envelope)
@@ -2237,7 +2236,7 @@ static void render_envelopeeditor(RECT view)
 						f2fx(channels[2]), f2fx(channels[3]));
 				}
 				
-				editor.tooltip = "Press right mouse button to create a new point";
+				editor.tooltip = _t("Press right mouse button to create a new point");
 			}
 		}
 
@@ -2411,7 +2410,7 @@ static void render_envelopeeditor(RECT view)
 							
 						colormod = 100.0f;
 						gfx_setcolor(1,0.75f,0.75f,1);
-						editor.tooltip = "Left mouse to drag. Hold shift to alter time point aswell. Right click to delete.";
+						editor.tooltip = _t("Left mouse to drag. Hold shift to alter time point aswell. Right click to delete.");
 					}
 
 					if(ui_active_item() == id || ui_hot_item() == id)
@@ -2445,7 +2444,7 @@ static int popup_menu_file(RECT view)
 	RECT slot;
 	ui_hsplit_t(&view, 2.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&new_map_button, "New", 0, &slot, draw_editor_button_menuitem, 0, "Creates a new map"))
+	if(do_editor_button(&new_map_button, _t("New"), 0, &slot, draw_editor_button_menuitem, 0, _t("Creates a new map")))
 	{
 		editor.reset();
 		return 1;
@@ -2453,38 +2452,38 @@ static int popup_menu_file(RECT view)
 
 	ui_hsplit_t(&view, 10.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&open_button, "Open", 0, &slot, draw_editor_button_menuitem, 0, "Opens a map for editing"))
+	if(do_editor_button(&open_button, _t("Open"), 0, &slot, draw_editor_button_menuitem, 0, _t("Opens a map for editing")))
 	{
-		editor.invoke_file_dialog(LISTDIRTYPE_ALL, "Open Map", "Open", "maps/", "", callback_open_map);
+		editor.invoke_file_dialog(LISTDIRTYPE_ALL, _t("Open Map"), _t("Open"), "maps/", "", callback_open_map);
 		return 1;
 	}
 
 	ui_hsplit_t(&view, 10.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&append_button, "Append", 0, &slot, draw_editor_button_menuitem, 0, "Opens a map and adds everything from that map to the current one"))
+	if(do_editor_button(&append_button, _t("Append"), 0, &slot, draw_editor_button_menuitem, 0, _t("Opens a map and adds everything from that map to the current one")))
 	{
-		editor.invoke_file_dialog(LISTDIRTYPE_ALL, "Append Map", "Append", "maps/", "", callback_append_map);
+		editor.invoke_file_dialog(LISTDIRTYPE_ALL, _t("Append Map"), _t("Append"), "maps/", "", callback_append_map);
 		return 1;
 	}
 
 	ui_hsplit_t(&view, 10.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&save_button, "Save (NOT IMPL)", 0, &slot, draw_editor_button_menuitem, 0, "Saves the current map"))
+	if(do_editor_button(&save_button, _t("Save (NOT IMPL)"), 0, &slot, draw_editor_button_menuitem, 0, _t("Saves the current map")))
 	{
 		return 1;
 	}
 
 	ui_hsplit_t(&view, 2.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&save_as_button, "Save As", 0, &slot, draw_editor_button_menuitem, 0, "Saves the current map under a new name"))
+	if(do_editor_button(&save_as_button, _t("Save As"), 0, &slot, draw_editor_button_menuitem, 0, _t("Saves the current map under a new name")))
 	{
-		editor.invoke_file_dialog(LISTDIRTYPE_SAVE, "Save Map", "Save", "maps/", "", callback_save_map);
+		editor.invoke_file_dialog(LISTDIRTYPE_SAVE, _t("Save Map"), _t("Save"), "maps/", "", callback_save_map);
 		return 1;
 	}
 	
 	ui_hsplit_t(&view, 10.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
-	if(do_editor_button(&exit_button, "Exit", 0, &slot, draw_editor_button_menuitem, 0, "Exits from the editor"))
+	if(do_editor_button(&exit_button, _t("Exit"), 0, &slot, draw_editor_button_menuitem, 0, _t("Exits from the editor")))
 	{
 		config.cl_editor = 0;
 		return 1;
@@ -2498,7 +2497,7 @@ static void render_menubar(RECT menubar)
 	static RECT file /*, view, help*/;
 
 	ui_vsplit_l(&menubar, 60.0f, &file, &menubar);
-	if(do_editor_button(&file, "File", 0, &file, draw_editor_button_menu, 0, 0))
+	if(do_editor_button(&file, _t("File"), 0, &file, draw_editor_button_menu, 0, 0))
 		ui_invoke_popup_menu(&file, 1, file.x, file.y+file.h-1.0f, 120, 150, popup_menu_file);
 	
 	/*

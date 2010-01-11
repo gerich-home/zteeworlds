@@ -176,7 +176,7 @@ void MENUS::render_demoplayer(RECT main_view)
 		// exit button
 		ui_vsplit_r(&buttonbar, buttonbar_height*3, &buttonbar, &button);
 		static int exit_button = 0;
-		if(ui_do_button(&exit_button, "Exit", 0, &button, ui_draw_demoplayer_button, 0))
+		if(ui_do_button(&exit_button, _t("Exit"), 0, &button, ui_draw_demoplayer_button, 0))
 			client_disconnect();
 			
 			
@@ -197,7 +197,7 @@ void MENUS::render_demoplayer(RECT main_view)
 		// rewrite button
 		ui_vsplit_r(&rewritebar, buttonbar_height*3, &rewritebar, &button);
 		static int rewrite_button = 0;
-		if(ui_do_button(&rewrite_button, "Rewrite", 0, &button, ui_draw_demoplayer_button, 0))
+		if(ui_do_button(&rewrite_button, _t("Rewrite"), 0, &button, ui_draw_demoplayer_button, 0))
 			demorec_rewrite(rewrite_filename);
 			
 		ui_vsplit_l(&rewritebar, margins, 0, &rewritebar);
@@ -415,7 +415,7 @@ void MENUS::render_demolist(RECT main_view)
 	static int demolist_id = 0;
 	char buf[1024];
 	
-	ui_do_listbox_start(&demolist_id, &main_view, 17.0f, "Demos", num_items, selected_item);
+	ui_do_listbox_start(&demolist_id, &main_view, 17.0f, _t("Demos"), num_items, selected_item);
 	for(int i = 0; i < num_demos; i++)
 	{
 		LISTBOXITEM item = ui_do_listbox_nextitem((void*)(10+i));
@@ -443,13 +443,13 @@ void MENUS::render_demolist(RECT main_view)
 	ui_vsplit_r(&play_rect, 120.0f, 0x0, &play_rect);
 	
 	static int refresh_button = 0;
-	if(ui_do_button(&refresh_button, "Refresh", 0, &refresh_rect, ui_draw_menu_button, 0))
+	if(ui_do_button(&refresh_button, _t("Refresh"), 0, &refresh_rect, ui_draw_menu_button, 0))
 	{
 		demolist_populate();
 	}	
 	
 	static int play_button = 0;
-	if(ui_do_button(&play_button, "Play", 0, &play_rect, ui_draw_menu_button, 0))
+	if(ui_do_button(&play_button, _t("Play"), 0, &play_rect, ui_draw_menu_button, 0))
 	{
 		if(selected_item >= 0 && selected_item < num_demos)
 		{
@@ -461,7 +461,7 @@ void MENUS::render_demolist(RECT main_view)
 		
 			const char *error = client_demoplayer_play(demos[selected_item].filename);
 			if(error)
-				popup_message("Error", error, "Ok");
+				popup_message(_t("Error"), error, "Ok");
 		}
 	}
 	

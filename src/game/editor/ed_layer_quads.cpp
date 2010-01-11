@@ -117,7 +117,6 @@ int LAYER_QUADS::brush_grab(LAYERGROUP *brush, RECT rect)
 		
 		if(px > rect.x && px < rect.x+rect.w && py > rect.y && py < rect.y+rect.h)
 		{
-			dbg_msg("", "grabbed one");
 			QUAD n;
 			n = *q;
 			
@@ -217,6 +216,7 @@ int LAYER_QUADS::render_properties(RECT *toolbox)
 		{"Image", image, PROPTYPE_IMAGE, -1, 0},
 		{0},
 	};
+	props[0].name = _t("Image");
 	
 	static int ids[NUM_PROPS] = {0};
 	int new_val = 0;
