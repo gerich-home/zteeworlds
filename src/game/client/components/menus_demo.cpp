@@ -183,7 +183,7 @@ void MENUS::render_demoplayer(RECT main_view)
 		// make first button
 		ui_vsplit_l(&rewritebar, buttonbar_height, &button, &rewritebar);
 		static int make_first_button = 0;
-		if(ui_do_button(&make_first_button, "[", info->paused, &button, ui_draw_demoplayer_button, 0))
+		if(ui_do_button(&make_first_button, "[", 0, &button, ui_draw_demoplayer_button, 0))
 			demorec_make_first();
 			
 		ui_vsplit_l(&rewritebar, margins, 0, &rewritebar);
@@ -191,7 +191,7 @@ void MENUS::render_demoplayer(RECT main_view)
 		// make last button
 		ui_vsplit_l(&rewritebar, buttonbar_height, &button, &rewritebar);
 		static int make_last_button = 0;
-		if(ui_do_button(&make_last_button, "]", info->paused, &button, ui_draw_demoplayer_button, 0))
+		if(ui_do_button(&make_last_button, "]", 0, &button, ui_draw_demoplayer_button, 0))
 			demorec_make_last();
 			
 		// rewrite button
