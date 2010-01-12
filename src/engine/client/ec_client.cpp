@@ -1893,6 +1893,11 @@ static void con_quit(void *result, void *user_data)
 	client_quit();
 }
 
+static void con_minimize(void *result, void *user_data)
+{
+    gfx_minimize();
+}
+
 static void con_ping(void *result, void *user_data)
 {
 	msg_pack_start_system(NETMSG_PING, 0);
@@ -2147,6 +2152,7 @@ static void client_register_commands()
 	LUA_REGISTER_FUNC(stoprecord)
 	LUA_REGISTER_FUNC(purgerecord)
 	
+	MACRO_REGISTER_COMMAND("minimize", "", CFGFLAG_CLIENT, con_minimize, 0x0, "Minimize Teeworlds");
 	MACRO_REGISTER_COMMAND("quit", "", CFGFLAG_CLIENT, con_quit, 0x0, "Quit Teeworlds");
 	MACRO_REGISTER_COMMAND("exit", "", CFGFLAG_CLIENT, con_quit, 0x0, "Quit Teeworlds");
 	MACRO_REGISTER_COMMAND("connect", "s", CFGFLAG_CLIENT, con_connect, 0x0, "Connect to the specified host/ip");
