@@ -290,6 +290,13 @@ public:
 		groups.removebyindex(index);
 	}
 	
+	void delete_envelope(int index)
+	{
+		if(index < 0 || index >= envelopes.len()) return;
+		delete envelopes[index];
+		envelopes.removebyindex(index);
+	}
+	
 	void modify_image_index(INDEX_MODIFY_FUNC func)
 	{
 		for(int i = 0; i < groups.len(); i++)

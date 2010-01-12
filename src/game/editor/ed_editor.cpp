@@ -1513,7 +1513,7 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 			if(do_editor_button(&ids[i], 0, 0, &dec, draw_dec_button, 0, _t("Decrease")))
 			{
 				if(inp_key_pressed(KEY_LSHIFT) || inp_key_pressed(KEY_RSHIFT))
-					*new_val = props[i].value-5;
+					*new_val = props[i].value-10;
 				else
 					*new_val = props[i].value-1;
 				change = i;
@@ -1521,7 +1521,7 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 			if(do_editor_button(((char *)&ids[i])+1, 0, 0, &inc, draw_inc_button, 0, _t("Increase")))
 			{
 				if(inp_key_pressed(KEY_LSHIFT) || inp_key_pressed(KEY_RSHIFT))
-					*new_val = props[i].value+5;
+					*new_val = props[i].value+10;
 				else
 					*new_val = props[i].value+1;
 				change = i;
@@ -1867,7 +1867,7 @@ static void render_images(RECT toolbox, RECT toolbar, RECT view)
 	static int new_image_button = 0;
 	ui_hsplit_t(&toolbox, 10.0f, &slot, &toolbox);
 	ui_hsplit_t(&toolbox, 12.0f, &slot, &toolbox);
-	if(do_editor_button(&new_image_button, _t("Add"), 0, &slot, draw_editor_button, 0, _t("Load a new image to use in the map")))
+	if(do_editor_button(&new_image_button, _t("Add"), 0, &slot, draw_editor_button, 0, _t("Load a new image to use in the map.  Use square images for tilesets! (512x512, 1024x1024...)")))
 		editor.invoke_file_dialog(LISTDIRTYPE_ALL, _t("Add Image"), _t("Add"), "mapres/", "", add_image);
 }
 
@@ -2120,6 +2120,46 @@ static void render_envelopeeditor(RECT view)
 		if(do_editor_button(&new_2d_button, _t("Pos.+"), 0, &button, draw_editor_button, 0, _t("Creates a new pos envelope")))
 			new_env = editor.map.new_envelope(3);
 		
+		// ENV DELETE
+		if(envelope)
+		{
+			ui_vsplit_r(&toolbar, 5.0f, &toolbar, &button);
+			ui_vsplit_r(&toolbar, 50.0f, &toolbar, &button);
+			static int new_0d_button = 0;
+			if(do_editor_button(&new_0d_button, _t("Delete"), 0, &button, draw_editor_button, 0, _t("Deletes the current Envelope")))
+			{
+				// delete the envelope itself
+				int to_delete = editor.selected_envelope;
+				editor.selected_envelope = 0;
+				editor.map.delete_envelope(to_delete);
+
+				// remove envelope from existing quads (otherwise tw will crash on loading the map)
+				for ( int g = 0; g < editor.map.groups.len(); g++ ) {
+					for ( int l = 0; l < editor.map.groups[g]->layers.len(); l++ ) {
+						LAYER *layer = editor.map.groups[g]->layers[l];
+						if ( layer && layer->type == LAYERTYPE_QUADS ) {
+							LAYER_QUADS *qlayer = (LAYER_QUADS *)editor.map.groups[g]->layers[l];
+							for ( int q = 0; q < qlayer->quads.len(); q++ ) {
+								QUAD *quad = &qlayer->quads[q];
+								if ( quad->pos_env == to_delete ) {
+									quad->pos_env = -1;
+								} else if ( quad->pos_env > to_delete ) {
+									quad->pos_env--;
+								}
+								if ( quad->color_env == to_delete ) {
+									quad->color_env = -1;
+								} else if ( quad->color_env > to_delete ) {
+									quad->color_env--;
+								}
+							}
+						}
+					}
+				}
+				return;
+			}
+		}
+		// ENV DELETE
+
 		if(new_env) // add the default points
 		{
 			if(new_env->channels == 4)
@@ -2231,12 +2271,25 @@ static void render_envelopeeditor(RECT view)
 					//float env_y = (ui_mouse_y()-view.y)/timescale;
 					float channels[4];
 					envelope->eval(time, channels);
+					
+					if(inp_key_pressed(KEY_LSHIFT) || inp_key_pressed(KEY_RSHIFT)) {
+						channels[0] = 0;
+						channels[1] = 0;
+						channels[2] = 0;
+						channels[3] = 0;
+					} else if ( inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL) ) {
+						channels[0] = 1;
+						channels[1] = 1;
+						channels[2] = 1;
+						channels[3] = 1;
+					}
+					
 					envelope->add_point(time,
 						f2fx(channels[0]), f2fx(channels[1]),
 						f2fx(channels[2]), f2fx(channels[3]));
 				}
 				
-				editor.tooltip = _t("Press right mouse button to create a new point");
+				editor.tooltip = _t("Press right mouse button to create a new point.  Additionally press shift to create the point with value 0 or ctrl to create with value 1.");
 			}
 		}
 
@@ -2378,17 +2431,24 @@ static void render_envelopeeditor(RECT view)
 						}
 						else
 						{
-							envelope->points[i].values[c] -= f2fx(editor.mouse_delta_y*valuescale);
 							if(inp_key_pressed(KEY_LSHIFT) || inp_key_pressed(KEY_RSHIFT))
 							{
-								if(i != 0)
-								{
+								if (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL))
+									envelope->points[i].time += (int)(editor.mouse_delta_x);
+								else
 									envelope->points[i].time += (int)((editor.mouse_delta_x*timescale)*1000.0f);
-									if(envelope->points[i].time < envelope->points[i-1].time)
-										envelope->points[i].time = envelope->points[i-1].time + 1;
-									if(i+1 != envelope->points.len() && envelope->points[i].time > envelope->points[i+1].time)
-										envelope->points[i].time = envelope->points[i+1].time - 1;
-								}
+								
+								if(envelope->points[i].time < envelope->points[i-1].time)
+									envelope->points[i].time = envelope->points[i-1].time + 1;
+								if(i+1 != envelope->points.len() && envelope->points[i].time > envelope->points[i+1].time)
+									envelope->points[i].time = envelope->points[i+1].time - 1;
+							}
+							else
+							{
+								if (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL))
+									envelope->points[i].values[c] -= (int)(editor.mouse_delta_y);
+								else
+									envelope->points[i].values[c] -= f2fx(editor.mouse_delta_y*valuescale*1.0f);
 							}
 						}
 						
@@ -2410,7 +2470,7 @@ static void render_envelopeeditor(RECT view)
 							
 						colormod = 100.0f;
 						gfx_setcolor(1,0.75f,0.75f,1);
-						editor.tooltip = _t("Left mouse to drag. Hold shift to alter time point aswell. Right click to delete.");
+						editor.tooltip = _t("Left mouse to alter value, hold shift to alter time point. Right click to delete.");
 					}
 
 					if(ui_active_item() == id || ui_hot_item() == id)
@@ -2772,6 +2832,8 @@ void editor_update_and_render()
 	if(inp_key_down(KEY_TAB))
 		editor.gui_active = !editor.gui_active;
 
+	// debug stuff non-devs don't need
+	/*
 	if(inp_key_down(KEY_F5))
 		editor.save("maps/debug_test2.map");
 
@@ -2780,6 +2842,7 @@ void editor_update_and_render()
 	
 	if(inp_key_down(KEY_F8))
 		editor.load("maps/debug_test.map");
+	*/
 	
 	if(inp_key_down(KEY_F10))
 		editor.show_mouse_pointer = false;

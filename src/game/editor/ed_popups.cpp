@@ -283,6 +283,69 @@ int popup_quad(RECT view)
 		return 1;
 	}
 
+	// fix coords
+	ui_hsplit_b(&view, 10.0f, &view, &button);
+	ui_hsplit_b(&view, 12.0f, &view, &button);
+
+	static int fc_button = 0;
+	if(do_editor_button(&fc_button, _t("Fix Coordinates"), 0, &button, draw_editor_button, 0, _t("Fixes coordinates of the quads points")))
+	{
+		for ( int p = 0; p < 4; p++ ) {
+			int x = quad->points[p].x / 1000;
+			int y = quad->points[p].y / 1000;
+
+			quad->points[p].x = 1000*x;
+			quad->points[p].y = 1000*y;
+		}
+
+		return 1;
+	}
+
+
+	// move quad
+	enum
+	{
+		POS_X=0,
+		POS_Y,
+		NUM_POS,
+	};
+
+	int pivot_pos[NUM_POS] = {0};
+	int old_pos[NUM_POS] = {0};
+
+	pivot_pos[POS_X]	= quad->points[4].x/1000;
+	pivot_pos[POS_Y]	= quad->points[4].y/1000;
+	old_pos[POS_X]		= pivot_pos[POS_X];
+	old_pos[POS_Y]		= pivot_pos[POS_Y];
+
+
+	PROPERTY pivot_props[] = {
+		{_t("X"), pivot_pos[POS_X], PROPTYPE_INT_STEP, 0, 255},
+		{_t("Y"), pivot_pos[POS_Y], PROPTYPE_INT_STEP, 0, 255},
+		{0},
+	};
+	
+	static int pivot_ids[NUM_POS] = {0};
+
+	int new_val = 0;
+	int pivot_prop = editor.do_properties(&view, pivot_props, pivot_ids, &new_val);
+
+	if(pivot_prop == POS_X)
+	{
+		quad->points[4].x = new_val*1000;
+		for ( int v = 0; v < 4; v++ ) {
+			int x = quad->points[v].x / 1000;
+			quad->points[v].x = (x+new_val-old_pos[POS_X])*1000;
+		}
+	}
+	if(pivot_prop == POS_Y)
+	{
+		quad->points[4].y = new_val*1000;
+		for ( int v = 0; v < 4; v++ ) {
+			int y = quad->points[v].y / 1000;
+			quad->points[v].y = (y+new_val-old_pos[POS_Y])*1000;
+		}
+	}
 
 	enum
 	{
@@ -307,7 +370,7 @@ int popup_quad(RECT view)
 	props[3].name = _t("Color TO");
 	
 	static int ids[NUM_PROPS] = {0};
-	int new_val = 0;
+	new_val = 0;
 	int prop = editor.do_properties(&view, props, ids, &new_val);		
 	
 	if(prop == PROP_POS_ENV) quad->pos_env = clamp(new_val, -1, editor.map.envelopes.len()-1);
@@ -324,49 +387,85 @@ int popup_point(RECT view)
 	
 	enum
 	{
-		PROP_COLOR=0,
+		PROP_R=0,
+		PROP_G,
+		PROP_B,
+		PROP_A,
 		NUM_PROPS,
 	};
-	
-	int color = 0;
-
-	for(int v = 0; v < 4; v++)
+	enum
 	{
-		if(editor.selected_points&(1<<v))
-		{
-			color = 0;
-			color |= quad->colors[v].r<<24;
-			color |= quad->colors[v].g<<16;
-			color |= quad->colors[v].b<<8;
-			color |= quad->colors[v].a;
-		}
+		POS_X=0,
+		POS_Y,
+		NUM_POS,
+	};
+	
+	int color[NUM_PROPS]	= {0};
+	int ppos[NUM_POS]		= {0};
+
+	int v = 0;
+	for(int n = 0; n < 4; n++)
+	{
+		if(editor.selected_points&(1<<n))
+			v = n;
 	}
 	
-	
+	color[PROP_R] = quad->colors[v].r;
+	color[PROP_G] = quad->colors[v].g;
+	color[PROP_B] = quad->colors[v].b;
+	color[PROP_A] = quad->colors[v].a;
+	ppos[POS_X]	  = quad->points[v].x/1000;
+	ppos[POS_Y]	  = quad->points[v].y/1000;	
+
 	PROPERTY props[] = {
-		{"Color", color, PROPTYPE_COLOR, -1, editor.map.envelopes.len()},
+		{_t("R"), color[PROP_R], PROPTYPE_INT_STEP, 0, 255},
+		{_t("G"), color[PROP_G], PROPTYPE_INT_STEP, 0, 255},
+		{_t("B"), color[PROP_B], PROPTYPE_INT_STEP, 0, 255},
+		{_t("A"), color[PROP_A], PROPTYPE_INT_STEP, 0, 255},
+		{0},
+	};
+	
+	PROPERTY pos_props[] = {
+		{_t("X"), ppos[POS_X], PROPTYPE_INT_STEP, 0, 255},
+		{_t("Y"), ppos[POS_Y], PROPTYPE_INT_STEP, 0, 255},
 		{0},
 	};
 	
 	static int ids[NUM_PROPS] = {0};
+	static int pos_ids[NUM_POS] = {0};
+	
 	int new_val = 0;
 	int prop = editor.do_properties(&view, props, ids, &new_val);		
-	if(prop == PROP_COLOR)
-	{
-		for(int v = 0; v < 4; v++)
-		{
-			if(editor.selected_points&(1<<v))
-			{
-				color = 0;
-				quad->colors[v].r = (new_val>>24)&0xff;
-				quad->colors[v].g = (new_val>>16)&0xff;
-				quad->colors[v].b = (new_val>>8)&0xff;
-				quad->colors[v].a = new_val&0xff;
-			}
-		}
-	}
+
+	int pos_prop = editor.do_properties(&view, pos_props, pos_ids, &new_val);
 	
-	return 0;	
+	if(prop == PROP_R && new_val > 0 && new_val < 256)
+	{
+		color[PROP_R] = 0;
+		quad->colors[v].r = new_val;
+	}
+	if(prop == PROP_G && new_val > 0 && new_val < 256)
+	{
+		color[PROP_G] = 0;
+		quad->colors[v].g = new_val;
+	}
+	if(prop == PROP_B && new_val > 0 && new_val < 256)
+	{
+		color[PROP_B] = 0;
+		quad->colors[v].b = new_val;
+	}
+	if(prop == PROP_A && new_val > 0 && new_val < 256)
+	{
+		color[PROP_A] = 0;
+		quad->colors[v].a = new_val;
+	}
+
+	if(pos_prop == POS_X)
+		quad->points[v].x = new_val*1000;
+	if(pos_prop == POS_Y)
+		quad->points[v].y = new_val*1000;
+
+	return 0;
 }
 
 
