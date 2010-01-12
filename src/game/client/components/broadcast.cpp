@@ -14,6 +14,8 @@ void BROADCAST::on_reset()
 
 void BROADCAST::on_render()
 {
+	if(!config.cl_render_broadcast || config.cl_clear_all)
+		return;
 	gfx_mapscreen(0, 0, 300*gfx_screenaspect(), 300);
 		
 	if(time_get() < broadcast_time)

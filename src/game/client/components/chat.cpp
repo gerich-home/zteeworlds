@@ -196,9 +196,15 @@ void CHAT::on_message(int msgtype, void *rawmsg)
 		add_line(msg->cid, msg->team, msg->message);
 
 		if(msg->cid >= 0)
-			gameclient.sounds->play(SOUNDS::CHN_GUI, SOUND_CHAT_CLIENT, 0, vec2(0,0));
+		{
+			if(config.cl_chatsound)
+				gameclient.sounds->play(SOUNDS::CHN_GUI, SOUND_CHAT_CLIENT, 0, vec2(0,0));
+		}
 		else
-			gameclient.sounds->play(SOUNDS::CHN_GUI, SOUND_CHAT_SERVER, 0, vec2(0,0));
+		{
+			if(config.cl_servermsgsound)
+				gameclient.sounds->play(SOUNDS::CHN_GUI, SOUND_CHAT_SERVER, 0, vec2(0,0));
+		}
 	}
 }
 
@@ -278,7 +284,12 @@ void CHAT::on_render()
 		cursor.line_width = 200.0f;
 		gfx_text_ex(&cursor, lines[r].name, -1);
 		gfx_text_ex(&cursor, lines[r].text, -1);
-		y -= cursor.y + cursor.font_size;
+		if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
+			y -= cursor.y + cursor.font_size;
+		else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
+			y -= cursor.y + cursor.font_size;
+		else if(config.cl_render_chat && config.cl_render_servermsg)
+			y -= cursor.y + cursor.font_size;
 
 		// cut off if msgs waste too much space
 		if(y < 208.0f)
@@ -289,6 +300,9 @@ void CHAT::on_render()
 		cursor.line_width = 200.0f;
 
 		// render name
+		if(config.cl_clear_all)
+			return;
+		
 		gfx_text_color(0.8f,0.8f,0.8f,1);
 		if(lines[r].client_id == -1)
 			gfx_text_color(1,1,0.5f,1); // system
@@ -302,7 +316,12 @@ void CHAT::on_render()
 			gfx_text_color(0.75f,0.5f,0.75f, 1); // spectator
 			
 		// render name
-		gfx_text_ex(&cursor, lines[r].name, -1);
+		if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
+			gfx_text_ex(&cursor, lines[r].name, -1);
+		else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
+			gfx_text_ex(&cursor, lines[r].name, -1);
+		else if(config.cl_render_chat && config.cl_render_servermsg)
+			gfx_text_ex(&cursor, lines[r].name, -1);
 
 		// render line
 		gfx_text_color(1,1,1,1);
@@ -375,7 +394,12 @@ void CHAT::on_render()
 			gfx_text_ex(&cursor, buf, -1);
 		} else
 		{
-			gfx_text_ex(&cursor, lines[r].text, -1);
+			if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
+				gfx_text_ex(&cursor, lines[r].text, -1);
+			else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
+				gfx_text_ex(&cursor, lines[r].text, -1);
+			else if(config.cl_render_chat && config.cl_render_servermsg)
+				gfx_text_ex(&cursor, lines[r].text, -1);
 		}
 	}
 

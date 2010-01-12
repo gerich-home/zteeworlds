@@ -768,6 +768,132 @@ void MENUS::render_settings_sound(RECT main_view)
 	}
 }
 
+void MENUS::render_settings_hudmod(RECT main_view)
+{
+	RECT button, text, right_view;
+	ui_vsplit_l(&main_view, 300.0f, &main_view, &right_view);
+	
+	// general settings
+	ui_hsplit_t(&main_view, 15.0f, &text, &main_view);
+	ui_do_label(&text, _t("General settings"), 14.0f, -1);
+		
+	ui_hsplit_t(&main_view, 10.0f, &button, &main_view);
+	
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.cl_clear_hud, _t("Clear hud"), config.cl_clear_hud, &button, ui_draw_checkbox, 0))
+		config.cl_clear_hud ^= 1;
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.cl_clear_all, _t("Clear all"), config.cl_clear_all, &button, ui_draw_checkbox, 0))
+		config.cl_clear_all ^= 1;
+		
+	ui_hsplit_t(&main_view, 40.0f, &button, &main_view);
+ 
+	// special settings
+	if(!config.cl_clear_all)
+	{
+		ui_hsplit_t(&main_view, 15.0f, &text, &main_view);
+		ui_do_label(&text, _t("Special settings"), 14.0f, -1);
+		
+		ui_hsplit_t(&main_view, 10.0f, &button, &main_view);
+		
+		if(!config.cl_clear_hud)
+		{
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			if (ui_do_button(&config.cl_render_time, _t("Server time"), config.cl_render_time, &button, ui_draw_checkbox, 0))
+				config.cl_render_time ^= 1;
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);	
+			if (ui_do_button(&config.cl_render_hp, _t("Health"), config.cl_render_hp, &button, ui_draw_checkbox, 0))
+				config.cl_render_hp ^= 1;
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			if (ui_do_button(&config.cl_render_ammo, _t("Ammunition"), config.cl_render_ammo, &button, ui_draw_checkbox, 0))
+				config.cl_render_ammo ^= 1;
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			if (ui_do_button(&config.cl_render_crosshair, _t("Crosshair"), config.cl_render_crosshair, &button, ui_draw_checkbox, 0))
+				config.cl_render_crosshair ^= 1;
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			if (ui_do_button(&config.cl_render_score, _t("Team score"), config.cl_render_score, &button, ui_draw_checkbox, 0))
+				config.cl_render_score ^= 1;
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			if (ui_do_button(&config.cl_render_viewmode, _t("Viewmode"), config.cl_render_viewmode, &button, ui_draw_checkbox, 0))
+				config.cl_render_viewmode ^= 1;
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			if (ui_do_button(&config.cl_render_infomsg, _t("Info messages"), config.cl_render_infomsg, &button, ui_draw_checkbox, 0))
+				config.cl_render_infomsg ^= 1;
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			if (ui_do_button(&config.cl_showfps, _t("FPS"), config.cl_showfps, &button, ui_draw_checkbox, 0))
+				config.cl_showfps ^= 1;
+		}
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_render_scoreboard, _t("Scoreboard"), config.cl_render_scoreboard, &button, ui_draw_checkbox, 0))
+			config.cl_render_scoreboard ^= 1;
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_render_warmup, _t("Warmup"), config.cl_render_warmup, &button, ui_draw_checkbox, 0))
+			config.cl_render_warmup ^= 1;
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_render_broadcast, _t("Broadcast"), config.cl_render_broadcast, &button, ui_draw_checkbox, 0))
+			config.cl_render_broadcast ^= 1;
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_render_servermsg, _t("Server messages"), config.cl_render_servermsg, &button, ui_draw_checkbox, 0))
+			config.cl_render_servermsg ^= 1;
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_render_chat, _t("Chat"), config.cl_render_chat, &button, ui_draw_checkbox, 0))
+			config.cl_render_chat ^= 1;
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_render_kill, _t("Kill messages"), config.cl_render_kill, &button, ui_draw_checkbox, 0))
+			config.cl_render_kill ^= 1;
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_render_vote, _t("Votes"), config.cl_render_vote, &button, ui_draw_checkbox, 0))
+			config.cl_render_vote ^= 1;
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_warning_teambalance, _t("Team balance warning"), config.cl_warning_teambalance, &button, ui_draw_checkbox, 0))
+			config.cl_warning_teambalance ^= 1;
+	}
+	
+	// sound settings
+	ui_hsplit_t(&right_view, 15.0f, &text, &right_view);
+	ui_do_label(&text, _t("Sound settings"), 14.0f, -1);
+	
+	ui_hsplit_t(&right_view, 10.0f, &button, &right_view);
+
+	ui_hsplit_t(&right_view, 20.0f, &button, &right_view);
+	if (ui_do_button(&config.cl_servermsgsound, _t("Activate server message sound"), config.cl_servermsgsound, &button, ui_draw_checkbox, 0))
+		config.cl_servermsgsound ^= 1;
+	ui_hsplit_t(&right_view, 20.0f, &button, &right_view);
+	if (ui_do_button(&config.cl_chatsound, _t("Activate chat message sound"), config.cl_chatsound, &button, ui_draw_checkbox, 0))
+		config.cl_chatsound ^= 1;
+	
+	// default button
+	ui_hsplit_b(&main_view, 20.0f, 0, &button);
+	static int default_button = 0;
+	if(ui_do_button((void*)&default_button, _t("Reset to defaults"), 0, &button, ui_draw_menu_button, 0))
+	{
+		config.cl_render_time = 1;
+		config.cl_render_warmup = 1;
+		config.cl_render_broadcast = 1;
+		config.cl_render_hp = 1;
+		config.cl_render_ammo = 1;
+		config.cl_render_crosshair = 1;
+		config.cl_render_score = 1;
+		config.cl_showfps = 0;
+		config.cl_render_viewmode = 1;
+		config.cl_render_infomsg = 1;
+		config.cl_render_scoreboard = 1;
+		config.cl_render_servermsg = 1;
+		config.cl_render_chat = 1;
+		config.cl_render_kill = 1;
+		config.cl_render_vote = 1;
+		config.cl_clear_hud = 0;
+		config.cl_clear_all = 0;
+		config.cl_servermsgsound = 1;
+		config.cl_chatsound = 1;
+		config.cl_warning_teambalance = 1;
+	}
+	
+	// information text
+	ui_hsplit_b(&main_view, 15.0f, &main_view, &button);
+	ui_vsplit_l(&button, main_view.w*4.1, 0, &button);
+	ui_do_label(&button, "by Sushi :)", 10.0f, 0);
+}
 
 	/*
 static void menu2_render_settings_network(RECT main_view)
@@ -799,7 +925,7 @@ void MENUS::render_settings(RECT main_view)
 	
 	RECT button;
 	
-	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound"};
+	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Hud-Mod"};
 	tabs[0] = _t("Player");
 	tabs[1] = _t("Controls");
 	tabs[2] = _t("Graphics");
@@ -824,6 +950,8 @@ void MENUS::render_settings(RECT main_view)
 		render_settings_graphics(main_view);
 	else if(settings_page == 3)
 		render_settings_sound(main_view);
+	else if(settings_page == 4)
+		render_settings_hudmod(main_view);
 
 	if(need_restart)
 	{

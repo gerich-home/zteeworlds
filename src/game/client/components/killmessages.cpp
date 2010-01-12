@@ -35,6 +35,9 @@ void KILLMESSAGES::on_message(int msgtype, void *rawmsg)
 
 void KILLMESSAGES::on_render()
 {
+	if(!config.cl_render_kill || config.cl_clear_all)
+		return;
+
 	float width = 400*3.0f*gfx_screenaspect();
 	float height = 400*3.0f;
 

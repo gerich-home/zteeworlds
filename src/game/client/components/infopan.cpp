@@ -47,6 +47,9 @@ void INFOPAN::add_line(const char *line)
 
 void INFOPAN::on_render()
 {
+	if(!config.cl_render_infomsg || config.cl_clear_all || config.cl_clear_hud)
+		return;
+
 	gfx_mapscreen(0,0,300*gfx_screenaspect(),300);
 	float x = 10.0f;
 	float y = 80.0f;

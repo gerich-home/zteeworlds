@@ -43,7 +43,7 @@ void NAMEPLATES::render_nameplate(
 
 void NAMEPLATES::on_render()
 {
-	if (!config.cl_nameplates)
+	if (!config.cl_nameplates || config.cl_clear_all)
 		return;
 
 	for(int i = 0; i < MAX_CLIENTS; i++)

@@ -37,6 +37,9 @@ static void mapscreen_to_group(float center_x, float center_y, MAPITEM_GROUP *gr
 
 void HUD::render_spectate()
 {
+	if(!config.cl_render_viewmode || config.cl_clear_all || config.cl_clear_hud)
+		return;
+
 	if(gameclient.freeview)
 		gfx_text(0, 4*gfx_screenaspect(), 4, 8, _t("Freeview"), -1);
 	else
@@ -76,12 +79,15 @@ void HUD::render_goals()
 		else
 			time = (client_tick()-gameclient.snap.gameobj->round_start_tick)/client_tickspeed();
 
-		str_format(buf, sizeof(buf), "%d:%02d", time /60, time %60);
-		float w = gfx_text_width(0, 16, buf, -1);
-		gfx_text(0, half-w/2, 2, 16, buf, -1);
+		if(config.cl_render_time && !config.cl_clear_hud && !config.cl_clear_all)
+		{
+			str_format(buf, sizeof(buf), "%d:%02d", time /60, time %60);
+			float w = gfx_text_width(0, 16, buf, -1);
+			gfx_text(0, half-w/2, 2, 16, buf, -1);
+		}
 	}
 
-	if(gameclient.snap.gameobj->sudden_death)
+	if((config.cl_render_time && !config.cl_clear_hud && !config.cl_clear_all) && gameclient.snap.gameobj->sudden_death)
 	{
 		const char *text = _t("Sudden Death");
 		float w = gfx_text_width(0, 16, text, -1);
@@ -89,7 +95,7 @@ void HUD::render_goals()
 	}
 
 	// render small score hud
-	if(!(gameclient.snap.gameobj && gameclient.snap.gameobj->game_over) && (gameflags&GAMEFLAG_TEAMS))
+	if((config.cl_render_score && !config.cl_clear_hud && !config.cl_clear_all) && !(gameclient.snap.gameobj && gameclient.snap.gameobj->game_over) && (gameflags&GAMEFLAG_TEAMS))
 	{
 		for(int t = 0; t < 2; t++)
 		{
@@ -194,7 +200,7 @@ void HUD::render_goals()
 	}
 
 	// render warmup timer
-	if(gameclient.snap.gameobj->warmup)
+	if((config.cl_render_warmup && !config.cl_clear_all) && gameclient.snap.gameobj->warmup)
 	{
 		char buf[256];
 		float w = gfx_text_width(0, 24, _t("Warmup"), -1);
@@ -212,7 +218,7 @@ void HUD::render_goals()
 
 void HUD::render_fps()
 {
-	if(config.cl_showfps)
+	if(config.cl_showfps && !config.cl_clear_all && !config.cl_clear_hud)
 	{
 		// calculate avg. fps. Little magic...
 		float fps = 1.0f / client_frametime();
@@ -242,7 +248,7 @@ void HUD::render_teambalancewarning()
 	bool flash = time_get()/(time_freq()/2)%2 == 0;
 	if (gameclient.snap.gameobj && (gameclient.snap.gameobj->flags&GAMEFLAG_TEAMS) != 0)
 	{	
-		if (config.cl_warning_teambalance && abs(gameclient.snap.team_size[0]-gameclient.snap.team_size[1]) >= 2)
+		if (config.cl_warning_teambalance && !config.cl_clear_all && abs(gameclient.snap.team_size[0]-gameclient.snap.team_size[1]) >= 2)
 		{
 			const char *text = _t("Please balance teams!");
 			if(flash)
@@ -324,10 +330,13 @@ void HUD::render_healthandammo()
 	
 	gfx_quads_begin();
 	
-	// if weaponstage is active, put a "glow" around the stage ammo
-	select_sprite(data->weapons.id[gameclient.snap.local_character->weapon%NUM_WEAPONS].sprite_proj);
-	for (int i = 0; i < min(gameclient.snap.local_character->ammocount, 10); i++)
-		draw_sprite2(x+i*12,y+24,10);
+	if(config.cl_render_ammo && !config.cl_clear_hud && !config.cl_clear_all)
+	{
+		// if weaponstage is active, put a "glow" around the stage ammo
+		select_sprite(data->weapons.id[gameclient.snap.local_character->weapon%NUM_WEAPONS].sprite_proj);
+		for (int i = 0; i < min(gameclient.snap.local_character->ammocount, 10); i++)
+			gfx_quads_drawTL(x+i*12,y+24,10,10);
+	}
 
 	gfx_quads_end();
 
@@ -335,23 +344,26 @@ void HUD::render_healthandammo()
 	int h = 0;
 
 	// render health
-	select_sprite(SPRITE_HEALTH_FULL);
-	for(; h < gameclient.snap.local_character->health; h++)
-		draw_sprite2(x+h*12,y,10);
+	if(config.cl_render_hp && !config.cl_clear_hud && !config.cl_clear_all)
+	{
+		select_sprite(SPRITE_HEALTH_FULL);
+		for(; h < gameclient.snap.local_character->health; h++)
+			gfx_quads_drawTL(x+h*12,y,10,10);
 
-	select_sprite(SPRITE_HEALTH_EMPTY);
-	for(; h < 10; h++)
-		draw_sprite2(x+h*12,y,10);
+		select_sprite(SPRITE_HEALTH_EMPTY);
+		for(; h < 10; h++)
+			gfx_quads_drawTL(x+h*12,y,10,10);
+	
+		// render armor meter
+		h = 0;
+		select_sprite(SPRITE_ARMOR_FULL);
+		for(; h < gameclient.snap.local_character->armor; h++)
+			gfx_quads_drawTL(x+h*12,y+12,10,10);
 
-	// render armor meter
-	h = 0;
-	select_sprite(SPRITE_ARMOR_FULL);
-	for(; h < gameclient.snap.local_character->armor; h++)
-		draw_sprite2(x+h*12,y+12,10);
-
-	select_sprite(SPRITE_ARMOR_EMPTY);
-	for(; h < 10; h++)
-		draw_sprite2(x+h*12,y+12,10);
+		select_sprite(SPRITE_ARMOR_EMPTY);
+		for(; h < 10; h++)
+			gfx_quads_drawTL(x+h*12,y+12,10,10);
+	}
 	gfx_quads_end();
 }
 
@@ -374,8 +386,10 @@ void HUD::on_render()
 	if(client_state() != CLIENTSTATE_DEMOPLAYBACK)
 		render_connectionwarning();
 	render_teambalancewarning();
-	render_voting();
-	render_cursor();
+	if(config.cl_render_vote && !config.cl_clear_all)
+		render_voting();
+	if(config.cl_render_crosshair && !config.cl_clear_hud && !config.cl_clear_all)
+		render_cursor();
 	if(spectate && !(gameclient.snap.gameobj && gameclient.snap.gameobj->game_over))
 		render_spectate();
 }

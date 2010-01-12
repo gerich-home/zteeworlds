@@ -715,7 +715,7 @@ void SCOREBOARD::on_render()
 	if(active)
 		do_scoreboard = true;
 		
-	if(gameclient.snap.local_info && gameclient.snap.local_info->team != -1)
+	if(config.cl_render_scoreboard && !config.cl_clear_all && gameclient.snap.local_info && gameclient.snap.local_info->team != -1)
 	{
 		// we are not a spectator, check if we are ead
 		if(!gameclient.snap.local_character || gameclient.snap.local_character->health < 0)
@@ -723,7 +723,7 @@ void SCOREBOARD::on_render()
 	}
 
 	// if we the game is over
-	if(gameclient.snap.gameobj && gameclient.snap.gameobj->game_over)
+	if(config.cl_render_scoreboard && !config.cl_clear_all && gameclient.snap.gameobj && gameclient.snap.gameobj->game_over)
 		do_scoreboard = true;
 		
 	if(!do_scoreboard)

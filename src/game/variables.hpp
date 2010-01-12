@@ -27,6 +27,28 @@ MACRO_CONFIG_INT(cl_motd_time, 10, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "How lon
 
 MACRO_CONFIG_STR(cl_version_server, 100, "version.teeworlds.com", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Server to use to check for new versions")
 
+//Hud-Mod
+MACRO_CONFIG_INT(cl_render_time, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the Server time on or off")
+MACRO_CONFIG_INT(cl_render_scoreboard, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the game over scoreboard on or off")
+MACRO_CONFIG_INT(cl_render_warmup, 1, 0, 1, CFGFLAG_CLIENT, "Turnes warmup timer on or off")
+MACRO_CONFIG_INT(cl_render_broadcast, 1, 0, 1, CFGFLAG_CLIENT, "Turnes broadcast on or off")
+MACRO_CONFIG_INT(cl_render_hp, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the hp display on or off")
+MACRO_CONFIG_INT(cl_render_ammo, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the ammo display on or off")
+MACRO_CONFIG_INT(cl_render_crosshair, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the crosshair on or off")
+MACRO_CONFIG_INT(cl_render_score, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the small score board on or off")
+MACRO_CONFIG_INT(cl_render_viewmode, 1, 0, 1, CFGFLAG_CLIENT, "Turnes viewmode display on or off")
+MACRO_CONFIG_INT(cl_render_infomsg, 1, 0, 1, CFGFLAG_CLIENT, "Turnes info messages display on or off")
+MACRO_CONFIG_INT(cl_render_servermsg, 1, 0, 1, CFGFLAG_CLIENT, "Turnes in game server messages on or off")
+MACRO_CONFIG_INT(cl_render_chat, 1, 0, 1, CFGFLAG_CLIENT, "Turnes in game chat on or off")
+MACRO_CONFIG_INT(cl_render_kill, 1, 0, 1, CFGFLAG_CLIENT, "Turnes kill messages on or off")
+MACRO_CONFIG_INT(cl_render_vote, 1, 0, 1, CFGFLAG_CLIENT, "Turnes Vote messages on or off")
+
+MACRO_CONFIG_INT(cl_clear_hud, 0, 0, 1, CFGFLAG_CLIENT, "Turnes hud on or off")
+MACRO_CONFIG_INT(cl_clear_all, 0, 0, 1, CFGFLAG_CLIENT, "Cleans the whole screen")
+
+MACRO_CONFIG_INT(cl_servermsgsound, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turnes servermessage sound on or off")
+MACRO_CONFIG_INT(cl_chatsound, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turnes chat sound on or off")
+
 MACRO_CONFIG_INT(player_use_custom_color, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Toggles usage of custom colors")
 MACRO_CONFIG_INT(player_color_body, 65408, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player body color")
 MACRO_CONFIG_INT(player_color_feet, 65408, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player feet color")
