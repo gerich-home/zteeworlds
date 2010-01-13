@@ -106,12 +106,12 @@ MACRO_CONFIG_INT(sv_vote_scorelimit, 0, 0, 1, CFGFLAG_SERVER, "Allow voting to c
 MACRO_CONFIG_INT(sv_vote_timelimit, 0, 0, 1, CFGFLAG_SERVER, "Allow voting to change time limit")
 
 //Chat-Mod
-MACRO_CONFIG_INT(cl_change_sound, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turns special chat sound on or off")
-MACRO_CONFIG_INT(cl_change_color, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turns special chat sound on or off")
-MACRO_CONFIG_STR(cl_search_name, 64, "nameless tee", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Names to search for in chat messages")
-MACRO_CONFIG_INT(cl_anti_spam, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Disables multiple messages")
+MACRO_CONFIG_INT(cl_change_sound, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turns special chat sound on or off")
+MACRO_CONFIG_INT(cl_change_color, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turns special chat sound on or off")
+MACRO_CONFIG_STR(cl_search_name, 64, "", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Names to search for in chat messages")
+MACRO_CONFIG_INT(cl_anti_spam, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Disables multiple messages")
 MACRO_CONFIG_INT(cl_block_spammer, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Disables chat messages for player you want to ignore")
-MACRO_CONFIG_STR(cl_spammer_name, 64, "nameless tee", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Names of players you want to ignore")
+MACRO_CONFIG_STR(cl_spammer_name, 64, "", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Names of players you want to ignore")
 
 /* debug */
 #ifdef CONF_DEBUG /* this one can crash the server if not used correctly */
