@@ -2,6 +2,8 @@
 #include <string.h>
 #include <engine/e_client_interface.h>
 
+#include <SDL_opengl.h>
+
 static int word_length(const char *text)
 {
 	int s = 1;
@@ -48,6 +50,8 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 	float screen_x0, screen_y0, screen_x1, screen_y1;
 	float fake_to_screen_x, fake_to_screen_y;
 	int actual_x, actual_y;
+	CFont *pFont = FreeTypeTextRenderer.GetDefaultFont();
+	CFontSizeData *pSizeData = NULL;
 
 	FONT *font;
 	int actual_size;
@@ -83,6 +87,8 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 		font_set = default_font_set;
 
 	font = font_set_pick(font_set, actual_size);
+	pSizeData = FreeTypeTextRenderer.GetSize(pFont, actual_size);
+	FreeTypeTextRenderer.RenderSetup(pFont, actual_size);
 
 	if (length < 0)
 		length = strlen(text);
@@ -102,7 +108,6 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 		draw_y = cursor_y;
 		bool prev_utf8 = false;
 		int prev_char = 0;
-		ft_FONTCHAR * prev_fontchar = NULL;
 		bool has_gfx_begin = false;
 		
 		while(to_render > 0)
@@ -171,13 +176,19 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					current++;
 					isUtf8Char = false;
 					this_batch--;
-					break;
 				} else {
 					isUtf8Char = config.gfx_freetype_font ? true : str_utf8_char_length(character) > 1;
+					this_batch -= str_utf8_char_length(character);
+				}
+				{
 					tmp = current;
 					nextcharacter = str_utf8_decode((const char **)(&tmp));
-					if ((void *)nextcharacter > (void *)end) break;
-					this_batch -= str_utf8_char_length(character);
+					if (tmp == current || str_utf8_char_length(nextcharacter) == 0)
+					{
+						nextcharacter = *((unsigned char *)current);
+					}
+					//if ((void *)nextcharacter > (void *)end) break;
+					//this_batch -= str_utf8_char_length(character);
 				}
 				
 				if(character == '\n')
@@ -270,22 +281,19 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					
 					advance = 1.2f;
 				} else
-				if (font_set->ft_font) {
-					ft_FONTCHAR * chr;
-					if (prev_char == character && prev_utf8)
-						chr = prev_fontchar;
-					else
-						chr = ft_font_get_char(font_set->ft_font, character, actual_size);
-					prev_fontchar = chr;
-					if (cursor->flags&TEXTFLAG_RENDER && chr)
+				if (pFont)
+				{
+					CFontChar * Char = FreeTypeTextRenderer.GetChar(pFont, pSizeData, character);
+					if (Char)
 					{
+						if (cursor->flags&TEXTFLAG_RENDER)
 						{
 							if (has_gfx_begin)
 							{
 								gfx_quads_end();
 								has_gfx_begin = false;
 							}
-							gfx_texture_set(chr->texture[1 - i]);
+							gfx_texture_set(pSizeData->m_aTextureIds[1 - i]);
 							gfx_quads_begin();
 							has_gfx_begin = true;
 							
@@ -294,24 +302,21 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 							else
 								gfx_setcolor(text_r, text_g, text_b, text_a);
 						
-							gfx_quads_setsubset(0.0f, 0.0f, chr->tex_w, chr->tex_h);
+							gfx_quads_setsubset(Char->m_aUvs[0], Char->m_aUvs[1], Char->m_aUvs[2], Char->m_aUvs[3]);
+							
+							if (config.gfx_text_shadows && i == 0)
+							{
+								gfx_setcolor(0.0f, 0.0f, 0.0f, 0.5f * text_a);
+								gfx_quads_drawTL(draw_x+Char->m_OffsetX*size+1, draw_y+Char->m_OffsetY*size+1, Char->m_Width*size, Char->m_Height*size);
+								gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
+							}
+							gfx_quads_drawTL(draw_x+Char->m_OffsetX*size, draw_y+Char->m_OffsetY*size, Char->m_Width*size, Char->m_Height*size);
+							
+							prev_utf8 = true;
 						}
-						
-						if (config.gfx_text_shadows && i == 0)
-						{
-							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.5f * text_a);
-							gfx_quads_drawTL(draw_x + chr->x_offset * size + 1, draw_y + chr->y_offset * size * 0.9f + 1, chr->w * size, chr->h * size);
-							gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
-						}
-						gfx_quads_drawTL(draw_x + chr->x_offset * size, draw_y + chr->y_offset * size * 0.75f, chr->w * size, chr->h * size);
-						
-						prev_utf8 = true;
-					}
 
-					if (chr)
-					{
-						advance = chr->advance;
-					}
+						advance = Char->m_AdvanceX + FreeTypeTextRenderer.Kerning(pFont, character, nextcharacter)/size;
+					} else dbg_msg("font", "no char: %c (%d)", character, character);
 				}
 								
 				if(cursor->flags&TEXTFLAG_STOP_AT_END && draw_x+advance*size-cursor->start_x > cursor->line_width)

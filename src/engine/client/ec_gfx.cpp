@@ -487,6 +487,23 @@ static unsigned char sample(int w, int h, const unsigned char *data, int u, int 
 	data[((v+1)*w+u+1)*4+offset])/4;
 }
 
+int gfx_add_texture(unsigned long tex_id, int width, int height)
+{
+	int tex = 0;
+	
+	tex = first_free_texture;
+	first_free_texture = textures[tex].next;
+	textures[tex].next = -1;
+	
+	textures[tex].tex = tex_id;
+	textures[tex].width = width;
+	textures[tex].height = height;
+	textures[tex].memsize = width * height * 4;
+	textures[tex].flags = 0;
+	
+	return tex;
+}
+
 int gfx_load_texture_raw(int w, int h, int format, const void *data, int store_format, int flags)
 {
 	int mipmap = 1;

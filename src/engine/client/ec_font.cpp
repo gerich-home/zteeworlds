@@ -7,25 +7,11 @@
 #include <engine/e_engine.h>
 #include "ec_font.h"
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
+#include "ec_new_text_render.h"
 
-#include <freetype/ftglyph.h>
-#include <freetype/ftoutln.h>
-#include <freetype/fttrigon.h>
+CTextRender FreeTypeTextRenderer;
 
-#include <vector>
-#include <string.h>
-
-#include <SDL_opengl.h>
-
-static int font_sizes[] = {8,9,10,11,12,13,14,15,16,17,18,19,20,36};
-#define NUM_FONT_SIZES (sizeof(font_sizes)/sizeof(int))
-
-static FT_Library ft_library;
-static bool ft_FontInitialized = false;
-
-void ft_font_init()
+/*void ft_font_init()
 {
 	if (ft_FontInitialized) return;
 	FT_Init_FreeType(&ft_library);
@@ -205,7 +191,7 @@ static int ft_font_get_index(int pixelsize)
 	}
 	
 	return NUM_FONT_SIZES-1;
-}
+}*/
 
 typedef struct
 {
@@ -327,12 +313,22 @@ int font_set_load(FONT_SET *font_set, const char *font_filename, const char *tex
 
     va_end(va);
 	
-	font_set->ft_font = ft_font_load(ft_font_filename);
+	FreeTypeTextRenderer.Init();
+	CFont * ft_font = FreeTypeTextRenderer.LoadFont(ft_font_filename);
+	if (!ft_font)
+	{
+		dbg_msg("font/loading", "failed loading freetype font %s.", ft_font_filename);
+		return -1;
+	} else {
+		FreeTypeTextRenderer.SetDefaultFont(ft_font);
+	}
+	
+	/*font_set->ft_font = ft_font_load(ft_font_filename);
 	if (!font_set->ft_font)
 	{
 		dbg_msg("font/loading", "failed loading freetype font %s.", ft_font_filename);
 		return -1;
-	}
+	}*/
 	
     return 0;
 }
