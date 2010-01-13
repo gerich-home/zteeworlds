@@ -157,7 +157,7 @@ int lang_load(const char * filename)
 	str_format(fn_buf, sizeof(fn_buf), "languages/%s", filename);
 	file = engine_openfile(fn_buf, IOFLAG_READ);
 
-	if(file)
+	while(file)
 	{
 		int gid = -1;
 		const char * str = 0;
@@ -169,12 +169,13 @@ int lang_load(const char * filename)
 		if (!(line = linereader_get(&lr))) // skiping language name
 		{
 			io_close(file);
-			return 0; 
+			break;
 		}
 		
 		while (line = linereader_get(&lr))
 		{
 			format_replace(line);
+			if (str_length(line) == 0 || line[0] == '\r' || line[0] == '\n') continue;
 			if (!str)
 			{
 				sscanf(line, "%d", &gid);
@@ -211,8 +212,9 @@ int lang_load(const char * filename)
 		}
 
 		io_close(file);
+		file = 0;
 		
-		dbg_msg("lang", "Language loaded");
+		dbg_msg("lang", "Language %s loaded", filename);
 
 		return 0;
 	}

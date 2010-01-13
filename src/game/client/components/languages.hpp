@@ -13,10 +13,12 @@ typedef struct LANGUAGE_LIST_ITEM
 class LANGUAGES : public COMPONENT
 {
 private:
+	char prev_lang[256];
 	static void langscan(const char *name, int is_dir, void *user);
 public:
 	std::vector<LANGUAGE_LIST_ITEM *> languages;
 	
 	virtual void on_init();
+	virtual void on_render();
 };
 

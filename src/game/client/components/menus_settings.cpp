@@ -216,7 +216,7 @@ void MENUS::render_settings_player(RECT main_view)
 					break;
 				}
 			if (!buf[0])
-				str_format(buf, sizeof(buf), _t("Current: %s"), "---");
+				str_format(buf, sizeof(buf), _t("Current: %s"), _t("unknown"));
 			ui_draw_rect(&footer, vec4(1,1,1,0.25f), CORNER_B, 5.0f); 
 			ui_vsplit_l(&footer, 10.0f, 0, &footer);
 			ui_do_label(&footer, buf, 14.0f, -1);
@@ -250,7 +250,6 @@ void MENUS::render_settings_player(RECT main_view)
 				if(ui_do_button(gameclient.languages->languages[i], "", selected, &button, ui_draw_list_row, 0))
 				{
 					mem_copy(config.language, (const char *)gameclient.languages->languages[i]->filename, sizeof(config.language));
-					lang_load(config.language);
 				}
 					
 				ui_hsplit_t(&list, 20, &button, &list);
