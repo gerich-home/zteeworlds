@@ -85,6 +85,10 @@ void MENUS::render_settings_player(RECT main_view)
 			config.cl_autoswitch_weapons ^= 1;
 			
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_show_ghost, _t("Show ghost"), config.cl_show_ghost, &button, ui_draw_checkbox, 0))
+			config.cl_show_ghost ^= 1;
+		
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		if (ui_do_button(&config.cl_nameplates, _t("Show name plates"), config.cl_nameplates, &button, ui_draw_checkbox, 0))
 			config.cl_nameplates ^= 1;
 

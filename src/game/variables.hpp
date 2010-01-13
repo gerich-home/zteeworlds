@@ -27,6 +27,8 @@ MACRO_CONFIG_INT(cl_motd_time, 10, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "How lon
 
 MACRO_CONFIG_STR(cl_version_server, 100, "version.teeworlds.com", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Server to use to check for new versions")
 
+MACRO_CONFIG_INT(cl_show_ghost, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Shows the ghost tee")
+
 //Hud-Mod
 MACRO_CONFIG_INT(cl_render_time, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the Server time on or off")
 MACRO_CONFIG_INT(cl_render_scoreboard, 1, 0, 1, CFGFLAG_CLIENT, "Turnes the game over scoreboard on or off")

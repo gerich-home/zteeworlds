@@ -402,7 +402,7 @@ void PLAYERS::render_player(
 	}
 
 	// render the "shadow" tee
-	if(info.local && config.debug)
+	if(info.local && (config.cl_show_ghost || config.debug))
 	{
 		vec2 ghost_position = mix(vec2(prev_char->x, prev_char->y), vec2(player_char->x, player_char->y), client_intratick());
 		TEE_RENDER_INFO ghost = render_info;
