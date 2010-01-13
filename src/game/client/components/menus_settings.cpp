@@ -768,6 +768,50 @@ void MENUS::render_settings_sound(RECT main_view)
 	}
 }
 
+void MENUS::render_settings_beep(RECT main_view)
+{
+	RECT button;
+	
+	ui_vsplit_l(&main_view, 300.0f, &main_view, 0);
+	
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.cl_change_sound, _t("Change chat sound"), config.cl_change_sound, &button, ui_draw_checkbox, 0))
+		config.cl_change_sound ^= 1;
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.cl_change_color, _t("Change color of chat messages"), config.cl_change_color, &button, ui_draw_checkbox, 0))
+		config.cl_change_color ^= 1;
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.cl_block_spammer, _t("Block all messages from spaming people"), config.cl_block_spammer, &button, ui_draw_checkbox, 0))
+		config.cl_block_spammer ^= 1;
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	if (ui_do_button(&config.cl_anti_spam, _t("Block spam"), config.cl_anti_spam, &button, ui_draw_checkbox, 0))
+		config.cl_anti_spam ^= 1;
+		
+	ui_hsplit_t(&main_view, 10.0f, &button, &main_view);
+	
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	ui_do_label(&button, _t("Search for names:"), 14.0, -1);
+	ui_vsplit_l(&button, 140.0f, 0, &button);
+	ui_vsplit_l(&button, 380.0f, &button, 0);
+	ui_do_edit_box(config.cl_search_name, &button, config.cl_search_name, sizeof(config.cl_search_name), 14.0f);
+	
+	ui_hsplit_t(&main_view, 5.0f, &button, &main_view);
+	
+	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+	ui_do_label(&button, _t("Spammer names:"), 14.0, -1);
+	ui_vsplit_l(&button, 140.0f, 0, &button);
+	ui_vsplit_l(&button, 380.0f, &button, 0);
+	ui_do_edit_box(config.cl_spammer_name, &button, config.cl_spammer_name, sizeof(config.cl_spammer_name), 14.0f);
+ 
+	// information text
+	ui_hsplit_b(&main_view, 25.0f, &main_view, &button);
+	ui_do_label(&button, _t("Enter the names u want to look for.\nSeperate them with a simple space."), 14.0f, -1);
+
+	ui_hsplit_b(&main_view, -10.0f, &main_view, &button);
+	ui_vsplit_l(&button, main_view.w*4.1, 0, &button);
+	ui_do_label(&button, _t("by Sushi :)"), 10.0f, 0);
+}
+
 void MENUS::render_settings_hudmod(RECT main_view)
 {
 	RECT button, text, right_view;
@@ -925,7 +969,7 @@ void MENUS::render_settings(RECT main_view)
 	
 	RECT button;
 	
-	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Hud-Mod"};
+	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Beep", "Hud-Mod"};
 	tabs[0] = _t("Player");
 	tabs[1] = _t("Controls");
 	tabs[2] = _t("Graphics");
@@ -951,6 +995,8 @@ void MENUS::render_settings(RECT main_view)
 	else if(settings_page == 3)
 		render_settings_sound(main_view);
 	else if(settings_page == 4)
+		render_settings_beep(main_view);
+	else if(settings_page == 5)
 		render_settings_hudmod(main_view);
 
 	if(need_restart)

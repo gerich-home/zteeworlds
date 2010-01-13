@@ -17,6 +17,9 @@ class CHAT : public COMPONENT
 		int client_id;
 		int team;
 		int name_color;
+		int contains_name;
+		int ignore;
+		int spam;
 		char name[64];
 		char text[512];
 	};
@@ -42,10 +45,39 @@ class CHAT : public COMPONENT
 
 	int mode;
 	
+	bool contains_name;
+	bool ignore_player;
+	bool spam;
+	
+	char last_msg[16][265];
+	
 	static void con_say(void *result, void *user_data);
 	static void con_sayteam(void *result, void *user_data);
 	static void con_chat(void *result, void *user_data);
 public:
+	struct split
+	{
+		char *pointers[256];
+		int count;
+	};
+
+	static struct split split (char *in, char delim)
+	{
+		struct split sp;
+		sp.count = 1;
+		sp.pointers[0] = in;
+ 
+		while (*++in)
+		{
+			if (*in == delim)
+			{
+				*in = 0;
+				sp.pointers[sp.count++] = in+1;
+			}
+		}
+		return sp;
+	};
+	
 	bool is_active() const { return mode != MODE_NONE; }
 	
 	void add_line(int client_id, int team, const char *line);
