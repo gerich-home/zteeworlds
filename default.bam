@@ -109,6 +109,7 @@ function build(settings)
 
 	if config.compiler.value == "cl" then
 		settings.cc.flags:Add("/wd4244", "/EHsc")
+		settings.link.flags:Add("/NODEFAULTLIB:libcmt.lib", "/NODEFAULTLIB:libcmtd.lib")
 	else
 		settings.cc.flags:Add("-Wall", "-fno-exceptions")
 		if platform == "macosx" then
