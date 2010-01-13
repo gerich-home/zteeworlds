@@ -752,7 +752,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		RECT button, label;
 		ui_hsplit_t(&main_view, 5.0f, &button, &main_view);
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		ui_vsplit_l(&button, 110.0f, &label, &button);
+		ui_vsplit_l(&button, 170.0f, &label, &button);
 		ui_hmargin(&button, 2.0f, &button);
 		ui_do_label(&label, _t("Sound Volume"), 14.0f, -1);
 		config.snd_volume = (int)(ui_do_scrollbar_h(&config.snd_volume, &button, config.snd_volume/100.0f)*100.0f);
@@ -763,7 +763,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		RECT button, label;
 		ui_hsplit_t(&main_view, 5.0f, &button, &main_view);
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		ui_vsplit_l(&button, 110.0f, &label, &button);
+		ui_vsplit_l(&button, 170.0f, &label, &button);
 		ui_hmargin(&button, 2.0f, &button);
 		ui_do_label(&label, _t("Music Volume"), 14.0f, -1);
 		config.music_volume = (int)(ui_do_scrollbar_h(&config.music_volume, &button, config.music_volume/100.0f)*100.0f);

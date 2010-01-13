@@ -671,7 +671,7 @@ void MENUS::render_serverbrowser(RECT main_view)
 		
 		RECT button;
 		ui_hsplit_b(&button_box, button_height, &button_box, &button);
-		ui_vsplit_r(&button, 120.0f, 0, &button);
+		ui_vsplit_r(&button, 170.0f, 0, &button);
 		ui_vmargin(&button, 2.0f, &button);
 		//ui_vmargin(&button, 2.0f, &button);
 		static int join_button = 0;
