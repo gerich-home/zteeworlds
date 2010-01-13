@@ -313,6 +313,7 @@ void MENUS::render_servercontrol_server(RECT main_view)
 
 void MENUS::render_servercontrol_kick(RECT main_view)
 {
+	char buf[256];
 	// draw header
 	RECT header, footer;
 	ui_hsplit_t(&main_view, 20, &header, &main_view);
@@ -343,7 +344,11 @@ void MENUS::render_servercontrol_kick(RECT main_view)
 		render_tee(ANIMSTATE::get_idle(), &info, EMOTE_NORMAL, vec2(1,0), vec2(button.x+button.h/2, button.y+button.h/2));
 
 		button.x += button.h;
-		ui_do_label(&button, gameclient.clients[i].name, 18.0f, -1);
+		if(i<10)
+			str_format(buf, sizeof(buf), "%2d |  %s", i, gameclient.clients[i].name);
+		else
+			str_format(buf, sizeof(buf), "%2d|  %s", i, gameclient.clients[i].name);
+		ui_do_label(&button, buf, 18.0f, -1);
 	}
 }
 
