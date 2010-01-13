@@ -71,7 +71,7 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 	cols[5].caption = _t("Type");
 	cols[6].caption = _t("Map");
 	cols[7].caption = _t("Players");
-	cols[8].caption = _t("Ping");
+	cols[9].caption = _t("Ping");
 	
 	int num_cols = sizeof(cols)/sizeof(column);
 	
