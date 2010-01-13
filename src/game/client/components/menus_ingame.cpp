@@ -345,9 +345,9 @@ void MENUS::render_servercontrol_kick(RECT main_view)
 
 		button.x += button.h;
 		if(i<10)
-			str_format(buf, sizeof(buf), "%2d |  %s", i, gameclient.clients[i].name);
+			str_format(buf, sizeof(buf), _t("%2d. %s"), i, gameclient.clients[i].name);
 		else
-			str_format(buf, sizeof(buf), "%2d|  %s", i, gameclient.clients[i].name);
+			str_format(buf, sizeof(buf), _t("%2d. %s"), i, gameclient.clients[i].name);
 		ui_do_label(&button, buf, 18.0f, -1);
 	}
 }
