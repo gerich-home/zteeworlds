@@ -13,6 +13,27 @@ CAMERA::CAMERA()
 {
 }
 
+static void con_dynamic_camera(void *result, void *user_data)
+{
+	if(config.cl_mouse_deadzone)
+	{
+		config.cl_mouse_followfactor = 0;
+		config.cl_mouse_max_distance = 400;
+		config.cl_mouse_deadzone = 0;
+	}
+	else
+	{
+		config.cl_mouse_followfactor = 60;
+		config.cl_mouse_max_distance = 1000;
+		config.cl_mouse_deadzone = 300;
+	}
+}
+
+void CAMERA::on_console_init()
+{
+	MACRO_REGISTER_COMMAND("+dynamic_camera", "", CFGFLAG_CLIENT, con_dynamic_camera, &config.cl_mouse_deadzone, "Switch dynamic camera mode");
+}
+
 void CAMERA::on_render()
 {
 	//vec2 center;

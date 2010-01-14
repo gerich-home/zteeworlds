@@ -8,6 +8,7 @@ public:
 	float zoom;
 
 	CAMERA();
+	virtual void on_console_init();
 	virtual void on_render();
 };
 
