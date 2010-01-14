@@ -10,7 +10,7 @@
 
 enum
 {
-	MAX_CHARACTERS = 64,
+	MAX_CHARACTERS = 128,
 };
 
 
