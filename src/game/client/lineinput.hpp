@@ -22,6 +22,7 @@ public:
 	const char *get_string() const { return str; }
 	int get_length() const { return len; }
 	unsigned cursor_offset() const { return cursor_pos; }
+	void set_cursor_offset(unsigned offset) { cursor_pos = offset; }
 };
 
 #endif

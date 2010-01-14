@@ -167,6 +167,56 @@ bool CHAT::on_input(INPUT_EVENT e)
 		else
 			input.set(history[curr_history_line].text);
 	}
+	else if (e.flags&INPFLAG_PRESS && e.key == KEY_TAB)
+	{
+		if(input.get_string()[0])
+		{
+			char * str = (char *)input.get_string();
+			int space = 0;
+			for (int i = 0; i < input.cursor_offset();)
+			{
+				char * tmp = str + i;
+				int character = str_utf8_decode((const char **)(&tmp));
+				int char_len = str_utf8_char_length(character);
+				if (tmp == str + i || char_len < 1)
+				{
+					char_len = 1;
+					character = str[i];
+				}
+				if (char_len == 1 && str[i] == ' ')
+				{
+					space = i + 1;
+				}
+				i += char_len;
+			}
+			
+			char buf[256], buf2[256];
+			memset(buf, 0, sizeof(buf));
+			mem_copy(buf, str + space, input.cursor_offset() - space);
+			for (int i = 0; i < MAX_CLIENTS; i++)
+			{
+				if (!gameclient.snap.player_infos[i]) continue;
+				
+				memset(buf2, 0, sizeof(buf2));
+				mem_copy(buf2, gameclient.clients[i].name, str_length(buf));
+				if (str_comp_nocase(buf, buf2) == 0)
+				{
+					memset(buf, 0, sizeof(buf));
+					memset(buf2, 0, sizeof(buf2));
+					if (space)
+						mem_copy(buf, str, space);
+										
+					str_format(buf2, 256, "%s%s%s", buf, gameclient.clients[i].name, str + input.cursor_offset());
+					int c_off = str_length(buf) + str_length(gameclient.clients[i].name);
+					input.set(buf2);
+					input.set_cursor_offset(c_off);
+					
+					
+					break;
+				}
+			}
+		}
+	}
 	else
 		input.process_input(e);
 	
