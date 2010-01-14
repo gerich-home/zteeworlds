@@ -249,6 +249,18 @@ void CHAT::on_message(int msgtype, void *rawmsg)
 		}
 			
  		add_line(msg->cid, msg->team, msg->message);
+		
+		#ifndef CONF_TRUNC
+		lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "client_event_chat");
+		if(lua_isfunction(GetLuaState(), -1))
+		{
+			lua_pushinteger(GetLuaState(), msg->cid);
+			lua_pushinteger(GetLuaState(), msg->team);
+			lua_pushstring(GetLuaState(), msg->message);
+			lua_pcall(GetLuaState(), 3, 0, 0);
+		}
+		lua_pop(GetLuaState(), 1);
+		#endif
 
 		if(!spam && !ignore_player)
 		{

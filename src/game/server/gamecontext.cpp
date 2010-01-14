@@ -1,6 +1,7 @@
 #include <string.h>
 #include <new>
 #include <engine/e_server_interface.h>
+#include <engine/e_lua.h>
 #include "gamecontext.hpp"
 
 GAMECONTEXT game;
@@ -201,6 +202,18 @@ void GAMECONTEXT::send_chat(int chatter_cid, int team, const char *text)
 				server_send_msg(i);
 		}
 	}
+	
+	#ifndef CONF_TRUNC
+	lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "server_event_chat");
+	if(lua_isfunction(GetLuaState(), -1))
+	{
+		lua_pushinteger(GetLuaState(), chatter_cid);
+		lua_pushinteger(GetLuaState(), team);
+		lua_pushstring(GetLuaState(), text);
+		lua_pcall(GetLuaState(), 3, 0, 0);
+	}
+	lua_pop(GetLuaState(), 1);
+	#endif
 }
 
 void GAMECONTEXT::send_emoticon(int cid, int emoticon)
