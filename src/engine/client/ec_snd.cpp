@@ -310,7 +310,7 @@ int snd_update()
 		lock_release(sound_lock);
 	}
 	
-	snd_set_channel(1, config.music_volume * 0.01f, 1.0f);
+	snd_set_channel(1, config.music_volume * 0.01f, 0.0f);
 	
 	return 0;
 }

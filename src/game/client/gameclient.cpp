@@ -375,6 +375,7 @@ void GAMECLIENT::on_init()
 		
 	{
 		int music_id = snd_load_wv("audio/music.wv");
+		snd_set_channel(SOUNDS::CHN_MUSIC, config.music_volume * 0.01f, 0.0f);
 		if (music_id >= 0)
 			snd_play(SOUNDS::CHN_MUSIC, music_id, SNDFLAG_LOOP);
 	}
