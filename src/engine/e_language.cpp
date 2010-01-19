@@ -1,43 +1,12 @@
 #include "e_language.h"
 
+#include <stdlib.h>
+#include <stdio.h>
 #include <base/system.h>
 #include <string.h>
 #include "e_linereader.h"
 #include "e_engine.h"
-/*
-LANGUAGE default_language = {
-	#define MACRO_LANGUAGE_ITEM(name, text) text,
-	#include "e_language_def.h"
-	#undef MACRO_LANGUAGE_ITEM
-};
-
-LANGUAGE curr_language;
-
-LANGUAGE * language = &curr_language;
-
-char * loaded_language = NULL;
-
-void lang_init()
-{
-	mem_copy(&curr_language, &default_language, sizeof(default_language));
-}
-
-void lang_free()
-{
-	#define MACRO_LANGUAGE_ITEM(name, text) if (curr_language.name != default_language.name) mem_free(language->name);
-	#include "e_language_def.h"
-	#undef MACRO_LANGUAGE_ITEM
-	if (loaded_language != NULL) mem_free(loaded_language);
-}
-
-const char * lang_get(const char * str_name)
-{
-	#define MACRO_LANGUAGE_ITEM(name, text) if (str_comp_nocase(str_name, #name ) == 0) return language->name ;
-	#include "e_language_def.h"
-	#undef MACRO_LANGUAGE_ITEM
-
-	return "";
-}*/
+#include <vector>
 
 void format_replace(char * text)
 {
@@ -73,37 +42,6 @@ void format_replace(char * text)
 	}
 	mem_zero(text + j, len - j);
 }
-
-/*int lang_load(const char * filename)
-{
-	IOHANDLE file;
-
-	file = engine_openfile(filename, IOFLAG_READ);
-
-	if(file)
-	{
-		char *line = "";
-		LINEREADER lr;
-
-		linereader_init(&lr, file);
-
-		#define MACRO_LANGUAGE_ITEM(name, text) line = linereader_get(&lr); if (line) while (str_length(line) == 0) line = linereader_get(&lr); if (line) { format_replace(line); language->name = (char *)mem_alloc(str_length(line) + 1, 1); mem_copy(language->name, line, str_length(line) + 1); };
-		#include "e_language_def.h"
-		#undef MACRO_LANGUAGE_ITEM
-
-		io_close(file);
-
-		if (loaded_language != NULL) mem_free(loaded_language);
-		loaded_language = (char *)mem_alloc(str_length(filename) + 1, 1);
-		mem_copy(loaded_language, filename, str_length(filename) + 1);
-
-		return 0;
-	}
-
-	return 1;
-}*/
-
-#include <vector>
 
 typedef struct LANGUAGE_ITEM
 {

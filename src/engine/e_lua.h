@@ -20,9 +20,12 @@ lua_State * GetLuaState();
 
 #ifndef CONF_TRUNC
 
+#ifdef __GNUC__
+#define LUA_REGISTER_FUNC(func) lua_register(GetLuaState(), #func , _lua_ ## func );
+#else
 #define LUA_REGISTER_FUNC(func) lua_register(GetLuaState(), #func , _lua_ ## func ); \
 	__pragma(message("Lua function: " # func))
-	
+#endif
 #else
 
 #define LUA_REGISTER_FUNC(func) ;

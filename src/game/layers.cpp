@@ -102,11 +102,19 @@ static int _lua_map_group_info(lua_State * L)
 
 	const char * action = lua_tostring(L, 2);
 
+#ifdef __GNUC__
+#define GROUP_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
+	{ \
+		lua_pushinteger(L, g->name); \
+		return 1; \
+	}
+#else
 #define GROUP_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
 	{ \
 		lua_pushinteger(L, g->##name); \
 		return 1; \
 	}
+#endif
 
 GROUP_VAR(version)
 GROUP_VAR(offset_x)
@@ -141,12 +149,19 @@ static int _lua_map_layer_info(lua_State * L)
 	if (!g) return 0;
 
 	const char * action = lua_tostring(L, 2);
-
+#ifdef __GNUC__
+#define LAYER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
+	{ \
+		lua_pushinteger(L, g->name); \
+		return 1; \
+	}
+#else
 #define LAYER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
 	{ \
 		lua_pushinteger(L, g->##name); \
 		return 1; \
 	}
+#endif
 
 LAYER_VAR(version)
 LAYER_VAR(type)
@@ -156,12 +171,20 @@ LAYER_VAR(flags)
 
 	if (g->type == LAYERTYPE_TILES)
 	{
-
+	  
+#ifdef __GNUC__
+#define TILELAYER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
+	{ \
+		lua_pushinteger(L, ((MAPITEM_LAYER_TILEMAP *)g)->name); \
+		return 1; \
+	}
+#else
 #define TILELAYER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
 	{ \
 		lua_pushinteger(L, ((MAPITEM_LAYER_TILEMAP *)g)->##name); \
 		return 1; \
 	}
+#endif
 
 TILELAYER_VAR(width)
 TILELAYER_VAR(height)
@@ -181,12 +204,20 @@ TILELAYER_VAR(data)
 
 	if (g->type == LAYERTYPE_QUADS)
 	{
-
+	  
+#ifdef __GNUC__
+#define QUADSLAYER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
+	{ \
+		lua_pushinteger(L, ((MAPITEM_LAYER_QUADS *)g)->name); \
+		return 1; \
+	}
+#else
 #define QUADSLAYER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
 	{ \
 		lua_pushinteger(L, ((MAPITEM_LAYER_QUADS *)g)->##name); \
 		return 1; \
 	}
+#endif
 
 QUADSLAYER_VAR(num_quads)
 QUADSLAYER_VAR(data)

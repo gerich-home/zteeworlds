@@ -1331,6 +1331,18 @@ static int _lua_gameclient_player_info(lua_State * L)
 		return 1;
 	}
 
+#ifdef __GNUC__
+#define CHARACTER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
+	{ \
+		lua_pushinteger(L, gameclient.snap.characters[cid].cur.name); \
+		return 1; \
+	} \
+	if (str_comp_nocase(action, "prev_"#name ) == 0) \
+	{ \
+		lua_pushinteger(L, gameclient.snap.characters[cid].prev.name); \
+		return 1; \
+	}
+#else
 #define CHARACTER_VAR(name) if (str_comp_nocase(action, #name ) == 0) \
 	{ \
 		lua_pushinteger(L, gameclient.snap.characters[cid].cur.##name); \
@@ -1341,6 +1353,7 @@ static int _lua_gameclient_player_info(lua_State * L)
 		lua_pushinteger(L, gameclient.snap.characters[cid].prev.##name); \
 		return 1; \
 	}
+#endif
 
 CHARACTER_VAR(tick)
 CHARACTER_VAR(x)
