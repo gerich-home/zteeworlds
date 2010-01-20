@@ -302,7 +302,7 @@ void CHAT::on_message(int msgtype, void *rawmsg)
 		
 		#ifndef CONF_TRUNC
 		lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "client_event_chat");
-		if(lua_isfunction(GetLuaState(), -1))
+		if(lua_isfunction(GetLuaState(), -1) && msg)
 		{
 			lua_pushinteger(GetLuaState(), msg->cid);
 			lua_pushinteger(GetLuaState(), msg->team);
