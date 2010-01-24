@@ -58,6 +58,7 @@ MACRO_CONFIG_STR(player_skin, 64, "default", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Playe
 MACRO_CONFIG_INT(cl_default_skin_only, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Default skin only")
 MACRO_CONFIG_INT(cl_showduelscores, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show small scoreboard in 1on1 game")
 MACRO_CONFIG_INT(gfx_eyecandy, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Advanced graphic effects")
+MACRO_CONFIG_INT(cl_anti_rainbow, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Anti-rainbow")
 #ifndef CONF_TRUNC
 MACRO_CONFIG_INT(cl_reconnect_time, 10, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Auto reconnection if disconnected")
 MACRO_CONFIG_INT(cl_spectator_zoom, 100, 10, 500, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Zoom in spectator mode")

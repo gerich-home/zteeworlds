@@ -502,6 +502,10 @@ void GAMECLIENT::on_reset()
 		clients[i].skin_info.color_feet = vec4(1,1,1,1);
 		clients[i].update_render_info();
 		clients[i].last_team = 0;
+		clients[i].last_color_change = 0;
+		clients[i].last_use_custom_color = clients[i].use_custom_color;
+		clients[i].last_color_body = clients[i].color_body;
+		clients[i].last_color_feet = clients[i].color_feet;
 		mem_zero(&clients[i].stats, sizeof(clients[i].stats));
 	}
 	
@@ -935,9 +939,24 @@ void GAMECLIENT::on_snapshot()
 			{
 				const NETOBJ_CLIENT_INFO *info = (const NETOBJ_CLIENT_INFO *)data;
 				int cid = item.id;
+				bool anti_rainbow = false;
 				ints_to_str(&info->name0, 6, clients[cid].name);
 				ints_to_str(&info->skin0, 6, clients[cid].skin_name);
 				
+				if (info->use_custom_color != clients[cid].last_use_custom_color ||
+					info->color_body != clients[cid].last_color_body ||
+					info->color_feet != clients[cid].last_color_feet)
+				{
+					clients[cid].last_use_custom_color = info->use_custom_color;
+					clients[cid].last_color_body = info->color_body;
+					clients[cid].last_color_feet = info->color_feet;
+					if (time(0) - clients[cid].last_color_change < 3.0f && config.cl_anti_rainbow)
+					{
+						anti_rainbow = true;
+					}
+					clients[cid].last_color_change = time(0);					
+				}
+
 				clients[cid].use_custom_color = info->use_custom_color;
 				clients[cid].color_body = info->color_body;
 				clients[cid].color_feet = info->color_feet;
@@ -970,7 +989,7 @@ void GAMECLIENT::on_snapshot()
 						clients[cid].skin_id = 0;
 				}
 				
-				if(clients[cid].use_custom_color)
+				if(clients[cid].use_custom_color && !anti_rainbow)
 					clients[cid].skin_info.texture = gameclient.skins->get(clients[cid].skin_id)->color_texture;
 				else
 				{

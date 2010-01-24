@@ -192,6 +192,12 @@ void MENUS::render_settings_player(RECT main_view)
 			config.cl_new_scoreboard = config.cl_new_scoreboard?0:1;
 		}
 		
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_anti_rainbow, _t("Anti-rainbow"), config.cl_anti_rainbow, &button, ui_draw_checkbox, 0))
+		{
+			config.cl_anti_rainbow = config.cl_anti_rainbow?0:1;
+		}
+		
 		{
 			RECT langlist = main_view;
 			ui_vmargin(&langlist, 5.0f, &langlist);

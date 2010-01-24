@@ -113,6 +113,10 @@ public:
 		float angle;
 		
 		int last_team;
+		float last_use_custom_color;
+		int last_color_body;
+		int last_color_feet;
+		int last_color_change;
 
 		struct
 		{
