@@ -198,6 +198,22 @@ void MENUS::render_settings_player(RECT main_view)
 			config.cl_anti_rainbow = config.cl_anti_rainbow?0:1;
 		}
 		
+#ifndef CONF_TRUNC
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.cl_sprees, _t("Killing sprees"), config.cl_sprees, &button, ui_draw_checkbox, 0))
+		{
+			config.cl_sprees = config.cl_sprees?0:1;
+		}
+		
+		if (config.cl_sprees)
+		{
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			ui_vsplit_l(&button, 15.0f, 0, &button);
+			if (ui_do_button(&config.cl_sprees_sounds, _t("Sounds of killing sprees"), config.cl_sprees_sounds, &button, ui_draw_checkbox, 0))
+				config.cl_sprees_sounds ^= 1;
+		}
+#endif
+		
 		{
 			RECT langlist = main_view;
 			ui_vmargin(&langlist, 5.0f, &langlist);

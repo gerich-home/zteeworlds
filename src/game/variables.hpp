@@ -62,6 +62,8 @@ MACRO_CONFIG_INT(cl_anti_rainbow, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Anti-ra
 #ifndef CONF_TRUNC
 MACRO_CONFIG_INT(cl_reconnect_time, 10, 0, 100, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Auto reconnection if disconnected")
 MACRO_CONFIG_INT(cl_spectator_zoom, 100, 10, 500, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Zoom in spectator mode")
+MACRO_CONFIG_INT(cl_sprees, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show killing sprees")
+MACRO_CONFIG_INT(cl_sprees_sounds, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Enable sounds of killing sprees")
 #endif
 
 MACRO_CONFIG_INT(ui_page, 5, 0, 9, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Interface page")

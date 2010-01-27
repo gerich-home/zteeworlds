@@ -378,6 +378,12 @@ void GAMECLIENT::on_init()
 		snd_set_channel(SOUNDS::CHN_MUSIC, config.music_volume * 0.01f, 0.0f);
 		if (music_id >= 0)
 			snd_play(SOUNDS::CHN_MUSIC, music_id, SNDFLAG_LOOP);
+		for (int i = 0; i < 6; i++)
+		{
+			char buf[128];
+			str_format(buf, sizeof(buf), "audio/spree%d.wv", (i + 1) * 5);
+			spree_sound_ids[i] = snd_load_wv(buf);
+		}
 	}
 	
 	int64 end = time_get();
@@ -813,11 +819,48 @@ void GAMECLIENT::on_message(int msgtype)
 			{
 				clients[msg->killer].stats.flag_killed++;
 			}
+			
+#ifndef CONF_TRUNC
+			clients[msg->killer].stats.spree_kills++;
+			if (config.cl_sprees && clients[msg->killer].stats.spree_kills%5 == 0)
+			{
+				char buf[512] = {0};
+				if (clients[msg->killer].stats.spree_kills == 5)
+					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is on a killing spree!"));
+				else if (clients[msg->killer].stats.spree_kills == 10)
+					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is on a rampage!"));
+				else if (clients[msg->killer].stats.spree_kills == 15)
+					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is dominating!"));
+				else if (clients[msg->killer].stats.spree_kills == 20)
+					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is unstoppable!"));
+				else if (clients[msg->killer].stats.spree_kills == 25)
+					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is godlike!"));
+				else if (clients[msg->killer].stats.spree_kills == 30)
+					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is Wicked SICK!"));
+				if (buf[0])
+					infopan->add_line(buf);
+				if (config.cl_sprees_sounds)
+				{
+					int snd_id = clients[msg->killer].stats.spree_kills / 5 - 1;
+					if (snd_id < 6 && spree_sound_ids[snd_id] >= 0)
+						snd_play(SOUNDS::CHN_WORLD, spree_sound_ids[snd_id], 0);
+				}
+			}
+#endif
 		}
 
 		if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
 			clients[msg->victim].stats.killed[msg->weapon]++;
 		clients[msg->victim].stats.total_killed++;
+#ifndef CONF_TRUNC
+		if (config.cl_sprees && clients[msg->victim].stats.spree_kills >= 5)
+		{
+			char buf[512];
+			str_format(buf, sizeof(buf), _t("%s's %d-kills killing spree ended by %s"), clients[msg->victim].name, clients[msg->victim].stats.spree_kills, clients[msg->killer].name);
+			infopan->add_line(buf);
+		}
+		clients[msg->victim].stats.spree_kills = 0;
+#endif
 	}
 }
 

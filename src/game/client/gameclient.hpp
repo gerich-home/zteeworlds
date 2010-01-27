@@ -127,6 +127,7 @@ public:
 			int flag_carried;
 			int flag_lost;
 			int flag_killed;
+			int spree_kills;
 		} stats;
 		
 		void update_render_info();
@@ -139,6 +140,8 @@ public:
 	void find_next_spectable_cid();
 	
 	int tick_to_screenshot;
+	
+	int spree_sound_ids[6];
 	
 	void on_reset();
 
