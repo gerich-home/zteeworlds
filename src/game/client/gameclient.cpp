@@ -842,17 +842,17 @@ void GAMECLIENT::on_message(int msgtype)
 			{
 				char buf[512] = {0};
 				if (clients[msg->killer].stats.spree_kills == 5)
-					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is on a killing spree!"));
+					str_format(buf, sizeof(buf), _t("%s is on a killing spree with %d kills!"), clients[msg->killer].name, clients[msg->killer].stats.spree_kills);
 				else if (clients[msg->killer].stats.spree_kills == 10)
-					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is on a rampage!"));
+					str_format(buf, sizeof(buf),_t("%s is on a rampage with %d kills!"), clients[msg->killer].name, clients[msg->killer].stats.spree_kills);
 				else if (clients[msg->killer].stats.spree_kills == 15)
-					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is dominating!"));
+					str_format(buf, sizeof(buf), _t("%s is dominating with %d kills!"), clients[msg->killer].name, clients[msg->killer].stats.spree_kills);
 				else if (clients[msg->killer].stats.spree_kills == 20)
-					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is unstoppable!"));
+					str_format(buf, sizeof(buf), _t("%s is unstoppable with %d kills!"), clients[msg->killer].name, clients[msg->killer].stats.spree_kills);
 				else if (clients[msg->killer].stats.spree_kills == 25)
-					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is godlike!"));
+					str_format(buf, sizeof(buf), _t("%s is godlike with %d kills!"), clients[msg->killer].name, clients[msg->killer].stats.spree_kills);
 				else if (clients[msg->killer].stats.spree_kills == 30)
-					str_format(buf, sizeof(buf), "%s %s", clients[msg->killer].name, _t("is Wicked SICK!"));
+					str_format(buf, sizeof(buf), _t("%s is Wicked SICK with %d kills!"), clients[msg->killer].name, clients[msg->killer].stats.spree_kills);
 				if (buf[0])
 					infopan->add_line(buf);
 				if (config.cl_sprees_sounds)
