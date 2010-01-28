@@ -748,7 +748,7 @@ void GAMECLIENT::on_render()
 
 void GAMECLIENT::on_message(int msgtype)
 {
-	
+	dbg_msg("", "msg %d: %s", msgtype, netmsg_get_name(msgtype));
 	// special messages
 	if(msgtype == NETMSGTYPE_SV_EXTRAPROJECTILE)
 	{
@@ -824,14 +824,13 @@ void GAMECLIENT::on_message(int msgtype)
 	} else if(msgtype == NETMSGTYPE_SV_KILLMSG)
 	{
 		NETMSG_SV_KILLMSG *msg = (NETMSG_SV_KILLMSG *)rawmsg;
-
-		if (msg->killer != msg->victim)
+		if (!msg) return;
+		if (msg->killer != msg->victim && msg->killer >= 0)
 		{
 			if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
 				clients[msg->killer].stats.kills[msg->weapon]++;
 			clients[msg->killer].stats.total_kills++;
-			
-			if (snap.gameobj->flags&GAMEFLAG_FLAGS && msg->mode_special&1)
+			if (snap.gameobj && snap.gameobj->flags&GAMEFLAG_FLAGS && msg->mode_special&1)
 			{
 				clients[msg->killer].stats.flag_killed++;
 			}
@@ -864,19 +863,20 @@ void GAMECLIENT::on_message(int msgtype)
 			}
 #endif
 		}
-
-		if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
-			clients[msg->victim].stats.killed[msg->weapon]++;
-		clients[msg->victim].stats.total_killed++;
+		if (msg->victim >= 0)
+			if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
+				clients[msg->victim].stats.killed[msg->weapon]++;
+			clients[msg->victim].stats.total_killed++;
 #ifndef CONF_TRUNC
-		if (config.cl_sprees && clients[msg->victim].stats.spree_kills >= 5)
-		{
-			char buf[512];
-			str_format(buf, sizeof(buf), _t("%s's %d-kills killing spree ended by %s"), clients[msg->victim].name, clients[msg->victim].stats.spree_kills, clients[msg->killer].name);
-			infopan->add_line(buf);
-		}
-		clients[msg->victim].stats.spree_kills = 0;
+			if (config.cl_sprees && clients[msg->victim].stats.spree_kills >= 5)
+			{
+				char buf[512];
+				str_format(buf, sizeof(buf), _t("%s's %d-kills killing spree ended by %s"), clients[msg->victim].name, clients[msg->victim].stats.spree_kills, clients[msg->killer].name);
+				infopan->add_line(buf);
+			}
+			clients[msg->victim].stats.spree_kills = 0;
 #endif
+		}
 	}
 }
 
