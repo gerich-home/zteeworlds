@@ -214,6 +214,20 @@ static int _lua_kill(lua_State * L)
 	return 0;
 }
 
+static int _lua_play_sound(lua_State * L)
+{
+	char filename[512];
+	int count = lua_gettop(L);
+	if(count > 0 && lua_isstring(L, 1))
+	{
+		str_format(filename, sizeof(filename), "data/audio/%s.wv", lua_tostring(L, 1));
+		int snd_id = snd_load_wv(filename);
+		snd_play(SOUNDS::CHN_WORLD, snd_id, 0);
+	}
+	
+	return 0;
+}
+
 void _lua_gameclient_package_register();
 
 void GAMECLIENT::on_console_init()
@@ -305,6 +319,8 @@ void GAMECLIENT::on_console_init()
 	LUA_REGISTER_FUNC(demo_makefirst)
 	LUA_REGISTER_FUNC(demo_makelast)
 	LUA_REGISTER_FUNC(demo_rewrite)
+	
+	LUA_REGISTER_FUNC(play_sound)
 	
 	_lua_gameclient_package_register();
 	
