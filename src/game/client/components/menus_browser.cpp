@@ -434,7 +434,7 @@ void MENUS::render_serverbrowser_filters(RECT view)
 		config.b_filter_gametype[0] = 0;
 		config.b_filter_compatversion = 1;
 		config.b_filter_string[0] = 0;
-		config.b_filter_pure = 1;
+		config.b_filter_pure = 0;
 	}
 }
 
