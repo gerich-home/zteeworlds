@@ -723,10 +723,10 @@ void GAMECLIENT::on_render()
 			{
 				clients[snap.flags[i]->carried_by].stats.flag_carried++;
 			}
-			if (old_carried_by[i] >= 0 && snap.flags[i]->carried_by == -2)
+			/*if (old_carried_by[i] >= 0 && snap.flags[i]->carried_by == -2)
 			{
 				clients[old_carried_by[i]].stats.flag_lost++;
-			}
+			}*/
 			old_carried_by[i] = snap.flags[i]->carried_by;
 		}
 	}
@@ -877,6 +877,42 @@ void GAMECLIENT::on_message(int msgtype)
 			}
 			clients[msg->victim].stats.spree_kills = 0;
 #endif
+		}
+	}
+	else if(msgtype == NETMSGTYPE_SV_CHAT && config.cl_new_scoreboard)
+	{
+		NETMSG_SV_CHAT *msg = (NETMSG_SV_CHAT *)rawmsg;
+		if(msg->cid < 0)
+		{
+			const char *p;
+			const char *look_for = "flag was captured by ";
+			if(p = str_find_nocase(msg->message, look_for))
+			{
+				char name[64];
+				p += str_length(look_for);
+				str_copy(name, p, sizeof(name));
+				if(str_comp_nocase(name+str_length(name)-9, " seconds)") == 0)
+				{
+					char *c = name+str_length(name)-10;
+					while(c > name)
+					{
+						c--;
+						if(*c == '(')
+						{
+							*(c-1) = 0;
+							break;
+						}
+					}
+				}
+				for(int i=0; i<MAX_CLIENTS; i++)
+				{
+					if(str_comp_nocase(gameclient.clients[i].name, name) == 0)
+					{
+						clients[i].stats.flag_lost++;
+						break;
+					}
+				}
+			}
 		}
 	}
 }
