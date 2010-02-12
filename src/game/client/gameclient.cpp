@@ -864,6 +864,7 @@ void GAMECLIENT::on_message(int msgtype)
 #endif
 		}
 		if (msg->victim >= 0)
+		{
 			if (msg->weapon >= WEAPON_HAMMER && msg->weapon < NUM_WEAPONS)
 				clients[msg->victim].stats.killed[msg->weapon]++;
 			clients[msg->victim].stats.total_killed++;
