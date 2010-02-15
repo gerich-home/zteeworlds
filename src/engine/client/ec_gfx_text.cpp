@@ -106,7 +106,6 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 		int to_render = length;
 		draw_x = cursor_x;
 		draw_y = cursor_y;
-		bool prev_utf8 = false;
 		int prev_char = 0;
 		bool has_gfx_begin = false;
 		
@@ -155,6 +154,8 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 			
 			to_render -= this_batch;
 
+			if ((const char *)end-(const char *)current <= 0 || this_batch < 0) break;
+
 			while(this_batch > 0)
 			{
 				float tex_x0, tex_y0, tex_x1, tex_y1;
@@ -169,27 +170,6 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 				
 				const char * prev_ptr = (const char *)current;
 
-				/*character = str_utf8_decode((const char **)(&current));
-				if ((void *)prev_ptr == (void *)current || str_utf8_char_length(character) == 0)
-				{
-					character = *((unsigned char *)current);
-					current++;
-					isUtf8Char = false;
-					this_batch--;
-				} else {
-					isUtf8Char = config.gfx_freetype_font ? true : str_utf8_char_length(character) > 1;
-					this_batch -= str_utf8_char_length(character);
-				}
-				{
-					tmp = current;
-					nextcharacter = str_utf8_decode((const char **)(&tmp));
-					if (tmp == current || str_utf8_char_length(nextcharacter) == 0)
-					{
-						nextcharacter = *((unsigned char *)current);
-					}
-					//if ((void *)nextcharacter > (void *)end) break;
-					//this_batch -= str_utf8_char_length(character);
-				}*/
 				character = str_utf8_decode((const char **)(&current));
 				if ((void *)prev_ptr == (void *)current)
 				{
@@ -255,11 +235,6 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 					}
 
 					advance = x_advance + font_kerning(font, *current, *(current+1));
-					
-					if(cursor->flags&TEXTFLAG_RENDER)
-					{
-						prev_utf8 = false;
-					}
 				} else
 				if (character >= 0xFFF00 && character <= 0xFFF10 && cursor->flags&TEXTFLAG_SMILEYS)	// Using reserved for private using unicode area for smiles
 				{
@@ -325,8 +300,6 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 								gfx_setcolor(0.0f, 0.0f, 0.0f, 0.3f*text_a);
 							}
 							gfx_quads_drawTL(draw_x+Char->m_OffsetX*size, draw_y+Char->m_OffsetY*size, Char->m_Width*size, Char->m_Height*size);
-							
-							prev_utf8 = true;
 						}
 
 						advance = Char->m_AdvanceX + FreeTypeTextRenderer.Kerning(pFont, character, nextcharacter)/size;

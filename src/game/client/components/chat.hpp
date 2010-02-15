@@ -49,7 +49,7 @@ class CHAT : public COMPONENT
 	bool ignore_player;
 	bool spam;
 	
-	char last_msg[16][265];
+	char last_msg[MAX_CLIENTS][512];
 	
 	static void con_say(void *result, void *user_data);
 	static void con_sayteam(void *result, void *user_data);

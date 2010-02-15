@@ -248,53 +248,56 @@ void CHAT::on_message(int msgtype, void *rawmsg)
 		// save last message for each player
 		spam = false;
 		
-		if(!strcmp(last_msg[msg->cid], message) != 0)
-			spam = true;
+		if (msg->cid >= 0 && msg->cid < MAX_CLIENTS)
+		{
+			if(!strcmp(last_msg[msg->cid], message) != 0)
+				spam = true;
+
+			strcpy(last_msg[msg->cid], message);
+
+			// check if player is ignored
+			char buf[64];
+			strcpy(buf, config.cl_spammer_name);
+
+			struct split sp = split(buf, ' ');
+
+			ignore_player = false;
 			
-		strcpy(last_msg[msg->cid], message);
-
-		// check if player is ignored
-		char buf[64];
-		strcpy(buf, config.cl_spammer_name);
-
-		struct split sp = split(buf, ' '); 
-		
-		ignore_player = false;
-		
-		if(config.cl_block_spammer && (strlen(config.cl_spammer_name) > 0))
-		{
-			int i = 0;
-			while (i < sp.count)
+			if(config.cl_block_spammer && (strlen(config.cl_spammer_name) > 0))
 			{
-				if(str_find_nocase(gameclient.clients[msg->cid].name, sp.pointers[i]) != 0)
+				int i = 0;
+				while (i < sp.count)
 				{
-					ignore_player = true;
-					break;
+					if(str_find_nocase(gameclient.clients[msg->cid].name, sp.pointers[i]) != 0)
+					{
+						ignore_player = true;
+						break;
+					}
+					else
+						i++;
 				}
-				else
-					i++;
 			}
-		}
-		
-		// check if message should be marked
-		strcpy(buf, config.cl_search_name);
 
-		struct split sp2 = split(buf, ' '); 
-		
-		contains_name = false;
-		
-		if(config.cl_change_color || config.cl_change_sound)
-		{
-			int i = 0;
-			while (i < sp2.count)
+			// check if message should be marked
+			strcpy(buf, config.cl_search_name);
+
+			struct split sp2 = split(buf, ' ');
+
+			contains_name = false;
+
+			if(config.cl_change_color || config.cl_change_sound)
 			{
-				if(str_find_nocase(message, sp2.pointers[i]) != 0)
+				int i = 0;
+				while (i < sp2.count)
 				{
-					contains_name = true;
-					break;
+					if(str_find_nocase(message, sp2.pointers[i]) != 0)
+					{
+						contains_name = true;
+						break;
+					}
+					else
+						i++;
 				}
-				else
-					i++;
 			}
 		}
 			
@@ -431,14 +434,16 @@ void CHAT::on_render()
 		TEXT_CURSOR cursor;
 		gfx_text_set_cursor(&cursor, begin, 0, fontsize, 0);
 		cursor.line_width = 200.0f;
-		gfx_text_ex(&cursor, lines[r].name, -1);
-		gfx_text_ex(&cursor, lines[r].text, -1);
-		
+		if (str_length(lines[r].name) > 0)
+			gfx_text_ex(&cursor, lines[r].name, -1);
+		if (str_length(lines[r].text) > 0)
+			gfx_text_ex(&cursor, lines[r].text, -2);
+
 		if(!lines[r].spam  && !lines[r].ignore)
 		{
-			if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
+			if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id < 0))
 				y -= cursor.y + cursor.font_size;
-			else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
+			else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id < 0))
 				y -= cursor.y + cursor.font_size;
 			else if(config.cl_render_chat && config.cl_render_servermsg)
 				y -= cursor.y + cursor.font_size;
@@ -467,13 +472,13 @@ void CHAT::on_render()
 			gfx_text_color(0.7f,0.7f,1.0f,1); // blue
 		else if(lines[r].name_color == -1)
 			gfx_text_color(0.75f,0.5f,0.75f, 1); // spectator
-			
+
 		// render name
-		if(!lines[r].spam && !lines[r].ignore)
+		if(!lines[r].spam && !lines[r].ignore && str_length(lines[r].name) > 0)
 		{
-			if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
+			if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id < 0))
 				gfx_text_ex(&cursor, lines[r].name, -1);
-			else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
+			else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id < 0))
 				gfx_text_ex(&cursor, lines[r].name, -1);
 			else if(config.cl_render_chat && config.cl_render_servermsg)
 				gfx_text_ex(&cursor, lines[r].name, -1);
@@ -494,85 +499,89 @@ void CHAT::on_render()
 		if(!lines[r].spam && !lines[r].ignore)
 		{
 			
-		if (config.gfx_smileys && lines[r].client_id != -1)
-		{
-			char buf[1024];
-			memset(buf, 0, sizeof(buf));
-			
-			int tlen = str_length(lines[r].text);
-			
-			char * c = lines[r].text;
-			char * end = c + tlen;
-			char * d = buf;
-			bool prevSmile = false;
-			while (*c)
+			if (config.gfx_smileys && lines[r].client_id >= 0)
 			{
-				if (str_utf8_isstart(*c) && (c == lines[r].text || *(c - 1) < 'A' || prevSmile))
+				char buf[1024];
+				memset(buf, 0, sizeof(buf));
+
+				int tlen = str_length(lines[r].text);
+
+				char * c = lines[r].text;
+				char * end = c + tlen;
+				char * d = buf;
+				bool prevSmile = false;
+				while (*c)
 				{
-					char buf0[64];
-					char buf1[64];
-					bool SmileFound = false;
-					for (int i = 0; i < smileys_count; i++)
+					if (str_utf8_isstart(*c) && (c == lines[r].text || *(c - 1) < 'A' || prevSmile))
 					{
-						for (int j = 0; j < smileys_texts_per_smile; j++)
+						char buf0[64];
+						char buf1[64];
+						bool SmileFound = false;
+						for (int i = 0; i < smileys_count; i++)
 						{
-							int len = str_length(smileys_texts[i][j]);
-							if (len == 0) continue;
-							if (end - c < len || *(c + len) >= 'A') continue;
-							
-							memset(buf0, 0, sizeof(buf0));
-							memset(buf1, 0, sizeof(buf1));
-							mem_copy(buf0, smileys_texts[i][j], len + 1);
-							mem_copy(buf1, c, len);
-							
-							if (str_comp_nocase(buf0, buf1) == 0)
+							for (int j = 0; j < smileys_texts_per_smile; j++)
 							{
-								int SmileCode = 0xFFF00 + i;
+								int len = str_length(smileys_texts[i][j]);
+								if (len == 0) continue;
+								if (end - c < len || *(c + len) >= 'A') continue;
 								
-								str_utf8_encode(d, SmileCode);
-								c += len;
-								d += str_utf8_char_length(SmileCode);
+								memset(buf0, 0, sizeof(buf0));
+								memset(buf1, 0, sizeof(buf1));
+								mem_copy(buf0, smileys_texts[i][j], len + 1);
+								mem_copy(buf1, c, len);
 								
-								SmileFound = true;
-								break;
+								if (str_comp_nocase(buf0, buf1) == 0)
+								{
+									int SmileCode = 0xFFF00 + i;
+
+									str_utf8_encode(d, SmileCode);
+									c += len;
+									d += str_utf8_char_length(SmileCode);
+
+									SmileFound = true;
+									break;
+								}
 							}
+							if (SmileFound) break;
 						}
-						if (SmileFound) break;
-					}
-					if (!SmileFound)
-					{
+						if (!SmileFound)
+						{
+							*d = *c;
+							c++;
+							d++;
+							prevSmile = false;
+						} else prevSmile = true;
+					} else {
 						*d = *c;
 						c++;
 						d++;
 						prevSmile = false;
-					} else prevSmile = true;
-				} else {
-					*d = *c;
-					c++;
-					d++;
-					prevSmile = false;
+					}
+				}
+
+				if (str_length(buf) > 0)
+				{
+					cursor.flags |= TEXTFLAG_SMILEYS;
+					if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
+						gfx_text_ex(&cursor, buf, -1);
+					else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
+						gfx_text_ex(&cursor, buf, -1);
+					else if(config.cl_render_chat && config.cl_render_servermsg)
+						gfx_text_ex(&cursor, buf, -1);
+				}
+			} else
+			{
+				//if(!lines[r].spam && !lines[r].ignore)
+				if (str_length(lines[r].text) > 0)
+				{
+					if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id < 0))
+						gfx_text_ex(&cursor, lines[r].text, -1);
+					else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id < 0))
+						gfx_text_ex(&cursor, lines[r].text, -1);
+					else if(config.cl_render_chat && config.cl_render_servermsg)
+						gfx_text_ex(&cursor, lines[r].text, -1);
 				}
 			}
-			
-			cursor.flags |= TEXTFLAG_SMILEYS;
-			if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
-				gfx_text_ex(&cursor, buf, -1);
-			else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
-				gfx_text_ex(&cursor, buf, -1);
-			else if(config.cl_render_chat && config.cl_render_servermsg)
-				gfx_text_ex(&cursor, buf, -1);
-		} else
-		{
-			//if(!lines[r].spam && !lines[r].ignore)
-			{
-				if(config.cl_render_chat && !config.cl_render_servermsg && !(lines[r].client_id == -1))
-					gfx_text_ex(&cursor, lines[r].text, -1);
-				else if(!config.cl_render_chat && config.cl_render_servermsg && (lines[r].client_id == -1))
-					gfx_text_ex(&cursor, lines[r].text, -1);
-				else if(config.cl_render_chat && config.cl_render_servermsg)
-					gfx_text_ex(&cursor, lines[r].text, -1);
-			}
-		}
 		}
 	}
 
