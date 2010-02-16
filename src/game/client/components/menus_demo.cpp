@@ -259,7 +259,7 @@ void MENUS::ui_do_listbox_start(void *id, const RECT *rect, float row_height, co
 	static float scrollvalue = 0;
 	ui_hmargin(&scroll, 5.0f, &scroll);
 	scrollvalue = ui_do_scrollbar_v(id, &scroll, scrollvalue);
-	
+
 	int scrollnum = num_items-num+10;
 	if(inp_key_presses(KEY_MOUSE_WHEEL_UP))
 		scrollvalue -= 1.0f/scrollnum;
@@ -275,8 +275,9 @@ void MENUS::ui_do_listbox_start(void *id, const RECT *rect, float row_height, co
 	listbox_view = listbox_originalview;
 	ui_vmargin(&listbox_view, 5.0f, &listbox_view);
 	ui_clip_enable(&listbox_view);
-	if (num_items > num)
-		listbox_view.y -= scrollvalue*(num_items-num)*row.h;
+	listbox_view.y -= scrollvalue*num*row.h;
+	//if (num_items > num)
+	//	listbox_view.y -= scrollvalue*(num_items-num)*row.h;
 }
 
 MENUS::LISTBOXITEM MENUS::ui_do_listbox_nextitem(void *id)
