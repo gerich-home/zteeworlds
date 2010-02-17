@@ -638,45 +638,69 @@ int MENUS::render_menubar(RECT r)
 
 void MENUS::render_loading(float percent)
 {
-	// need up date this here to get correct
-	vec3 rgb = hsl_to_rgb(vec3(config.ui_color_hue/255.0f, config.ui_color_sat/255.0f, config.ui_color_lht/255.0f));
-	gui_color = vec4(rgb.r, rgb.g, rgb.b, config.ui_color_alpha/255.0f);
-	
     RECT screen = *ui_screen();
 	gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
-	
-	render_background();
+
+	static int logo_tex = -1;
+
+	if(logo_tex == -1)
+		logo_tex = gfx_load_texture("logo.png", IMG_AUTO, 0);
+
+	gfx_blend_none();
+
+	gfx_texture_set(-1);
+	gfx_quads_begin();
+	gfx_setcolor(0, 0, 0, 1);
+	gfx_quads_drawTL(0, 0, screen.w, screen.h);
+	gfx_quads_end();
+
+	gfx_texture_set(logo_tex);
+	gfx_quads_begin();
+	gfx_setcolor(1, 1, 1, 1);
+	gfx_quads_setsubset(0, 0, 1, 1);
+	gfx_quads_drawTL(0, 0, screen.w, screen.h);
+	gfx_quads_end();
 
 	float tw;
 
 	float w = 700;
-	float h = 200;
+	float h = 100;
 	float x = screen.w/2-w/2;
-	float y = screen.h/2-h/2;
-
-	gfx_blend_normal();
-
-	gfx_texture_set(-1);
-	gfx_quads_begin();
-	gfx_setcolor(0,0,0,0.50f);
-	draw_round_rect(x, y, w, h, 40.0f);
-	gfx_quads_end();
-
+	float y = screen.h/2-h/4;
 
 	const char *caption = _t("Loading");
 
-	tw = gfx_text_width(0, 48.0f, caption, -1);
+	tw = gfx_text_width(0, 32.0f, caption, -1);
+
+	gfx_blend_normal();
+	gfx_texture_set(-1);
+	gfx_quads_begin();
+	gfx_setcolor(1, 1, 1, 0.5f);
+	draw_round_rect_ext((screen.w - tw) / 2.0f - 32.0f, screen.h - 78.0f, tw + 64.0f, 78.0f, 8.0f, 3);
+	gfx_quads_end();
+
 	RECT r;
-	r.x = x;
-	r.y = y+20;
-	r.w = w;
-	r.h = h;
-	ui_do_label(&r, caption, 48.0f, 0, -1);
+	r.x = 0;
+	r.y = screen.h - 64.0f;
+	r.w = screen.w;
+	r.h = 64;
+	ui_do_label(&r, caption, 32.0f, 0, -1);
 
 	gfx_texture_set(-1);
 	gfx_quads_begin();
-	gfx_setcolor(1,1,1,0.75f);
-	draw_round_rect(x+40, y+h-75, (w-80)*percent, 25, 5.0f);
+
+	gfx_setcolorvertex(2, 0.36f, 0.88f, 0.52f, 1.0f);
+	gfx_setcolorvertex(0, 0.13f, 0.69f, 0.30f, 1.0f);
+	gfx_setcolorvertex(3, 0.36f, 0.88f, 0.52f, 1.0f);
+	gfx_setcolorvertex(1, 0.13f, 0.69f, 0.30f, 1.0f);
+	gfx_quads_drawTL(0, screen.h - 7, screen.w * percent, 7);
+
+	gfx_setcolorvertex(0, 0.36f, 0.88f, 0.52f, 1.0f);
+	gfx_setcolorvertex(2, 0.13f, 0.69f, 0.30f, 1.0f);
+	gfx_setcolorvertex(1, 0.36f, 0.88f, 0.52f, 1.0f);
+	gfx_setcolorvertex(3, 0.13f, 0.69f, 0.30f, 1.0f);
+
+	gfx_quads_drawTL(0, screen.h - 14, screen.w * percent, 7);
 	gfx_quads_end();
 
 	gfx_swap();
