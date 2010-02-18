@@ -49,16 +49,16 @@ int ui_update(float mx, float my, float mwx, float mwy, int buttons)
 /*
 bool ui_
 */
-int ui_mouse_inside(const Rect *r)
+int ui_mouse_inside(const RECT *r)
 {
     if(mouse_x >= r->x && mouse_x <= r->x+r->w && mouse_y >= r->y && mouse_y <= r->y+r->h)
         return 1;
     return 0;
 }
 
-static Rect screen = { 0.0f, 0.0f, 848.0f, 480.0f };
+static RECT screen = { 0.0f, 0.0f, 848.0f, 480.0f };
 
-Rect *ui_screen()
+RECT *ui_screen()
 {
     float aspect = gfx_screenaspect();
     float w, h;
@@ -82,7 +82,7 @@ float ui_scale()
     return config.ui_scale/100.0f;
 }
 
-void ui_clip_enable(const Rect *r)
+void ui_clip_enable(const RECT *r)
 {
 	float xscale = gfx_screenwidth()/ui_screen()->w;
 	float yscale = gfx_screenheight()/ui_screen()->h;
@@ -94,9 +94,9 @@ void ui_clip_disable()
 	gfx_clip_disable();
 }
 
-void ui_hsplit_t(const Rect *original, float cut, Rect *top, Rect *bottom)
+void ui_hsplit_t(const RECT *original, float cut, RECT *top, RECT *bottom)
 {
-    Rect r = *original;
+    RECT r = *original;
     cut *= ui_scale();
 
     if (top)
@@ -116,9 +116,9 @@ void ui_hsplit_t(const Rect *original, float cut, Rect *top, Rect *bottom)
     }
 }
 
-void ui_hsplit_b(const Rect *original, float cut, Rect *top, Rect *bottom)
+void ui_hsplit_b(const RECT *original, float cut, RECT *top, RECT *bottom)
 {
-    Rect r = *original;
+    RECT r = *original;
     cut *= ui_scale();
 
     if (top)
@@ -139,9 +139,9 @@ void ui_hsplit_b(const Rect *original, float cut, Rect *top, Rect *bottom)
 }
 
 
-void ui_vsplit_mid(const Rect *original, Rect *left, Rect *right)
+void ui_vsplit_mid(const RECT *original, RECT *left, RECT *right)
 {
-    Rect r = *original;
+    RECT r = *original;
     float cut = r.w/2;
 
     if (left)
@@ -161,9 +161,9 @@ void ui_vsplit_mid(const Rect *original, Rect *left, Rect *right)
     }
 }
 
-void ui_vsplit_l(const Rect *original, float cut, Rect *left, Rect *right)
+void ui_vsplit_l(const RECT *original, float cut, RECT *left, RECT *right)
 {
-    Rect r = *original;
+    RECT r = *original;
     cut *= ui_scale();
 
     if (left)
@@ -183,9 +183,9 @@ void ui_vsplit_l(const Rect *original, float cut, Rect *left, Rect *right)
     }
 }
 
-void ui_vsplit_r(const Rect *original, float cut, Rect *left, Rect *right)
+void ui_vsplit_r(const RECT *original, float cut, RECT *left, RECT *right)
 {
-    Rect r = *original;
+    RECT r = *original;
     cut *= ui_scale();
 
     if (left)
@@ -205,9 +205,9 @@ void ui_vsplit_r(const Rect *original, float cut, Rect *left, Rect *right)
     }
 }
 
-void ui_margin(const Rect *original, float cut, Rect *other_rect)
+void ui_margin(const RECT *original, float cut, RECT *other_rect)
 {
-    Rect r = *original;
+    RECT r = *original;
 	cut *= ui_scale();
 
     other_rect->x = r.x + cut;
@@ -216,9 +216,9 @@ void ui_margin(const Rect *original, float cut, Rect *other_rect)
     other_rect->h = r.h - 2*cut;
 }
 
-void ui_vmargin(const Rect *original, float cut, Rect *other_rect)
+void ui_vmargin(const RECT *original, float cut, RECT *other_rect)
 {
-    Rect r = *original;
+    RECT r = *original;
 	cut *= ui_scale();
 
     other_rect->x = r.x + cut;
@@ -227,9 +227,9 @@ void ui_vmargin(const Rect *original, float cut, Rect *other_rect)
     other_rect->h = r.h;
 }
 
-void ui_hmargin(const Rect *original, float cut, Rect *other_rect)
+void ui_hmargin(const RECT *original, float cut, RECT *other_rect)
 {
-    Rect r = *original;
+    RECT r = *original;
 	cut *= ui_scale();
 
     other_rect->x = r.x;
@@ -239,7 +239,7 @@ void ui_hmargin(const Rect *original, float cut, Rect *other_rect)
 }
 
 
-int ui_do_button(const void *id, const char *text, int checked, const Rect *r, ui_draw_button_func draw_func, const void *extra)
+int ui_do_button(const void *id, const char *text, int checked, const RECT *r, ui_draw_button_func draw_func, const void *extra)
 {
     /* logic */
     int ret = 0;
@@ -278,7 +278,7 @@ int ui_do_button(const void *id, const char *text, int checked, const Rect *r, u
     return ret;
 }
 
-void ui_do_label(const Rect *r, const char *text, float size, int align, int max_width)
+void ui_do_label(const RECT *r, const char *text, float size, int align, int max_width)
 {
     gfx_blend_normal();
     size *= ui_scale();

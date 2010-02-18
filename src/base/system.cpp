@@ -57,6 +57,8 @@ static int num_loggers = 0;
 static NETSTATS network_stats = {0};
 static MEMSTATS memory_stats = {0};
 
+static char StoragePath[2048] = {0};
+
 void dbg_logger(DBG_LOGGER logger)
 {
 	loggers[num_loggers++] = logger;
@@ -880,8 +882,71 @@ int fs_listdir(const char *dir, FS_LISTDIR_CALLBACK cb, void *user)
 #endif
 }
 
+void sys_parse_arguments(const char * appname, int argc, char ** argv)
+{
+	int i;
+	for(i = 1; i < argc; i++)
+	{
+		if(strcmp("-o", argv[i]) == 0 || strcmp("--old-storage", argv[i]) == 0 || strcmp("--old-path", argv[i]) == 0)
+		{
+			#if defined(CONF_FAMILY_WINDOWS)
+				HRESULT r;
+				char *home = getenv("APPDATA");
+				if(!home)
+					continue;
+				_snprintf(StoragePath, sizeof(StoragePath), "%s/%s", home, appname);
+				continue;
+			#else
+				char *home = getenv("HOME");
+			#if !defined(CONF_PLATFORM_MACOSX)
+				int i;
+			#endif
+				if(!home)
+					continue;
+
+			#if defined(CONF_PLATFORM_MACOSX)
+				snprintf(StoragePath, sizeof(StoragePath), "%s/Library/Application Support/%s", home, appname);
+			#else
+				snprintf(StoragePath, sizeof(StoragePath), "%s/.%s", home, appname);
+				for(i = strlen(home)+2; path[i]; i++)
+					path[i] = tolower(path[i]);
+			#endif
+
+			#endif
+
+			continue;
+		} else
+#if defined(CONF_FAMILY_WINDOWS)
+		if(strcmp("-s", argv[i]) == 0 || strcmp("--silent", argv[i]) == 0)
+		{
+			ShowWindow(GetConsoleWindow(), SW_HIDE);
+			continue;
+		} else
+#endif
+		if ((strcmp("-p", argv[i]) == 0 || strcmp("--path", argv[i]) == 0 || strcmp("--storage", argv[i]) == 0) && i < argc - 1)
+		{
+			i++;
+			#if defined(CONF_FAMILY_WINDOWS)
+				_snprintf(StoragePath, sizeof(StoragePath), "%s", argv[i]);
+			#else
+				snprintf(StoragePath, sizeof(StoragePath), "%s", argv[i]);
+			#endif
+			continue;
+		}
+	}
+}
+
 int fs_storage_path(const char *appname, char *path, int max)
 {
+	if (StoragePath[0] != 0)
+	{
+#if defined(CONF_FAMILY_WINDOWS)
+		_snprintf(path, max, "%s", StoragePath);
+#else
+		snprintf(path, max, "%s", StoragePath);
+#endif
+	return 0;
+	}
 #if defined(CONF_FAMILY_WINDOWS)
 	_snprintf(path, max, "%s/profile", ".");
 #else

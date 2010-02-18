@@ -37,13 +37,13 @@ enum
 /* */
 typedef struct { float x, y, z; } VEC3;
 typedef struct { float u, v; } TEXCOORD;
-typedef struct { float r, g, b, a; } Color;
+typedef struct { float r, g, b, a; } COLOR;
 
 typedef struct
 {
 	VEC3 pos;
 	TEXCOORD tex;
-	Color color;
+	COLOR color;
 } VERTEX;
 
 const int vertex_buffer_size = 32*1024;
@@ -52,7 +52,7 @@ static int num_vertices = 0;
 
 static int no_gfx = 0;
 
-static Color color[4];
+static COLOR color[4];
 static TEXCOORD texture[4];
 
 static int do_screenshot = 0;

@@ -43,10 +43,10 @@ bool MENUS_KEYBINDER::on_input(INPUT_EVENT e)
 	return false;
 }
 
-void MENUS::render_settings_player(Rect main_view)
+void MENUS::render_settings_player(RECT main_view)
 {
-	Rect button;
-	Rect skinselection;
+	RECT button;
+	RECT skinselection;
 	ui_vsplit_l(&main_view, 300.0f, &main_view, &skinselection);
 
 
@@ -124,7 +124,7 @@ void MENUS::render_settings_player(Rect main_view)
 				
 			for(int i = 0; i < 2; i++)
 			{
-				Rect text;
+				RECT text;
 				ui_hsplit_t(&main_view, 20.0f, &text, &main_view);
 				ui_vsplit_l(&text, 15.0f, 0, &text);
 				ui_do_label(&text, parts[i], 14.0f, -1);
@@ -133,7 +133,7 @@ void MENUS::render_settings_player(Rect main_view)
 				int color = 0;
 				for(int s = 0; s < 3; s++)
 				{
-					Rect text;
+					RECT text;
 					ui_hsplit_t(&main_view, 19.0f, &button, &main_view);
 					ui_vsplit_l(&button, 30.0f, 0, &button);
 					ui_vsplit_l(&button, 30.0f, &text, &button);
@@ -215,10 +215,10 @@ void MENUS::render_settings_player(Rect main_view)
 #endif
 		
 		{
-			Rect langlist = main_view;
+			RECT langlist = main_view;
 			ui_vmargin(&langlist, 5.0f, &langlist);
 			
-			Rect header, footer;
+			RECT header, footer;
 			ui_hsplit_t(&langlist, 20, &button, &langlist);
 			
 			// draw header
@@ -245,10 +245,10 @@ void MENUS::render_settings_player(Rect main_view)
 						
 			ui_draw_rect(&langlist, vec4(0,0,0,0.15f), 0, 0);
 
-			Rect scroll;
+			RECT scroll;
 			ui_vsplit_r(&langlist, 15, &langlist, &scroll);
 
-			Rect list = langlist;
+			RECT list = langlist;
 			ui_hsplit_t(&list, 20, &button, &list);
 			
 			int num = (int)(langlist.h/button.h);
@@ -280,7 +280,7 @@ void MENUS::render_settings_player(Rect main_view)
 	}
 		
 	// draw header
-	Rect header, footer;
+	RECT header, footer;
 	ui_hsplit_t(&skinselection, 20, &header, &skinselection);
 	ui_draw_rect(&header, vec4(1,1,1,0.25f), CORNER_T, 5.0f); 
 	ui_do_label(&header, _t("Skins"), 18.0f, 0);
@@ -293,10 +293,10 @@ void MENUS::render_settings_player(Rect main_view)
 	// modes
 	ui_draw_rect(&skinselection, vec4(0,0,0,0.15f), 0, 0);
 
-	Rect scroll;
+	RECT scroll;
 	ui_vsplit_r(&skinselection, 15, &skinselection, &scroll);
 
-	Rect list = skinselection;
+	RECT list = skinselection;
 	ui_hsplit_t(&list, 50, &button, &list);
 	
 	int num = (int)(skinselection.h/button.h);
@@ -344,8 +344,8 @@ void MENUS::render_settings_player(Rect main_view)
 			
 		info.size = ui_scale()*50.0f;
 		
-		Rect icon;
-		Rect text;
+		RECT icon;
+		RECT text;
 		ui_vsplit_l(&button, 50.0f, &icon, &text);
 		
 		if(ui_do_button(s, "", selected, &button, ui_draw_list_row, 0))
@@ -410,12 +410,12 @@ KEYINFO keys[] =
 
 const int key_count = sizeof(keys) / sizeof(KEYINFO);
 
-void MENUS::ui_do_getbuttons(int start, int stop, Rect view)
+void MENUS::ui_do_getbuttons(int start, int stop, RECT view)
 {
 	for (int i = start; i < stop; i++)
 	{
 		KEYINFO key = keys[i];
-		Rect button, label;
+		RECT button, label;
 		ui_hsplit_t(&view, 20.0f, &button, &view);
 		ui_vsplit_l(&button, 130.0f, &label, &button);
 	
@@ -431,7 +431,7 @@ void MENUS::ui_do_getbuttons(int start, int stop, Rect view)
 	}
 }
 
-void MENUS::render_settings_controls(Rect main_view)
+void MENUS::render_settings_controls(RECT main_view)
 {
 	// this is kinda slow, but whatever
 	for(int i = 0; i < key_count; i++)
@@ -451,7 +451,7 @@ void MENUS::render_settings_controls(Rect main_view)
 			}
 	}
 
-	Rect movement_settings, weapon_settings, voting_settings, chat_settings, misc_settings, reset_button;
+	RECT movement_settings, weapon_settings, voting_settings, chat_settings, misc_settings, reset_button;
 	ui_vsplit_l(&main_view, main_view.w/2-5.0f, &movement_settings, &voting_settings);
 	
 	/* movement settings */
@@ -465,7 +465,7 @@ void MENUS::render_settings_controls(Rect main_view)
 		ui_hsplit_t(&movement_settings, 14.0f+5.0f+10.0f, 0, &movement_settings);
 		
 		{
-			Rect button, label;
+			RECT button, label;
 			ui_hsplit_t(&movement_settings, 20.0f, &button, &movement_settings);
 			ui_vsplit_l(&button, 130.0f, &label, &button);
 			ui_do_label(&label, _t("Mouse sens."), 14.0f, -1);
@@ -538,9 +538,9 @@ void MENUS::render_settings_controls(Rect main_view)
 		gameclient.binds->set_defaults();
 }
 
-void MENUS::render_settings_graphics(Rect main_view)
+void MENUS::render_settings_graphics(RECT main_view)
 {
-	Rect button;
+	RECT button;
 	char buf[128];
 	
 	static const int MAX_RESOLUTIONS = 256;
@@ -550,11 +550,11 @@ void MENUS::render_settings_graphics(Rect main_view)
 	if(num_modes == -1)
 		num_modes = gfx_get_video_modes(modes, MAX_RESOLUTIONS);
 	
-	Rect modelist;
+	RECT modelist;
 	ui_vsplit_l(&main_view, 300.0f, &main_view, &modelist);
 	
 	// draw allmodes switch
-	Rect header, footer;
+	RECT header, footer;
 	ui_hsplit_t(&modelist, 20, &button, &modelist);
 	if (ui_do_button(&config.gfx_display_all_modes, _t("Show only supported"), config.gfx_display_all_modes^1, &button, ui_draw_checkbox, 0))
 	{
@@ -577,10 +577,10 @@ void MENUS::render_settings_graphics(Rect main_view)
 	// modes
 	ui_draw_rect(&modelist, vec4(0,0,0,0.15f), 0, 0);
 
-	Rect scroll;
+	RECT scroll;
 	ui_vsplit_r(&modelist, 15, &modelist, &scroll);
 
-	Rect list = modelist;
+	RECT list = modelist;
 	ui_hsplit_t(&list, 20, &button, &list);
 	
 	int num = (int)(modelist.h/button.h);
@@ -666,7 +666,7 @@ void MENUS::render_settings_graphics(Rect main_view)
 
 	//
 	
-	Rect text;
+	RECT text;
 	ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
 	ui_hsplit_t(&main_view, 20.0f, &text, &main_view);
 	//ui_vsplit_l(&text, 15.0f, 0, &text);
@@ -680,7 +680,7 @@ void MENUS::render_settings_graphics(Rect main_view)
 	int *color_slider[4] = {&config.ui_color_hue, &config.ui_color_sat, &config.ui_color_lht, &config.ui_color_alpha};
 	for(int s = 0; s < 4; s++)
 	{
-		Rect text;
+		RECT text;
 		ui_hsplit_t(&main_view, 19.0f, &button, &main_view);
 		ui_vmargin(&button, 15.0f, &button);
 		ui_vsplit_l(&button, 50.0f, &text, &button);
@@ -731,9 +731,9 @@ void MENUS::render_settings_graphics(Rect main_view)
 		config.gfx_eyecandy ^= 1;
 }
 
-void MENUS::render_settings_sound(Rect main_view)
+void MENUS::render_settings_sound(RECT main_view)
 {
-	Rect button;
+	RECT button;
 	ui_vsplit_l(&main_view, 300.0f, &main_view, 0);
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
@@ -771,7 +771,7 @@ void MENUS::render_settings_sound(Rect main_view)
 	
 	// volume slider
 	{
-		Rect button, label;
+		RECT button, label;
 		ui_hsplit_t(&main_view, 5.0f, &button, &main_view);
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		ui_vsplit_l(&button, 170.0f, &label, &button);
@@ -782,7 +782,7 @@ void MENUS::render_settings_sound(Rect main_view)
 	}
 	
 	{
-		Rect button, label;
+		RECT button, label;
 		ui_hsplit_t(&main_view, 5.0f, &button, &main_view);
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		ui_vsplit_l(&button, 170.0f, &label, &button);
@@ -793,7 +793,7 @@ void MENUS::render_settings_sound(Rect main_view)
 	}
 
 	{
-		Rect button, label;
+		RECT button, label;
 		ui_hsplit_t(&main_view, 5.0f, &button, &main_view);
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		ui_vsplit_l(&button, 170.0f, &label, &button);
@@ -804,9 +804,9 @@ void MENUS::render_settings_sound(Rect main_view)
 	}
 }
 
-void MENUS::render_settings_beep(Rect main_view)
+void MENUS::render_settings_beep(RECT main_view)
 {
-	Rect button;
+	RECT button;
 	
 	ui_vsplit_l(&main_view, 300.0f, &main_view, 0);
 	
@@ -848,9 +848,9 @@ void MENUS::render_settings_beep(Rect main_view)
 	ui_do_label(&button, _t("by Sushi :)"), 10.0f, 0);
 }
 
-void MENUS::render_settings_hudmod(Rect main_view)
+void MENUS::render_settings_hudmod(RECT main_view)
 {
-	Rect button, text, right_view;
+	RECT button, text, right_view;
 	ui_vsplit_l(&main_view, 300.0f, &main_view, &right_view);
 	
 	// general settings
@@ -990,12 +990,12 @@ static void menu2_render_settings_network(RECT main_view)
 	}
 }*/
 
-void MENUS::render_settings(Rect main_view)
+void MENUS::render_settings(RECT main_view)
 {
 	static int settings_page = 0;
 	
 	// render background
-	Rect temp, tabbar;
+	RECT temp, tabbar;
 	ui_vsplit_r(&main_view, 120.0f, &main_view, &tabbar);
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_B|CORNER_TL, 10.0f);
 	ui_hsplit_t(&tabbar, 50.0f, &temp, &tabbar);
@@ -1003,7 +1003,7 @@ void MENUS::render_settings(Rect main_view)
 	
 	ui_hsplit_t(&main_view, 10.0f, 0, &main_view);
 	
-	Rect button;
+	RECT button;
 	
 	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Beep", "Hud-Mod"};
 	tabs[0] = _t("Player");
@@ -1037,7 +1037,7 @@ void MENUS::render_settings(Rect main_view)
 
 	if(need_restart)
 	{
-		Rect restart_warning;
+		RECT restart_warning;
 		ui_hsplit_b(&main_view, 40, &main_view, &restart_warning);
 		ui_do_label(&restart_warning, _t("You must restart the game for all settings to take effect."), 15.0f, -1, 220);
 	}

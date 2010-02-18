@@ -18,9 +18,9 @@
 #include "motd.hpp"
 #include "voting.hpp"
 
-void MENUS::render_game(Rect main_view)
+void MENUS::render_game(RECT main_view)
 {
-	Rect button;
+	RECT button;
 	//RECT votearea;
 	ui_hsplit_t(&main_view, 45.0f, &main_view, 0);
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_ALL, 10.0f);
@@ -162,7 +162,7 @@ void MENUS::render_game(Rect main_view)
 	}*/
 }
 
-void MENUS::render_serverinfo(Rect main_view)
+void MENUS::render_serverinfo(RECT main_view)
 {
 	// fetch server info
 	SERVER_INFO current_server_info;
@@ -187,7 +187,7 @@ void MENUS::render_serverinfo(Rect main_view)
 	// render background
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_ALL, 10.0f);
 	
-	Rect view, serverinfo, gameinfo, motd;
+	RECT view, serverinfo, gameinfo, motd;
 	
 	float x = 0.0f;
 	float y = 0.0f;
@@ -229,7 +229,7 @@ void MENUS::render_serverinfo(Rect main_view)
 	gfx_text(0, serverinfo.x+x, serverinfo.y+y, 20, buf, 250);
 	
 	{
-		Rect button;
+		RECT button;
 		int is_favorite = client_serverbrowse_isfavorite(current_server_info.netaddr);
 		ui_hsplit_b(&serverinfo, 20.0f, &serverinfo, &button);
 		static int add_fav_button = 0;
@@ -290,14 +290,14 @@ static const char *format_command(const char *cmd)
 	return cmd;
 }
 
-void MENUS::render_servercontrol_server(Rect main_view)
+void MENUS::render_servercontrol_server(RECT main_view)
 {
 	int num_options = 0;
 	for(VOTING::VOTEOPTION *option = gameclient.voting->first; option; option = option->next)
 		num_options++;
 
 	static int votelist = 0;
-	Rect list = main_view;
+	RECT list = main_view;
 	ui_do_listbox_start(&votelist, &list, 24.0f, _t("Options"), num_options, callvote_selectedoption);
 	
 	for(VOTING::VOTEOPTION *option = gameclient.voting->first; option; option = option->next)
@@ -311,11 +311,11 @@ void MENUS::render_servercontrol_server(Rect main_view)
 	callvote_selectedoption = ui_do_listbox_end();
 }
 
-void MENUS::render_servercontrol_kick(Rect main_view)
+void MENUS::render_servercontrol_kick(RECT main_view)
 {
 	char buf[256];
 	// draw header
-	Rect header, footer;
+	RECT header, footer;
 	ui_hsplit_t(&main_view, 20, &header, &main_view);
 	ui_draw_rect(&header, vec4(1,1,1,0.25f), CORNER_T, 5.0f); 
 	ui_do_label(&header, _t("Players"), 18.0f, 0);
@@ -327,13 +327,13 @@ void MENUS::render_servercontrol_kick(Rect main_view)
 
 	// players
 	ui_draw_rect(&main_view, vec4(0,0,0,0.15f), 0, 0);
-	Rect list = main_view;
+	RECT list = main_view;
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(!gameclient.snap.player_infos[i])
 			continue;
 
-		Rect button;
+		RECT button;
 		ui_hsplit_t(&list, button_height, &button, &list);
 		
 		if(ui_do_button((char *)&gameclient.snap+i, "", callvote_selectedplayer == i, &button, ui_draw_list_row, 0))
@@ -352,12 +352,12 @@ void MENUS::render_servercontrol_kick(Rect main_view)
 	}
 }
 
-void MENUS::render_servercontrol(Rect main_view)
+void MENUS::render_servercontrol(RECT main_view)
 {
 	static int control_page = 0;
 	
 	// render background
-	Rect temp, tabbar;
+	RECT temp, tabbar;
 	ui_vsplit_r(&main_view, 120.0f, &main_view, &tabbar);
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_B|CORNER_TL, 10.0f);
 	ui_hsplit_t(&tabbar, 50.0f, &temp, &tabbar);
@@ -365,7 +365,7 @@ void MENUS::render_servercontrol(Rect main_view)
 	
 	ui_hsplit_t(&main_view, 10.0f, 0, &main_view);
 	
-	Rect button;
+	RECT button;
 	
 	const char *tabs[] = {"Options", "Kick"};
 	tabs[0] = _t("Options");
@@ -385,7 +385,7 @@ void MENUS::render_servercontrol(Rect main_view)
 	}
 		
 	ui_margin(&main_view, 10.0f, &main_view);
-	Rect bottom;
+	RECT bottom;
 	ui_hsplit_b(&main_view, button_height + 5*2, &main_view, &bottom);
 	ui_hmargin(&bottom, 5.0f, &bottom);
 	
@@ -397,7 +397,7 @@ void MENUS::render_servercontrol(Rect main_view)
 		
 
 	{
-		Rect button;
+		RECT button;
 		ui_vsplit_r(&bottom, 120.0f, &bottom, &button);
 		
 		static int callvote_button = 0;
@@ -424,10 +424,10 @@ void MENUS::render_servercontrol(Rect main_view)
 	}		
 }
 
-void MENUS::render_ingame_serverbrowser(Rect main_view)
+void MENUS::render_ingame_serverbrowser(RECT main_view)
 {
-	Rect box;
-	Rect button;
+	RECT box;
+	RECT button;
 	
 	static int prev_page = config.ui_page;
 	static int last_servers_page = config.ui_page;

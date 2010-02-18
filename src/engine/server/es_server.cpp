@@ -22,11 +22,6 @@
 
 #include <mastersrv/mastersrv.h>
 
-#if defined(CONF_FAMILY_WINDOWS) 
-	#define _WIN32_WINNT 0x0500 
-	#include <windows.h> 
-#endif 
-
 #include <engine/e_lua.h>
 
 static SNAPBUILD builder;
@@ -1515,17 +1510,7 @@ static void server_register_commands()
 
 int main(int argc, char **argv)
 {
-#if defined(CONF_FAMILY_WINDOWS)
-	int i;
-	for(i = 1; i < argc; i++)
-	{
-		if(strcmp("-s", argv[i]) == 0 || strcmp("--silent", argv[i]) == 0)
-		{
-			ShowWindow(GetConsoleWindow(), SW_HIDE);
-			break;
-		}
-	}
-#endif
+	sys_parse_arguments("Teeworlds", argc, argv);
 
 	/* init the engine */
 	dbg_msg("server", "starting...");

@@ -58,18 +58,18 @@ enum
 typedef struct
 {
 	int x, y; // 22.10 fixed point
-} Point;
+} POINT;
 
 typedef struct
 {
 	int r, g, b, a;
-} Color;
+} COLOR;
 
 typedef struct
 {
-	Point points[5];
-	Color colors[4];
-	Point texcoords[4];
+	POINT points[5];
+	COLOR colors[4];
+	POINT texcoords[4];
 	
 	int pos_env;
 	int pos_env_offset;
@@ -136,7 +136,7 @@ typedef struct
 	int height;
 	int flags;
 	
-	Color color;
+	COLOR color;
 	int color_env;
 	int color_env_offset;
 	

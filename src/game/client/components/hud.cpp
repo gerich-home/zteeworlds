@@ -283,7 +283,7 @@ void HUD::render_voting()
 	gfx_text(0x0, 5+100-tw, 60, 6, buf, -1);
 	
 
-	Rect base = {5, 70, 100, 4};
+	RECT base = {5, 70, 100, 4};
 	gameclient.voting->render_bars(base, false);
 	
 	const char *yes_key = gameclient.binds->get_key("vote yes");

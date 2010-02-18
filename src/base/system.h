@@ -1029,4 +1029,6 @@ int str_utf8_char_length(int ch);
 */
 void gui_messagebox(const char *title, const char *message);
 
+void sys_parse_arguments(const char * appname, int argc, char ** argv);
+
 #endif

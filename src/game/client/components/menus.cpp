@@ -114,7 +114,7 @@ vec4 MENUS::button_color_mul(const void *id)
 	return vec4(1,1,1,1);
 }
 
-void MENUS::ui_draw_browse_icon(int what, const Rect *r)
+void MENUS::ui_draw_browse_icon(int what, const RECT *r)
 {
 	gfx_texture_set(data->images[IMAGE_BROWSEICONS].id);
 	gfx_quads_begin();
@@ -124,19 +124,19 @@ void MENUS::ui_draw_browse_icon(int what, const Rect *r)
 }
 
 
-void MENUS::ui_draw_menu_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_menu_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	ui_draw_rect(r, vec4(1,1,1,0.5f)*button_color_mul(id), CORNER_ALL, 5.0f);
 	ui_do_label(r, text, r->h*fontmod_height, 0);
 }
 
-void MENUS::ui_draw_keyselect_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_keyselect_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	ui_draw_rect(r, vec4(1,1,1,0.5f)*button_color_mul(id), CORNER_ALL, 5.0f);
 	ui_do_label(r, text, r->h*fontmod_height, 0);
 }
 
-void MENUS::ui_draw_menu_tab_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_menu_tab_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	int corners = CORNER_T;
 	vec4 colormod(1,1,1,1);
@@ -151,7 +151,7 @@ void MENUS::ui_draw_menu_tab_button(const void *id, const char *text, int checke
 }
 
 
-void MENUS::ui_draw_settings_tab_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_settings_tab_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	if(checked)
 		ui_draw_rect(r, color_tabbar_active, CORNER_R, 10.0f);
@@ -160,30 +160,30 @@ void MENUS::ui_draw_settings_tab_button(const void *id, const char *text, int ch
 	ui_do_label(r, text, r->h*fontmod_height, 0);
 }
 
-void MENUS::ui_draw_grid_header(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_grid_header(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	if(checked)
 		ui_draw_rect(r, vec4(1,1,1,0.5f), CORNER_T, 5.0f);
-	Rect t;
+	RECT t;
 	ui_vsplit_l(r, 5.0f, 0, &t);
 	ui_do_label(&t, text, r->h*fontmod_height, -1);
 }
 
-void MENUS::ui_draw_list_row(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_list_row(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	if(checked)
 	{
-		Rect sr = *r;
+		RECT sr = *r;
 		ui_margin(&sr, 1.5f, &sr);
 		ui_draw_rect(&sr, vec4(1,1,1,0.5f), CORNER_ALL, 4.0f);
 	}
 	ui_do_label(r, text, r->h*fontmod_height, -1);
 }
 
-void MENUS::ui_draw_checkbox_common(const void *id, const char *text, const char *boxtext, const Rect *r)
+void MENUS::ui_draw_checkbox_common(const void *id, const char *text, const char *boxtext, const RECT *r)
 {
-	Rect c = *r;
-	Rect t = *r;
+	RECT c = *r;
+	RECT t = *r;
 	c.w = c.h;
 	t.x += c.w;
 	t.w -= c.w;
@@ -196,20 +196,20 @@ void MENUS::ui_draw_checkbox_common(const void *id, const char *text, const char
 	ui_do_label(&t, text, r->h*fontmod_height*0.8f, -1);
 }
 
-void MENUS::ui_draw_checkbox(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_checkbox(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	ui_draw_checkbox_common(id, text, checked?"X":"", r);
 }
 
 
-void MENUS::ui_draw_checkbox_number(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_checkbox_number(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	char buf[16];
 	str_format(buf, sizeof(buf), "%d", checked);
 	ui_draw_checkbox_common(id, text, buf, r);
 }
 
-int MENUS::ui_do_edit_box(void *id, const Rect *rect, char *str, int str_size, float font_size, bool hidden)
+int MENUS::ui_do_edit_box(void *id, const RECT *rect, char *str, int str_size, float font_size, bool hidden)
 {
     int inside = ui_mouse_inside(rect);
 	int r = 0;
@@ -325,7 +325,7 @@ int MENUS::ui_do_edit_box(void *id, const Rect *rect, char *str, int str_size, f
 	if(inside)
 		ui_set_hot_item(id);
 
-	Rect textbox = *rect;
+	RECT textbox = *rect;
 	ui_draw_rect(&textbox, vec4(1,1,1,0.5f), CORNER_ALL, 5.0f);
 	ui_vmargin(&textbox, 5.0f, &textbox);
 	
@@ -354,9 +354,9 @@ int MENUS::ui_do_edit_box(void *id, const Rect *rect, char *str, int str_size, f
 	return r;
 }
 
-float MENUS::ui_do_scrollbar_v(const void *id, const Rect *rect, float current)
+float MENUS::ui_do_scrollbar_v(const void *id, const RECT *rect, float current)
 {
-	Rect handle;
+	RECT handle;
 	static float offset_y;
 	ui_hsplit_t(rect, 33, &handle, 0);
 
@@ -391,11 +391,11 @@ float MENUS::ui_do_scrollbar_v(const void *id, const Rect *rect, float current)
 		ui_set_hot_item(id);
 
 	// render
-	Rect rail;
+	RECT rail;
 	ui_vmargin(rect, 5.0f, &rail);
 	ui_draw_rect(&rail, vec4(1,1,1,0.25f), 0, 0.0f);
 
-	Rect slider = handle;
+	RECT slider = handle;
 	slider.w = rail.x-slider.x;
 	ui_draw_rect(&slider, vec4(1,1,1,0.25f), CORNER_L, 2.5f);
 	slider.x = rail.x+rail.w;
@@ -410,9 +410,9 @@ float MENUS::ui_do_scrollbar_v(const void *id, const Rect *rect, float current)
 
 
 
-float MENUS::ui_do_scrollbar_h(const void *id, const Rect *rect, float current)
+float MENUS::ui_do_scrollbar_h(const void *id, const RECT *rect, float current)
 {
-	Rect handle;
+	RECT handle;
 	static float offset_x;
 	ui_vsplit_l(rect, 33, &handle, 0);
 
@@ -447,11 +447,11 @@ float MENUS::ui_do_scrollbar_h(const void *id, const Rect *rect, float current)
 		ui_set_hot_item(id);
 
 	// render
-	Rect rail;
+	RECT rail;
 	ui_hmargin(rect, 5.0f, &rail);
 	ui_draw_rect(&rail, vec4(1,1,1,0.25f), 0, 0.0f);
 
-	Rect slider = handle;
+	RECT slider = handle;
 	slider.h = rail.y-slider.y;
 	ui_draw_rect(&slider, vec4(1,1,1,0.25f), CORNER_T, 2.5f);
 	slider.y = rail.y+rail.h;
@@ -464,7 +464,7 @@ float MENUS::ui_do_scrollbar_h(const void *id, const Rect *rect, float current)
     return ret;
 }
 
-int MENUS::ui_do_key_reader(void *id, const Rect *rect, int key)
+int MENUS::ui_do_key_reader(void *id, const RECT *rect, int key)
 {
 	// process
 	static void *grabbed_id = 0;
@@ -513,10 +513,10 @@ int MENUS::ui_do_key_reader(void *id, const Rect *rect, int key)
 }
 
 
-int MENUS::render_menubar(Rect r)
+int MENUS::render_menubar(RECT r)
 {
-	Rect box = r;
-	Rect button;
+	RECT box = r;
+	RECT button;
 	
 	static int prev_page = config.ui_page;
 	static int last_servers_page = config.ui_page;
@@ -643,7 +643,7 @@ int MENUS::render_menubar(Rect r)
 
 void MENUS::render_loading(float percent)
 {
-    Rect screen = *ui_screen();
+    RECT screen = *ui_screen();
 	gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
 
 	if(logo_tex == -1)
@@ -682,7 +682,7 @@ void MENUS::render_loading(float percent)
 	draw_round_rect_ext((screen.w - tw) / 2.0f - 32.0f, screen.h - 78.0f, tw + 64.0f, 78.0f, 8.0f, 3);
 	gfx_quads_end();
 
-	Rect r;
+	RECT r;
 	r.x = 0;
 	r.y = screen.h - 64.0f;
 	r.w = screen.w;
@@ -709,7 +709,7 @@ void MENUS::render_loading(float percent)
 	gfx_swap();
 }
 
-void MENUS::render_news(Rect main_view)
+void MENUS::render_news(RECT main_view)
 {
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_ALL, 10.0f);
 }
@@ -731,7 +731,7 @@ void MENUS::popup_message(const char *topic, const char *body, const char *butto
 
 int MENUS::render()
 {
-    Rect screen = *ui_screen();
+    RECT screen = *ui_screen();
 	gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
 
 	static bool first = true;
@@ -758,8 +758,8 @@ int MENUS::render()
 		color_tabbar_active = color_tabbar_active_outgame;
 	}
 	
-	Rect tab_bar;
-	Rect main_view;
+	RECT tab_bar;
+	RECT main_view;
 
 	// some margin around the screen
 	ui_margin(&screen, 10.0f, &screen);
@@ -850,7 +850,7 @@ int MENUS::render()
 		const char *button_text = "";
 		int extra_align = 0;
 		
-		Rect box, part;
+		RECT box, part;
 		box = screen;
 		ui_vmargin(&box, 150.0f, &box);
 		ui_hmargin(&box, 150.0f, &box);
@@ -956,7 +956,7 @@ int MENUS::render()
 
 		if(popup == POPUP_QUIT)
 		{
-			Rect yes, no;
+			RECT yes, no;
 			ui_hsplit_b(&box, 20.f, &box, &part);
 			ui_hsplit_b(&box, 24.f, &box, &part);
 			ui_vmargin(&part, 80.0f, &part);
@@ -976,7 +976,7 @@ int MENUS::render()
 		}
 		else if(popup == POPUP_PASSWORD)
 		{
-			Rect label, textbox, tryagain, abort;
+			RECT label, textbox, tryagain, abort;
 			
 			ui_hsplit_b(&box, 20.f, &box, &part);
 			ui_hsplit_b(&box, 24.f, &box, &part);
@@ -1009,7 +1009,7 @@ int MENUS::render()
 		}
 		else if(popup == POPUP_FIRST_LAUNCH)
 		{
-			Rect label, textbox;
+			RECT label, textbox;
 			
 			ui_hsplit_b(&box, 20.f, &box, &part);
 			ui_hsplit_b(&box, 24.f, &box, &part);
@@ -1145,7 +1145,7 @@ void MENUS::on_render()
 
 	if(client_state() == CLIENTSTATE_DEMOPLAYBACK)
 	{
-		Rect screen = *ui_screen();
+		RECT screen = *ui_screen();
 		gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
 		render_demoplayer(screen);
 	}
@@ -1187,7 +1187,7 @@ void MENUS::on_render()
 		gui_color.a);
     
 	// update the ui
-	Rect *screen = ui_screen();
+	RECT *screen = ui_screen();
 	float mx = (mouse_pos.x/(float)gfx_screenwidth())*screen->w;
 	float my = (mouse_pos.y/(float)gfx_screenheight())*screen->h;
 		
@@ -1212,7 +1212,7 @@ void MENUS::on_render()
 	// render debug information
 	if(config.debug)
 	{
-		Rect screen = *ui_screen();
+		RECT screen = *ui_screen();
 		gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
 
 		char buf[512];
@@ -1386,7 +1386,7 @@ void MENUS::render_background()
 
 		gfx_mapscreen(0, 0, sw, sh);
 
-		Rect s = *ui_screen();
+		RECT s = *ui_screen();
 
 		gfx_texture_set(-1);
 		gfx_quads_begin();
@@ -1442,7 +1442,7 @@ void MENUS::render_background()
 		float cx = 1024.0f / 16.0f;
 		float cy = 1024.0f / 16.0f;
 
-		{Rect screen = *ui_screen();
+		{RECT screen = *ui_screen();
 		gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);}
 
 		gfx_texture_set(texture_tiles);
@@ -1608,7 +1608,7 @@ void MENUS::render_background()
 	float sh = 300;
 	gfx_mapscreen(0, 0, sw, sh);
 
-	Rect s = *ui_screen();
+	RECT s = *ui_screen();
 
 	// render background color
 	gfx_texture_set(-1);
@@ -1645,6 +1645,6 @@ void MENUS::render_background()
 	gfx_quads_end();
 
 	// restore screen	
-    {Rect screen = *ui_screen();
+    {RECT screen = *ui_screen();
 	gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);}	
 }

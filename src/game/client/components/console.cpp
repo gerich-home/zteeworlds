@@ -267,7 +267,7 @@ void CONSOLE::possible_commands_render_callback(const char *str, void *user)
 
 void CONSOLE::on_render()
 {
-    Rect screen = *ui_screen();
+    RECT screen = *ui_screen();
 	float console_max_height = screen.h*3/5.0f;
 	float console_height;
 

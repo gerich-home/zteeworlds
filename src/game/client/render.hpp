@@ -51,7 +51,7 @@ void draw_sprite3(float x, float y, float size);
 // rects
 void draw_round_rect(float x, float y, float w, float h, float r);
 void draw_round_rect_ext(float x, float y, float w, float h, float r, int corners);
-void ui_draw_rect(const Rect *r, vec4 color, int corners, float rounding);
+void ui_draw_rect(const RECT *r, vec4 color, int corners, float rounding);
 
 // larger rendering methods
 void render_tilemap_generate_skip();

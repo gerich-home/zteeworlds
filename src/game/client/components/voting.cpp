@@ -187,11 +187,11 @@ void VOTING::on_render()
 }
 
 
-void VOTING::render_bars(Rect bars, bool text)
+void VOTING::render_bars(RECT bars, bool text)
 {
 	ui_draw_rect(&bars, vec4(0.8f,0.8f,0.8f,0.5f), CORNER_ALL, bars.h/3);
 	
-	Rect splitter = bars;
+	RECT splitter = bars;
 	splitter.x = splitter.x+splitter.w/2;
 	splitter.w = splitter.h/2.0f;
 	splitter.x -= splitter.w/2;
@@ -199,10 +199,10 @@ void VOTING::render_bars(Rect bars, bool text)
 			
 	if(total)
 	{
-		Rect pass_area = bars;
+		RECT pass_area = bars;
 		if(yes)
 		{
-			Rect yes_area = bars;
+			RECT yes_area = bars;
 			yes_area.w *= yes/(float)total;
 			ui_draw_rect(&yes_area, vec4(0.2f,0.9f,0.2f,0.85f), CORNER_ALL, bars.h/3);
 			
@@ -219,7 +219,7 @@ void VOTING::render_bars(Rect bars, bool text)
 		
 		if(no)
 		{
-			Rect no_area = bars;
+			RECT no_area = bars;
 			no_area.w *= no/(float)total;
 			no_area.x = (bars.x + bars.w)-no_area.w;
 			ui_draw_rect(&no_area, vec4(0.9f,0.2f,0.2f,0.85f), CORNER_ALL, bars.h/3);

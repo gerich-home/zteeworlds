@@ -5,7 +5,7 @@
 typedef struct 
 {
     float x, y, w, h;
-} Rect;
+} RECT;
 
 enum
 {
@@ -39,27 +39,27 @@ const void *ui_next_hot_item();
 const void *ui_active_item();
 const void *ui_last_active_item();
 
-int ui_mouse_inside(const Rect *r);
+int ui_mouse_inside(const RECT *r);
 
-Rect *ui_screen();
+RECT *ui_screen();
 void ui_set_scale(float s);
 float ui_scale();
-void ui_clip_enable(const Rect *r);
+void ui_clip_enable(const RECT *r);
 void ui_clip_disable();
 
-void ui_hsplit_t(const Rect *original, float cut, Rect *top, Rect *bottom);
-void ui_hsplit_b(const Rect *original, float cut, Rect *top, Rect *bottom);
-void ui_vsplit_mid(const Rect *original, Rect *left, Rect *right);
-void ui_vsplit_l(const Rect *original, float cut, Rect *left, Rect *right);
-void ui_vsplit_r(const Rect *original, float cut, Rect *left, Rect *right);
+void ui_hsplit_t(const RECT *original, float cut, RECT *top, RECT *bottom);
+void ui_hsplit_b(const RECT *original, float cut, RECT *top, RECT *bottom);
+void ui_vsplit_mid(const RECT *original, RECT *left, RECT *right);
+void ui_vsplit_l(const RECT *original, float cut, RECT *left, RECT *right);
+void ui_vsplit_r(const RECT *original, float cut, RECT *left, RECT *right);
 
-void ui_margin(const Rect *original, float cut, Rect *other_rect);
-void ui_vmargin(const Rect *original, float cut, Rect *other_rect);
-void ui_hmargin(const Rect *original, float cut, Rect *other_rect);
+void ui_margin(const RECT *original, float cut, RECT *other_rect);
+void ui_vmargin(const RECT *original, float cut, RECT *other_rect);
+void ui_hmargin(const RECT *original, float cut, RECT *other_rect);
 
-typedef void (*ui_draw_button_func)(const void *id, const char *text, int checked, const Rect *r, const void *extra);
-int ui_do_button(const void *id, const char *text, int checked, const Rect *r, ui_draw_button_func draw_func, const void *extra);
-void ui_do_label(const Rect *r, const char *text, float size, int align, int max_width = -1);
+typedef void (*ui_draw_button_func)(const void *id, const char *text, int checked, const RECT *r, const void *extra);
+int ui_do_button(const void *id, const char *text, int checked, const RECT *r, ui_draw_button_func draw_func, const void *extra);
+void ui_do_label(const RECT *r, const char *text, float size, int align, int max_width = -1);
 
 
 #endif

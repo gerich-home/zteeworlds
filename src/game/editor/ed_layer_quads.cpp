@@ -89,7 +89,7 @@ QUAD *LAYER_QUADS::new_quad()
 	return q;
 }
 
-void LAYER_QUADS::brush_selecting(Rect rect)
+void LAYER_QUADS::brush_selecting(RECT rect)
 {
 	// draw selection rectangle
 	gfx_texture_set(-1);
@@ -101,7 +101,7 @@ void LAYER_QUADS::brush_selecting(Rect rect)
 	gfx_lines_end();
 }
 
-int LAYER_QUADS::brush_grab(LAYERGROUP *brush, Rect rect)
+int LAYER_QUADS::brush_grab(LAYERGROUP *brush, RECT rect)
 {
 	// create new layers
 	LAYER_QUADS *grabbed = new LAYER_QUADS();
@@ -203,7 +203,7 @@ void LAYER_QUADS::get_size(float *w, float *h)
 
 extern int selected_points;
 
-int LAYER_QUADS::render_properties(Rect *toolbox)
+int LAYER_QUADS::render_properties(RECT *toolbox)
 {
 	// layer props
 	enum

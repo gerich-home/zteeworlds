@@ -31,11 +31,6 @@
 
 #include <game/editor/ed_editor.hpp>
 
-#if defined(CONF_FAMILY_WINDOWS)
-	#define _WIN32_WINNT 0x0500
-	#include <windows.h>
-#endif
-
 const int prediction_margin = 1000/50/2; /* magic network prediction value */
 
 /*
@@ -2205,17 +2200,7 @@ int SDL_main(int argc, char **argv)
 int main(int argc, char **argv)
 #endif
 {
-#if defined(CONF_FAMILY_WINDOWS)
-	int i;
-	for(i = 1; i < argc; i++)
-	{
-		if(strcmp("-s", argv[i]) == 0 || strcmp("--silent", argv[i]) == 0)
-		{
-			ShowWindow(GetConsoleWindow(), SW_HIDE);
-			break;
-		}
-	}
-#endif
+	sys_parse_arguments("Teeworlds", argc, argv);
 
 	/* init the engine */
 	dbg_msg("client", "starting...");

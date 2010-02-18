@@ -20,13 +20,13 @@
 
 static char rewrite_filename[1024] = {0};
 
-void MENUS::ui_draw_demoplayer_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
+void MENUS::ui_draw_demoplayer_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
 {
 	ui_draw_rect(r, vec4(1,1,1, checked ? 0.10f : 0.5f)*button_color_mul(id), CORNER_ALL, 5.0f);
 	ui_do_label(r, text, 14.0f, 0);
 }
 
-void MENUS::render_demoplayer(Rect main_view)
+void MENUS::render_demoplayer(RECT main_view)
 {
 	const DEMOPLAYBACK_INFO *info = client_demoplayer_getinfo();
 	
@@ -54,7 +54,7 @@ void MENUS::render_demoplayer(Rect main_view)
 		ui_margin(&main_view, 5.0f, &main_view);
 	}
 	
-	Rect seekbar, buttonbar, rewritebar;
+	RECT seekbar, buttonbar, rewritebar;
 	
 	if(menu_active)
 	{
@@ -84,7 +84,7 @@ void MENUS::render_demoplayer(Rect main_view)
 		
 		float amount = current_tick/(float)total_ticks;
 		
-		Rect filledbar = seekbar;
+		RECT filledbar = seekbar;
 		filledbar.w = 10.0f + (filledbar.w-10.0f)*amount;
 		
 		ui_draw_rect(&filledbar, vec4(1,1,1,0.5f), CORNER_ALL, 5.0f);
@@ -127,7 +127,7 @@ void MENUS::render_demoplayer(Rect main_view)
 	if(menu_active)
 	{
 		// do buttons
-		Rect button;
+		RECT button;
 
 		// pause button
 		ui_vsplit_l(&buttonbar, buttonbar_height, &button, &buttonbar);
@@ -214,18 +214,18 @@ void MENUS::render_demoplayer(Rect main_view)
 	}
 }
 
-static Rect listbox_originalview;
-static Rect listbox_view;
+static RECT listbox_originalview;
+static RECT listbox_view;
 static float listbox_rowheight;
 static int listbox_itemindex;
 static int listbox_selected_index;
 static int listbox_new_selected;
 
-void MENUS::ui_do_listbox_start(void *id, const Rect *rect, float row_height, const char *title, int num_items, int selected_index)
+void MENUS::ui_do_listbox_start(void *id, const RECT *rect, float row_height, const char *title, int num_items, int selected_index)
 {
-	Rect scroll, row;
-	Rect view = *rect;
-	Rect header, footer;
+	RECT scroll, row;
+	RECT view = *rect;
+	RECT header, footer;
 	
 	// draw header
 	ui_hsplit_t(&view, listheader_height, &header, &view);
@@ -282,12 +282,12 @@ void MENUS::ui_do_listbox_start(void *id, const Rect *rect, float row_height, co
 
 MENUS::LISTBOXITEM MENUS::ui_do_listbox_nextitem(void *id)
 {
-	Rect row;
+	RECT row;
 	LISTBOXITEM item = {0};
 	ui_hsplit_t(&listbox_view, listbox_rowheight-2.0f, &row, &listbox_view);
 	ui_hsplit_t(&listbox_view, 2.0f, 0, &listbox_view);
 
-	Rect select_hit_box = row;
+	RECT select_hit_box = row;
 
 	item.visible = 1;
 	if(listbox_selected_index == listbox_itemindex)
@@ -318,7 +318,7 @@ MENUS::LISTBOXITEM MENUS::ui_do_listbox_nextitem(void *id)
 	if(listbox_selected_index==listbox_itemindex)
 	{
 		//selected_index = i;
-		Rect r = row;
+		RECT r = row;
 		ui_margin(&r, 1.5f, &r);
 		ui_draw_rect(&r, vec4(1,1,1,0.5f), CORNER_ALL, 4.0f);
 	}	
@@ -403,7 +403,7 @@ void MENUS::demolist_populate()
 }
 
 
-void MENUS::render_demolist(Rect main_view)
+void MENUS::render_demolist(RECT main_view)
 {
 	static int inited = 0;
 	if(!inited)
@@ -414,7 +414,7 @@ void MENUS::render_demolist(Rect main_view)
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_ALL, 10.0f);
 	ui_margin(&main_view, 10.0f, &main_view);
 	
-	Rect buttonbar;
+	RECT buttonbar;
 	ui_hsplit_b(&main_view, button_height+5.0f, &main_view, &buttonbar);
 	ui_hsplit_t(&buttonbar, 5.0f, 0, &buttonbar);
 	
@@ -445,7 +445,7 @@ void MENUS::render_demolist(Rect main_view)
 		client_demoplayer_play(demos[selected_item].filename);
 	}
 	
-	Rect refresh_rect, play_rect;
+	RECT refresh_rect, play_rect;
 	ui_vsplit_r(&buttonbar, 250.0f, &buttonbar, &refresh_rect);
 	ui_vsplit_r(&refresh_rect, 130.0f, &refresh_rect, &play_rect);
 	ui_vsplit_r(&play_rect, 120.0f, 0x0, &play_rect);
