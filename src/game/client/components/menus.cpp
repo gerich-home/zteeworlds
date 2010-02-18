@@ -41,6 +41,8 @@ float MENUS::fontmod_height = 0.8f;
 INPUT_EVENT MENUS::inputevents[MAX_INPUTEVENTS];
 int MENUS::num_inputevents;
 
+static int logo_tex = -1;
+
 inline float hue_to_rgb(float v1, float v2, float h)
 {
    if(h < 0) h += 1;
@@ -641,8 +643,6 @@ void MENUS::render_loading(float percent)
     RECT screen = *ui_screen();
 	gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
 
-	static int logo_tex = -1;
-
 	if(logo_tex == -1)
 		logo_tex = gfx_load_texture("logo.png", IMG_AUTO, 0);
 
@@ -1228,6 +1228,12 @@ void MENUS::render_background()
 	static int texture_doodads = -1;
 	static int texture_tee = -1;
 	static int texture_game = -1;
+
+	if (logo_tex != -1)
+	{
+		gfx_free_texture(logo_tex);
+		logo_tex = -1;
+	}
 
 	if(texture_sun == -1)
 		texture_sun = gfx_load_texture("mapres/sun.png", IMG_AUTO, 0);

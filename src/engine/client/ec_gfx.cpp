@@ -504,6 +504,16 @@ int gfx_add_texture(unsigned long tex_id, int width, int height)
 	return tex;
 }
 
+void gfx_free_texture(unsigned long tex_id)
+{
+	glDeleteTextures(1, &textures[tex_id].tex);
+	textures[tex_id].tex = -1;
+	textures[tex_id].width = 0;
+	textures[tex_id].height = 0;
+	textures[tex_id].memsize = 0;
+	textures[tex_id].flags = 0;
+}
+
 int gfx_load_texture_raw(int w, int h, int format, const void *data, int store_format, int flags)
 {
 	int mipmap = 1;

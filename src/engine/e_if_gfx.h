@@ -671,5 +671,6 @@ int gfx_get_texture_height(int index);
 vec4 gfx_getcolor(int vertex);
 
 int gfx_add_texture(unsigned long tex_id, int width, int height);
+void gfx_free_texture(unsigned long tex_id);
 
 #endif
