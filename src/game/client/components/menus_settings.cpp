@@ -98,65 +98,7 @@ void MENUS::render_settings_player(RECT main_view)
 			
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		
-		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		if (ui_do_button(&config.player_color_body, _t("Custom colors"), config.player_use_custom_color, &button, ui_draw_checkbox, 0))
-		{
-			config.player_use_custom_color = config.player_use_custom_color?0:1;
-			need_sendinfo = true;
-		}
 		
-		if(config.player_use_custom_color)
-		{
-			int *colors[2];
-			colors[0] = &config.player_color_body;
-			colors[1] = &config.player_color_feet;
-			
-			const char *parts[] = {"Body", "Feet"};
-			parts[0] = _t("Body");
-			parts[1] = _t("Feet");
-			
-			const char *labels[] = {"Hue", "Sat.", "Lht."};
-			labels[0] = _t("Hue");
-			labels[1] = _t("Sat.");
-			labels[2] = _t("Lht.");
-			static int color_slider[2][3] = {{0}};
-			//static float v[2][3] = {{0, 0.5f, 0.25f}, {0, 0.5f, 0.25f}};
-				
-			for(int i = 0; i < 2; i++)
-			{
-				RECT text;
-				ui_hsplit_t(&main_view, 20.0f, &text, &main_view);
-				ui_vsplit_l(&text, 15.0f, 0, &text);
-				ui_do_label(&text, parts[i], 14.0f, -1);
-				
-				int prevcolor = *colors[i];
-				int color = 0;
-				for(int s = 0; s < 3; s++)
-				{
-					RECT text;
-					ui_hsplit_t(&main_view, 19.0f, &button, &main_view);
-					ui_vsplit_l(&button, 30.0f, 0, &button);
-					ui_vsplit_l(&button, 30.0f, &text, &button);
-					ui_vsplit_r(&button, 5.0f, &button, 0);
-					ui_hsplit_t(&button, 4.0f, 0, &button);
-					
-					float k = ((prevcolor>>((2-s)*8))&0xff)  / 255.0f;
-					k = ui_do_scrollbar_h(&color_slider[i][s], &button, k);
-					color <<= 8;
-					color += clamp((int)(k*255), 0, 255);
-					ui_do_label(&text, labels[s], 15.0f, -1);
-					 
-				}
-		
-				if(*colors[i] != color)
-					need_sendinfo = true;
-					
-				*colors[i] = color;
-				ui_hsplit_t(&main_view, 5.0f, 0, &main_view);
-			}
-		}
-		
-		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		if (ui_do_button(&config.cl_default_skin_only, _t("Default skin only"), config.cl_default_skin_only, &button, ui_draw_checkbox, 0))
@@ -278,6 +220,66 @@ void MENUS::render_settings_player(RECT main_view)
 			}
 		}
 	}
+
+	ui_hsplit_t(&skinselection, 20.0f, &button, &skinselection);
+	if (ui_do_button(&config.player_color_body, _t("Custom colors"), config.player_use_custom_color, &button, ui_draw_checkbox, 0))
+	{
+		config.player_use_custom_color = config.player_use_custom_color?0:1;
+		need_sendinfo = true;
+	}
+
+	if(config.player_use_custom_color)
+	{
+		int *colors[2];
+		colors[0] = &config.player_color_body;
+		colors[1] = &config.player_color_feet;
+
+		const char *parts[] = {"Body", "Feet"};
+		parts[0] = _t("Body");
+		parts[1] = _t("Feet");
+
+		const char *labels[] = {"Hue", "Sat.", "Lht."};
+		labels[0] = _t("Hue");
+		labels[1] = _t("Sat.");
+		labels[2] = _t("Lht.");
+		static int color_slider[2][3] = {{0}};
+		//static float v[2][3] = {{0, 0.5f, 0.25f}, {0, 0.5f, 0.25f}};
+
+		for(int i = 0; i < 2; i++)
+		{
+			RECT text;
+			ui_hsplit_t(&skinselection, 20.0f, &text, &skinselection);
+			ui_vsplit_l(&text, 15.0f, 0, &text);
+			ui_do_label(&text, parts[i], 14.0f, -1);
+
+			int prevcolor = *colors[i];
+			int color = 0;
+			for(int s = 0; s < 3; s++)
+			{
+				RECT text;
+				ui_hsplit_t(&skinselection, 19.0f, &button, &skinselection);
+				ui_vsplit_l(&button, 30.0f, 0, &button);
+				ui_vsplit_l(&button, 30.0f, &text, &button);
+				ui_vsplit_r(&button, 5.0f, &button, 0);
+				ui_hsplit_t(&button, 4.0f, 0, &button);
+
+				float k = ((prevcolor>>((2-s)*8))&0xff)  / 255.0f;
+				k = ui_do_scrollbar_h(&color_slider[i][s], &button, k);
+				color <<= 8;
+				color += clamp((int)(k*255), 0, 255);
+				ui_do_label(&text, labels[s], 15.0f, -1);
+
+			}
+
+			if(*colors[i] != color)
+				need_sendinfo = true;
+
+			*colors[i] = color;
+			ui_hsplit_t(&skinselection, 5.0f, 0, &skinselection);
+		}
+	}
+
+	ui_hsplit_t(&skinselection, 20.0f, &button, &skinselection);
 		
 	// draw header
 	RECT header, footer;
