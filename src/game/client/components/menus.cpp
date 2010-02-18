@@ -873,7 +873,7 @@ int MENUS::render()
 			{
 				char buf2[1024];
 
-				title = _t("Download");
+				title = _t("Downloading map");
 				str_format(buf2, sizeof(buf2), _t("Map: %s\n\n%d/%d KiB (%.1f KiB/sec)\n\nPlease wait %d seconds..."), client_mapdownload_name(), (int)(client_mapdownload_amount() / 1024.0f), (int)(client_mapdownload_totalsize() / 1024.0f), download.avg_speed / 1024.0f, (int)download.remaining);
 
 				if ((unsigned long)time(0) - download.last_time >= 1)
