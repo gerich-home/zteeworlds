@@ -71,7 +71,7 @@ void INFOPAN::on_render()
 		gfx_text_set_cursor(&cursor, begin, 0, fontsize, 0);
 		cursor.line_width = 200.0f;
 		gfx_text_ex(&cursor, lines[r].text, -1);
-		y += cursor.y + cursor.font_size;
+		y += cursor.y + cursor.font_size * cursor.line_count;
 
 		// cut off if msgs waste too much space
 		if(y > 200.0f)
