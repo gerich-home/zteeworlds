@@ -101,11 +101,8 @@ MENUS::MENUS()
 	
 	last_input = time_get();
 
-	download.elapsedtick = 50;
-	download.elapsedsec = 0;
-	download.speed = 0;
-	download.timeneeded = 0;
-	download.timeremaining = 0;
+	memset(&download, 0, sizeof(download));
+	download.start_time = download.last_time = (unsigned long)time(0);
 }
 
 vec4 MENUS::button_color_mul(const void *id)
@@ -826,11 +823,8 @@ int MENUS::render()
 				render_settings(main_view);
 
 			// Reset download vars
-			download.elapsedtick = 50;
-			download.elapsedsec = 0;
-			download.speed = 0;
-			download.timeneeded = 0;
-			download.timeremaining = 0;
+			memset(&download, 0, sizeof(download));
+			download.start_time = download.last_time = (unsigned long)time(0);
 		}
 		else if(config.ui_page == PAGE_NEWS)
 			render_news(main_view);
@@ -879,29 +873,23 @@ int MENUS::render()
 			{
 				char buf2[1024];
 
-				if(download.elapsedtick <= 0)
+				title = _t("Download");
+				str_format(buf2, sizeof(buf2), _t("Map: %s\n\n%d/%d KiB (%.1f KiB/sec)\n\nPlease wait %d seconds..."), client_mapdownload_name(), (int)(client_mapdownload_amount() / 1024.0f), (int)(client_mapdownload_totalsize() / 1024.0f), download.avg_speed / 1024.0f, (int)download.remaining);
+
+				if ((unsigned long)time(0) - download.last_time >= 1)
 				{
-					download.elapsedsec++;
-					download.elapsedtick = 50;
-					download.speed = client_mapdownload_amount()/1024 - download.lastsize;
+					download.speed = (client_mapdownload_amount() - download.last_size) / ((unsigned long)time(0) - download.last_time);
+					download.last_time = (unsigned long)time(0);
+					download.last_size = client_mapdownload_amount();
+					if (download.avg_speed == 0)
+						download.avg_speed = download.speed;
+					else
+						download.avg_speed = (download.avg_speed + download.speed) / 2.0f;
 
-					download.lastsize = client_mapdownload_amount()/1024;
+					download.remaining = (unsigned long)(abs((client_mapdownload_totalsize() - client_mapdownload_amount()) / download.avg_speed));
 				}
-				else if(download.elapsedtick > 0)
-					download.elapsedtick--;
 
-				download.timeneeded = (float)download.elapsedsec+(50-download.elapsedtick)/50.0;
-
-				if(download.speed != 0.0)
-					download.timeremaining = ((float)client_mapdownload_totalsize()/1024-client_mapdownload_amount()/1024)/download.speed;
-				else
-					download.timeremaining = 0;
-
-				str_format(buf2, sizeof(buf2), _t("Downloading map '%s'"), client_mapdownload_name());
-				str_format(buf, sizeof(buf), _t("Status...................: %d%%\nSize.......................: %d/%d KiB\nDownload speed..: %3.1f KiB/s\nTime elapsed.......: %3.1f sec\nTime remaining....: %3.1f sec"), (client_mapdownload_amount()/1024*100)/(client_mapdownload_totalsize()/1024), client_mapdownload_amount()/1024, client_mapdownload_totalsize()/1024,download.speed, download.timeneeded, download.timeremaining);
-
-				title = buf2;
-				extra_text = buf;
+				extra_text = buf2;
 
 				gfx_blend_normal();
 				gfx_texture_set(-1);

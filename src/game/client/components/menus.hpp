@@ -197,11 +197,14 @@ public:
 	//DownloadExtension
 	struct
 	{
-		int elapsedsec;
-		int elapsedtick;
+		unsigned long start_time;
+		unsigned long last_time;
+
 		float speed;
-		float timeneeded;
-		int lastsize;
-		float timeremaining;
+		float avg_speed;
+
+		int last_size;
+
+		unsigned long remaining;
 	} download;
 };
