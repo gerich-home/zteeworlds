@@ -1011,7 +1011,7 @@ void MENUS::render_settings_about(RECT main_view)
 	str_format(buf, sizeof(buf), "spl0k - %s", _t("for TeeComp mod"));
 	ui_do_label(&button, buf, 14.0f, -1);
 	ui_hsplit_t(&button, 20.0f, 0, &button);
-	str_format(buf, sizeof(buf), "Sushi Tee - %s", _t("for his pack, HUD and Bepp mods"));
+	str_format(buf, sizeof(buf), "Sushi Tee - %s", _t("for his pack, HUD and Beep mods"));
 	ui_do_label(&button, buf, 14.0f, -1);
 	ui_hsplit_t(&button, 20.0f, 0, &button);
 	str_format(buf, sizeof(buf), "DeRK - %s", _t("for TDTW"));

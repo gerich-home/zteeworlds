@@ -684,9 +684,9 @@ void MENUS::render_loading(float percent)
 
 	RECT r;
 	r.x = 0;
-	r.y = screen.h - 64.0f;
+	r.y = screen.h - 100.0f + 32.0f;
 	r.w = screen.w;
-	r.h = 64;
+	r.h = 32.0f;
 	ui_do_label(&r, caption, 32.0f, 0, -1);
 
 	gfx_texture_set(-1);
