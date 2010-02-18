@@ -834,7 +834,7 @@ void GAMECLIENT::on_message(int msgtype)
 			
 #ifndef CONF_TRUNC
 			clients[msg->killer].stats.spree_kills++;
-			if (config.cl_sprees && clients[msg->killer].stats.spree_kills%5 == 0)
+			if (config.cl_sprees && clients[msg->killer].stats.spree_kills%5 == 0 && (!config.cl_sprees_local_only || (config.cl_sprees_local_only && msg->killer == snap.local_cid)))
 			{
 				char buf[512] = {0};
 				if (clients[msg->killer].stats.spree_kills == 5)
@@ -866,7 +866,7 @@ void GAMECLIENT::on_message(int msgtype)
 				clients[msg->victim].stats.killed[msg->weapon]++;
 			clients[msg->victim].stats.total_killed++;
 #ifndef CONF_TRUNC
-			if (config.cl_sprees && clients[msg->victim].stats.spree_kills >= 5)
+			if (config.cl_sprees && clients[msg->victim].stats.spree_kills >= 5 && (!config.cl_sprees_local_only || (config.cl_sprees_local_only && msg->victim == snap.local_cid)))
 			{
 				char buf[512];
 				str_format(buf, sizeof(buf), _t("%s's %d-kills killing spree ended by %s"), clients[msg->victim].name, clients[msg->victim].stats.spree_kills, clients[msg->killer].name);

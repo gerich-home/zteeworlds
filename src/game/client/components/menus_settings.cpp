@@ -147,6 +147,11 @@ void MENUS::render_settings_player(RECT main_view)
 		{
 			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 			ui_vsplit_l(&button, 15.0f, 0, &button);
+			if (ui_do_button(&config.cl_sprees_local_only, _t("Only for local player"), config.cl_sprees_local_only, &button, ui_draw_checkbox, 0))
+				config.cl_sprees_local_only ^= 1;
+
+			ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+			ui_vsplit_l(&button, 15.0f, 0, &button);
 			if (ui_do_button(&config.cl_sprees_sounds, _t("Sounds of killing sprees"), config.cl_sprees_sounds, &button, ui_draw_checkbox, 0))
 				config.cl_sprees_sounds ^= 1;
 		}
