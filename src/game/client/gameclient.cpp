@@ -468,9 +468,7 @@ int GAMECLIENT::on_snapinput(int *data)
 
 		if(inp->hook && !last_hook)
 		{
-			freeview = !freeview;
-			if(!freeview)
-				find_next_spectable_cid();
+			freeview = true;
 			last_hook = true;
 		}
 		else if(!inp->hook && last_hook)
