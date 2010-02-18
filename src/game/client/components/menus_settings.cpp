@@ -1010,6 +1010,8 @@ void MENUS::render_settings(RECT main_view)
 	tabs[1] = _t("Controls");
 	tabs[2] = _t("Graphics");
 	tabs[3] = _t("Sound");
+	tabs[4] = _t("Beep");
+	tabs[5] = _t("Hud-Mod");
 	int num_tabs = (int)(sizeof(tabs)/sizeof(*tabs));
 
 	for(int i = 0; i < num_tabs; i++)
