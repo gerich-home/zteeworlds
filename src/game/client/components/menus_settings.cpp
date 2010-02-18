@@ -975,20 +975,55 @@ void MENUS::render_settings_hudmod(RECT main_view)
 	ui_do_label(&button, "by Sushi :)", 10.0f, 0);
 }
 
-	/*
-static void menu2_render_settings_network(RECT main_view)
+
+void MENUS::render_settings_about(RECT main_view)
 {
 	RECT button;
-	ui_vsplit_l(&main_view, 300.0f, &main_view, 0);
-	
-	{
-		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		ui_do_label(&button, _t("Rcon Password"), 14.0, -1);
-		ui_vsplit_l(&button, 110.0f, 0, &button);
-		ui_vsplit_l(&button, 180.0f, &button, 0);
-		ui_do_edit_box(&config.rcon_password, &button, config.rcon_password, sizeof(config.rcon_password), true);
-	}
-}*/
+
+	char buf[512];
+
+	ui_do_label(&main_view, "Teeworlds Z-Team Pack 4", 40.0f, 0);
+	ui_hsplit_t(&main_view, 80.0f, 0, &main_view);
+	ui_do_label(&main_view, _t("Based on the Teeworlds 0.5.2"), 14.0f, -1);
+	ui_hsplit_t(&main_view, 60.0f, 0, &main_view);
+	ui_do_label(&main_view, _t("Developers:"), 14.0f, -1);
+	ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
+	button = main_view;
+	button.x += 30.0f;
+	str_format(buf, sizeof(buf), "Lite, vit - %s", _t("coding"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	ui_hsplit_t(&button, 20.0f, 0, &button);
+	str_format(buf, sizeof(buf), "karbo - %s", _t("sounds and music"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	ui_hsplit_t(&button, 20.0f, 0, &button);
+	str_format(buf, sizeof(buf), "Sozidai_mouse - %s", _t("art"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	main_view.y = button.y;
+	main_view.h = button.h;
+	ui_hsplit_t(&main_view, 60.0f, 0, &main_view);
+	ui_do_label(&main_view, _t("Thanks to:"), 14.0f, -1);
+	ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
+	button = main_view;
+	button.x += 30.0f;
+	str_format(buf, sizeof(buf), "%s - %s", _t("Teeworlds developers"), _t("for this amazing game"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	ui_hsplit_t(&button, 20.0f, 0, &button);
+	str_format(buf, sizeof(buf), "spl0k - %s", _t("for TeeComp mod"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	ui_hsplit_t(&button, 20.0f, 0, &button);
+	str_format(buf, sizeof(buf), "Sushi Tee - %s", _t("for his pack, HUD and Bepp mods"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	ui_hsplit_t(&button, 20.0f, 0, &button);
+	str_format(buf, sizeof(buf), "DeRK - %s", _t("for TDTW"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	ui_hsplit_t(&button, 20.0f, 0, &button);
+	str_format(buf, sizeof(buf), "KillaBilla - %s", _t("for DownloadExtension"));
+	ui_do_label(&button, buf, 14.0f, -1);
+	main_view.y = button.y;
+	main_view.h = button.h;
+	ui_hsplit_t(&main_view, 60.0f, 0, &main_view);
+	ui_do_label(&main_view, _t("Thank you! Good game!"), 21.0f, 0);
+}
 
 void MENUS::render_settings(RECT main_view)
 {
@@ -1005,13 +1040,14 @@ void MENUS::render_settings(RECT main_view)
 	
 	RECT button;
 	
-	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Beep", "Hud-Mod"};
+	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Beep", "Hud-Mod", "About"};
 	tabs[0] = _t("Player");
 	tabs[1] = _t("Controls");
 	tabs[2] = _t("Graphics");
 	tabs[3] = _t("Sound");
 	tabs[4] = _t("Beep");
 	tabs[5] = _t("Hud-Mod");
+	tabs[6] = _t("About");
 	int num_tabs = (int)(sizeof(tabs)/sizeof(*tabs));
 
 	for(int i = 0; i < num_tabs; i++)
@@ -1036,6 +1072,8 @@ void MENUS::render_settings(RECT main_view)
 		render_settings_beep(main_view);
 	else if(settings_page == 5)
 		render_settings_hudmod(main_view);
+	else if(settings_page == 6)
+		render_settings_about(main_view);
 
 	if(need_restart)
 	{
