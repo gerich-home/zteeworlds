@@ -142,7 +142,6 @@ void MENUS::render_demoplayer(RECT main_view)
 		if(ui_do_button(&play_button, ">", !info->paused, &button, ui_draw_demoplayer_button, 0))
 		{
 			client_demoplayer_setpause(0);
-			client_demoplayer_setspeed(1.0f);
 		}
 
 		// slowdown
