@@ -894,6 +894,8 @@ int MENUS::render()
 				gfx_blend_normal();
 				gfx_texture_set(-1);
 				gfx_quads_begin();
+				gfx_setcolor(0.0f, 0.0f, 0.0f, 0.75f);
+				draw_round_rect(screen.x + 175.0f, screen.h - 225.0f, (screen.w - 350.0f), 25.0f, 5.0f);
 				gfx_setcolor(1.0f, 1.0f, 1.0f, 0.75f);
 				draw_round_rect(screen.x + 175.0f, screen.h - 225.0f, (screen.w - 350.0f) * clamp((float)((client_mapdownload_amount()/1024.0f*100.0f)/(client_mapdownload_totalsize()/1024.0f)/100.0f), 0.0f, 1.0f), 25.0f, 5.0f);
 				gfx_quads_end();
