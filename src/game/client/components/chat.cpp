@@ -319,8 +319,12 @@ void CHAT::on_message(int msgtype, void *rawmsg)
 		{
 			if((msg->cid >= 0) && config.cl_change_sound && contains_name)	
 			{
+				static int chatsound_id = -1;
 				if(config.cl_chatsound)
-					gameclient.sounds->play(SOUNDS::CHN_GUI, SOUND_TEE_CRY, 0, vec2(0,0));
+				{
+					if (chatsound_id < 0) chatsound_id = snd_load_wv("audio/sfx_beep.wv");
+					if (chatsound_id >= 0) snd_play(SOUNDS::CHN_GUI, chatsound_id, 0);
+				}
 			}
 			else if(msg->cid >= 0)
 			{
