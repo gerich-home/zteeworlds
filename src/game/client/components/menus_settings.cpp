@@ -737,7 +737,7 @@ void MENUS::render_settings_sound(RECT main_view)
 	ui_vsplit_l(&main_view, 300.0f, &main_view, 0);
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.snd_enable, _t("Use Sounds"), config.snd_enable, &button, ui_draw_checkbox, 0))
+	if (ui_do_button(&config.snd_enable, _t("Use sounds"), config.snd_enable, &button, ui_draw_checkbox, 0))
 	{
 		config.snd_enable ^= 1;
 		need_restart = true;
@@ -755,7 +755,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		char buf[64];
 		str_format(buf, sizeof(buf), "%d", config.snd_rate);
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-		ui_do_label(&button, _t("Sample Rate"), 14.0f, -1);
+		ui_do_label(&button, _t("Sample rate"), 14.0f, -1);
 		ui_vsplit_l(&button, 110.0f, 0, &button);
 		ui_vsplit_l(&button, 180.0f, &button, 0);
 		ui_do_edit_box(&config.snd_rate, &button, buf, sizeof(buf), 14.0f);
@@ -776,7 +776,7 @@ void MENUS::render_settings_sound(RECT main_view)
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		ui_vsplit_l(&button, 170.0f, &label, &button);
 		ui_hmargin(&button, 2.0f, &button);
-		ui_do_label(&label, _t("Sound Volume"), 14.0f, -1);
+		ui_do_label(&label, _t("Sound volume"), 14.0f, -1);
 		config.snd_volume = (int)(ui_do_scrollbar_h(&config.snd_volume, &button, config.snd_volume/100.0f)*100.0f);
 		ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
 	}
@@ -787,8 +787,19 @@ void MENUS::render_settings_sound(RECT main_view)
 		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 		ui_vsplit_l(&button, 170.0f, &label, &button);
 		ui_hmargin(&button, 2.0f, &button);
-		ui_do_label(&label, _t("Music Volume"), 14.0f, -1);
+		ui_do_label(&label, _t("Music volume"), 14.0f, -1);
 		config.music_volume = (int)(ui_do_scrollbar_h(&config.music_volume, &button, config.music_volume/100.0f)*100.0f);
+		ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
+	}
+
+	{
+		RECT button, label;
+		ui_hsplit_t(&main_view, 5.0f, &button, &main_view);
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		ui_vsplit_l(&button, 170.0f, &label, &button);
+		ui_hmargin(&button, 2.0f, &button);
+		ui_do_label(&label, _t("Music volume in game"), 14.0f, -1);
+		config.music_ingame_volume = (int)(ui_do_scrollbar_h(&config.music_ingame_volume, &button, config.music_ingame_volume/100.0f)*100.0f);
 		ui_hsplit_t(&main_view, 20.0f, 0, &main_view);
 	}
 }
