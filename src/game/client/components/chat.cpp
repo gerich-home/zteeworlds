@@ -193,6 +193,7 @@ bool CHAT::on_input(INPUT_EVENT e)
 			char buf[256], buf2[256];
 			memset(buf, 0, sizeof(buf));
 			mem_copy(buf, str + space, input.cursor_offset() - space);
+			if (strlen(buf) == 0) return true;
 			for (int i = 0; i < MAX_CLIENTS; i++)
 			{
 				if (!gameclient.snap.player_infos[i]) continue;
@@ -211,6 +212,25 @@ bool CHAT::on_input(INPUT_EVENT e)
 					input.set(buf2);
 					input.set_cursor_offset(c_off);
 					
+					break;
+				}
+			}
+
+			for (int i = 0; i < MAX_CLIENTS; i++)
+			{
+				if (!gameclient.snap.player_infos[i]) continue;
+
+				if (str_find_nocase(gameclient.clients[i].name, buf) != 0)
+				{
+					memset(buf, 0, sizeof(buf));
+					memset(buf2, 0, sizeof(buf2));
+					if (space)
+						mem_copy(buf, str, space);
+
+					str_format(buf2, 256, "%s%s%s", buf, gameclient.clients[i].name, str + input.cursor_offset());
+					int c_off = str_length(buf) + str_length(gameclient.clients[i].name);
+					input.set(buf2);
+					input.set_cursor_offset(c_off);
 					
 					break;
 				}
