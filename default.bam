@@ -1,5 +1,12 @@
 CheckVersion("0.2")
 
+--- Change codepage to 1251 for correct error displaying in russian ---
+if family == "windows" then
+	if os.getenv("CP1251") ~= nil then
+		os.execute("chcp 1251")
+	end
+end
+
 Import("other/sdl/sdl.bam")
 Import("other/freetype/freetype.bam")
 
