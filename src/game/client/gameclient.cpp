@@ -748,7 +748,6 @@ void GAMECLIENT::on_render()
 
 void GAMECLIENT::on_message(int msgtype)
 {
-	dbg_msg("", "msg %d: %s", msgtype, netmsg_get_name(msgtype));
 	// special messages
 	if(msgtype == NETMSGTYPE_SV_EXTRAPROJECTILE)
 	{
