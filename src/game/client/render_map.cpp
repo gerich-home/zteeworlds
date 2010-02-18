@@ -70,7 +70,7 @@ void render_eval_envelope(ENVPOINT *points, int num_points, int channels, float 
 }
 
 
-static void rotate(POINT *center, POINT *point, float rotation)
+static void rotate(Point *center, Point *point, float rotation)
 {
 	int x = point->x - center->x;
 	int y = point->y - center->y;
@@ -134,11 +134,11 @@ void render_quads(QUAD *quads, int num_quads, void (*eval)(float time_offset, in
 		gfx_setcolorvertex(2, q->colors[2].r*conv*r, q->colors[2].g*conv*g, q->colors[2].b*conv*b, q->colors[2].a*conv*a);
 		gfx_setcolorvertex(3, q->colors[3].r*conv*r, q->colors[3].g*conv*g, q->colors[3].b*conv*b, q->colors[3].a*conv*a);
 
-		POINT *points = q->points;
+		Point *points = q->points;
 	
 		if(rot != 0)
 		{
-			static POINT rotated[4];
+			static Point rotated[4];
 			rotated[0] = q->points[0];
 			rotated[1] = q->points[1];
 			rotated[2] = q->points[2];

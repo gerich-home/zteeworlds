@@ -53,7 +53,7 @@ void MAPLAYERS::on_render()
 	if(client_state() != CLIENTSTATE_ONLINE && client_state() != CLIENTSTATE_DEMOPLAYBACK)
 		return;
 	
-	RECT screen;
+	Rect screen;
 	gfx_getscreen(&screen.x, &screen.y, &screen.w, &screen.h);
 	
 	vec2 center = gameclient.camera->center;

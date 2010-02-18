@@ -255,7 +255,7 @@ void FASTMENU::on_render()
 	
 	was_active = true;
 
-    RECT screen = *ui_screen();
+    Rect screen = *ui_screen();
 	
 	int x, y;
 	inp_mouse_relative(&x, &y);

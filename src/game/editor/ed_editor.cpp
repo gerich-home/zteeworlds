@@ -49,7 +49,7 @@ LAYERGROUP::~LAYERGROUP()
 	clear();
 }
 
-void LAYERGROUP::convert(RECT *rect)
+void LAYERGROUP::convert(Rect *rect)
 {
 	rect->x += offset_x;
 	rect->y += offset_y;
@@ -177,7 +177,7 @@ void EDITOR_IMAGE::analyse_tileflags()
 // copied from gc_menu.cpp, should be more generalized
 //extern int ui_do_edit_box(void *id, const RECT *rect, char *str, int str_size, float font_size, bool hidden=false);
 
-int ui_do_edit_box(void *id, const RECT *rect, char *str, int str_size, float font_size, bool hidden=false)
+int ui_do_edit_box(void *id, const Rect *rect, char *str, int str_size, float font_size, bool hidden=false)
 {
     int inside = ui_mouse_inside(rect);
 	int r = 0;
@@ -296,7 +296,7 @@ int ui_do_edit_box(void *id, const RECT *rect, char *str, int str_size, float fo
 	if(inside)
 		ui_set_hot_item(id);
 
-	RECT textbox = *rect;
+	Rect textbox = *rect;
 	ui_draw_rect(&textbox, vec4(1,1,1,0.5f), CORNER_ALL, 5.0f);
 	ui_vmargin(&textbox, 5.0f, &textbox);
 	
@@ -334,9 +334,9 @@ vec4 button_color_mul(const void *id)
 	return vec4(1,1,1,1);
 }
 
-float ui_do_scrollbar_v(const void *id, const RECT *rect, float current)
+float ui_do_scrollbar_v(const void *id, const Rect *rect, float current)
 {
-	RECT handle;
+	Rect handle;
 	static float offset_y;
 	ui_hsplit_t(rect, 33, &handle, 0);
 
@@ -371,11 +371,11 @@ float ui_do_scrollbar_v(const void *id, const RECT *rect, float current)
 		ui_set_hot_item(id);
 
 	// render
-	RECT rail;
+	Rect rail;
 	ui_vmargin(rect, 5.0f, &rail);
 	ui_draw_rect(&rail, vec4(1,1,1,0.25f), 0, 0.0f);
 
-	RECT slider = handle;
+	Rect slider = handle;
 	slider.w = rail.x-slider.x;
 	ui_draw_rect(&slider, vec4(1,1,1,0.25f), CORNER_L, 2.5f);
 	slider.x = rail.x+rail.w;
@@ -405,25 +405,25 @@ static vec4 get_button_color(const void *id, int checked)
 	return vec4(1,1,1,0.5f);
 }
 
-void draw_editor_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+void draw_editor_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item() == id) if(extra) editor.tooltip = (const char *)extra;
 	ui_draw_rect(r, get_button_color(id, checked), CORNER_ALL, 3.0f);
 	ui_do_label(r, text, 10, 0, -1);
 }
 
-static void draw_editor_button_file(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+static void draw_editor_button_file(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item() == id) if(extra) editor.tooltip = (const char *)extra;
 	if(ui_hot_item() == id)
 		ui_draw_rect(r, get_button_color(id, checked), CORNER_ALL, 3.0f);
 	
-	RECT t = *r;
+	Rect t = *r;
 	ui_vmargin(&t, 5.0f, &t);
 	ui_do_label(&t, text, 10, -1, -1);
 }
 
-static void draw_editor_button_menu(const void *id, const char *text, int checked, const RECT *rect, const void *extra)
+static void draw_editor_button_menu(const void *id, const char *text, int checked, const Rect *rect, const void *extra)
 {
 	/*
 	if(ui_hot_item() == id) if(extra) editor.tooltip = (const char *)extra;
@@ -431,7 +431,7 @@ static void draw_editor_button_menu(const void *id, const char *text, int checke
 		ui_draw_rect(r, get_button_color(id, checked), CORNER_ALL, 3.0f);
 	*/
 
-	RECT r = *rect;
+	Rect r = *rect;
 	/*
 	if(ui_popups[id == id)
 	{
@@ -450,46 +450,46 @@ static void draw_editor_button_menu(const void *id, const char *text, int checke
 	//RECT t = *r;
 }
 
-void draw_editor_button_menuitem(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+void draw_editor_button_menuitem(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item() == id) if(extra) editor.tooltip = (const char *)extra;
 	if(ui_hot_item() == id || checked)
 		ui_draw_rect(r, get_button_color(id, checked), CORNER_ALL, 3.0f);
 	
-	RECT t = *r;
+	Rect t = *r;
 	ui_vmargin(&t, 5.0f, &t);
 	ui_do_label(&t, text, 10, -1, -1);
 }
 
-static void draw_editor_button_l(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+static void draw_editor_button_l(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item() == id) if(extra) editor.tooltip = (const char *)extra;
 	ui_draw_rect(r, get_button_color(id, checked), CORNER_L, 3.0f);
 	ui_do_label(r, text, 10, 0, -1);
 }
 
-static void draw_editor_button_m(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+static void draw_editor_button_m(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item() == id) if(extra) editor.tooltip = (const char *)extra;
 	ui_draw_rect(r, get_button_color(id, checked), 0, 3.0f);
 	ui_do_label(r, text, 10, 0, -1);
 }
 
-static void draw_editor_button_r(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+static void draw_editor_button_r(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item() == id) if(extra) editor.tooltip = (const char *)extra;
 	ui_draw_rect(r, get_button_color(id, checked), CORNER_R, 3.0f);
 	ui_do_label(r, text, 10, 0, -1);
 }
 
-static void draw_inc_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+static void draw_inc_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item == id) if(extra) editor.tooltip = (const char *)extra;
 	ui_draw_rect(r, get_button_color(id, checked), CORNER_R, 3.0f);
 	ui_do_label(r, text?text:">", 10, 0, -1);
 }
 
-static void draw_dec_button(const void *id, const char *text, int checked, const RECT *r, const void *extra)
+static void draw_dec_button(const void *id, const char *text, int checked, const Rect *r, const void *extra)
 {
 	if(ui_hot_item == id) if(extra) editor.tooltip = (const char *)extra;
 	ui_draw_rect(r, get_button_color(id, checked), CORNER_L, 3.0f);
@@ -501,7 +501,7 @@ enum
 	BUTTON_CONTEXT=1,
 };
 
-int do_editor_button(const void *id, const char *text, int checked, const RECT *r, ui_draw_button_func draw_func, int flags, const char *tooltip)
+int do_editor_button(const void *id, const char *text, int checked, const Rect *r, ui_draw_button_func draw_func, int flags, const char *tooltip)
 {
 	if(ui_mouse_inside(r))
 	{
@@ -515,7 +515,7 @@ int do_editor_button(const void *id, const char *text, int checked, const RECT *
 }
 
 
-static void render_background(RECT view, int texture, float size, float brightness)
+static void render_background(Rect view, int texture, float size, float brightness)
 {
 	gfx_texture_set(texture);
 	gfx_blend_normal();
@@ -529,7 +529,7 @@ static void render_background(RECT view, int texture, float size, float brightne
 static LAYERGROUP brush;
 static LAYER_TILES tileset_picker(16, 16);
 
-static int ui_do_value_selector(void *id, RECT *r, const char *label, int current, int min, int max, float scale)
+static int ui_do_value_selector(void *id, Rect *r, const char *label, int current, int min, int max, float scale)
 {
     /* logic */
     static float value;
@@ -625,9 +625,9 @@ static void callback_open_map(const char *filename) { editor.load(filename); }
 static void callback_append_map(const char *filename) { editor.append(filename); }
 static void callback_save_map(const char *filename) { editor.save(filename); }
 
-static void do_toolbar(RECT toolbar)
+static void do_toolbar(Rect toolbar)
 {
-	RECT button;
+	Rect button;
 	
 	// ctrl+o to open
 	if(inp_key_down('o') && (inp_key_pressed(KEY_LCTRL) || inp_key_pressed(KEY_RCTRL)))
@@ -801,7 +801,7 @@ static void do_toolbar(RECT toolbar)
 	}
 }
 
-static void rotate(POINT *center, POINT *point, float rotation)
+static void rotate(Point *center, Point *point, float rotation)
 {
 	int x = point->x - center->x;
 	int y = point->y - center->y;
@@ -822,7 +822,7 @@ static void do_quad(QUAD *q, int index)
 	
 	// some basic values
 	void *id = &q->points[4]; // use pivot addr as id
-	static POINT rotate_points[4];
+	static Point rotate_points[4];
 	static float last_wx;
 	static float last_wy;
 	static int operation = OP_NONE;
@@ -1077,7 +1077,7 @@ static void do_quad_point(QUAD *q, int quad_index, int v)
 	gfx_quads_draw(px, py, 5.0f, 5.0f);	
 }
 
-static void do_map_editor(RECT view, RECT toolbar)
+static void do_map_editor(Rect view, Rect toolbar)
 {
 	//ui_clip_enable(&view);
 	
@@ -1127,7 +1127,7 @@ static void do_map_editor(RECT view, RECT toolbar)
 	// remap the screen so it can display the whole tileset
 	if(show_picker)
 	{
-		RECT screen = *ui_screen();
+		Rect screen = *ui_screen();
 		float size = 32.0*16.0f;
 		float w = size*(screen.w/view.w);
 		float h = size*(screen.h/view.h);
@@ -1219,7 +1219,7 @@ static void do_map_editor(RECT view, RECT toolbar)
 
 			if(ui_active_item() == editor_id)
 			{
-				RECT r;
+				Rect r;
 				r.x = start_wx;
 				r.y = start_wy;
 				r.w = wx-start_wx;
@@ -1391,7 +1391,7 @@ static void do_map_editor(RECT view, RECT toolbar)
 		gfx_texture_set(-1);
 		gfx_lines_begin();
 
-			RECT r;
+			Rect r;
 			r.x = editor.get_selected_group()->clip_x;
 			r.y = editor.get_selected_group()->clip_y;
 			r.w = editor.get_selected_group()->clip_w;
@@ -1464,7 +1464,7 @@ static void do_map_editor(RECT view, RECT toolbar)
 					editor.world_offset_x, editor.world_offset_y,
 					1.0f, 1.0f, 0.0f, 0.0f, aspect, 1.0f, points);
 				
-				RECT r;
+				Rect r;
 				r.x = points[0];
 				r.y = points[1];
 				r.w = points[2]-points[0];
@@ -1486,22 +1486,22 @@ static void do_map_editor(RECT view, RECT toolbar)
 }
 
 
-int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val)
+int EDITOR::do_properties(Rect *toolbox, PROPERTY *props, int *ids, int *new_val)
 {
 	int change = -1;
 
 	for(int i = 0; props[i].name; i++)
 	{
-		RECT slot;
+		Rect slot;
 		ui_hsplit_t(toolbox, 13.0f, &slot, toolbox);
-		RECT label, shifter;
+		Rect label, shifter;
 		ui_vsplit_mid(&slot, &label, &shifter);
 		ui_hmargin(&shifter, 1.0f, &shifter);
 		ui_do_label(&label, props[i].name, 10.0f, -1, -1);
 		
 		if(props[i].type == PROPTYPE_INT_STEP)
 		{
-			RECT inc, dec;
+			Rect inc, dec;
 			char buf[64];
 			
 			ui_vsplit_r(&shifter, 10.0f, &shifter, &inc);
@@ -1529,7 +1529,7 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 		}
 		else if(props[i].type == PROPTYPE_BOOL)
 		{
-			RECT no, yes;
+			Rect no, yes;
 			ui_vsplit_mid(&shifter, &no, &yes);
 			if(do_editor_button(&ids[i], _t("No"), !props[i].value, &no, draw_dec_button, 0, ""))
 			{
@@ -1599,14 +1599,14 @@ int EDITOR::do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val
 	return change;
 }
 
-static void render_layers(RECT toolbox, RECT toolbar, RECT view)
+static void render_layers(Rect toolbox, Rect toolbar, Rect view)
 {
-	RECT layersbox = toolbox;
+	Rect layersbox = toolbox;
 
 	if(!editor.gui_active)
 		return;
 			
-	RECT slot, button;
+	Rect slot, button;
 	char buf[64];
 
 	int valid_group = 0;
@@ -1621,7 +1621,7 @@ static void render_layers(RECT toolbox, RECT toolbar, RECT view)
 	{
 		for(int g = 0; g < editor.map.groups.len(); g++)
 		{
-			RECT visible_toggle;
+			Rect visible_toggle;
 			ui_hsplit_t(&layersbox, 12.0f, &slot, &layersbox);
 			ui_vsplit_l(&slot, 12, &visible_toggle, &slot);
 			if(do_editor_button(&editor.map.groups[g]->visible, editor.map.groups[g]->visible?"V":"H", 0, &visible_toggle, draw_editor_button_l, 0, _t("Toggle group visibility")))
@@ -1755,12 +1755,12 @@ static void modify_index_deleted(int *index)
 		*index = *index - 1;
 }
 
-static int popup_image(RECT view)
+static int popup_image(Rect view)
 {
 	static int replace_button = 0;	
 	static int remove_button = 0;	
 
-	RECT slot;
+	Rect slot;
 	ui_hsplit_t(&view, 2.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
 	EDITOR_IMAGE *img = editor.map.images[editor.selected_image];
@@ -1806,11 +1806,11 @@ static int popup_image(RECT view)
 }
 
 
-static void render_images(RECT toolbox, RECT toolbar, RECT view)
+static void render_images(Rect toolbox, Rect toolbar, Rect view)
 {
 	for(int e = 0; e < 2; e++) // two passes, first embedded, then external
 	{
-		RECT slot;
+		Rect slot;
 		ui_hsplit_t(&toolbox, 15.0f, &slot, &toolbox);
 		if(e == 0)
 			ui_do_label(&slot, _t("Embedded"), 12.0f, 0);
@@ -1844,7 +1844,7 @@ static void render_images(RECT toolbox, RECT toolbar, RECT view)
 			// render image
 			if(editor.selected_image == i)
 			{
-				RECT r;
+				Rect r;
 				ui_margin(&view, 10.0f, &r);
 				if(r.h < r.w)
 					r.w = r.h;
@@ -1860,7 +1860,7 @@ static void render_images(RECT toolbox, RECT toolbar, RECT view)
 		}
 	}
 	
-	RECT slot;
+	Rect slot;
 	ui_hsplit_t(&toolbox, 5.0f, &slot, &toolbox);
 	
 	// new image
@@ -1896,8 +1896,8 @@ static void editor_listdir_callback(const char *name, int is_dir, void *user)
 	if(files_cur-1 < files_startat || files_cur > files_stopat)
 		return;
 	
-	RECT *view = (RECT *)user;
-	RECT button;
+	Rect *view = (Rect *)user;
+	Rect button;
 	ui_hsplit_t(view, 15.0f, &button, view);
 	ui_hsplit_t(view, 2.0f, 0, view);
 	//char buf[512];
@@ -1924,14 +1924,14 @@ static void render_file_dialog()
 	// GUI coordsys
 	gfx_mapscreen(ui_screen()->x, ui_screen()->y, ui_screen()->w, ui_screen()->h);
 	
-	RECT view = *ui_screen();
+	Rect view = *ui_screen();
 	ui_draw_rect(&view, vec4(0,0,0,0.25f), 0, 0);
 	ui_vmargin(&view, 150.0f, &view);
 	ui_hmargin(&view, 50.0f, &view);
 	ui_draw_rect(&view, vec4(0,0,0,0.75f), CORNER_ALL, 5.0f);
 	ui_margin(&view, 10.0f, &view);
 
-	RECT title, filebox, filebox_label, buttonbar, scroll;
+	Rect title, filebox, filebox_label, buttonbar, scroll;
 	ui_hsplit_t(&view, 18.0f, &title, &view);
 	ui_hsplit_t(&view, 5.0f, 0, &view); // some spacing
 	ui_hsplit_b(&view, 14.0f, &view, &buttonbar);
@@ -1996,7 +1996,7 @@ static void render_file_dialog()
 	static int ok_button = 0;	
 	static int cancel_button = 0;	
 
-	RECT button;
+	Rect button;
 	ui_vsplit_r(&buttonbar, 50.0f, &buttonbar, &button);
 	if(do_editor_button(&ok_button, file_dialog_button_text, 0, &button, draw_editor_button, 0, 0) || inp_key_pressed(KEY_RETURN))
 	{
@@ -2032,9 +2032,9 @@ void EDITOR::invoke_file_dialog(int listdirtypes, const char *title, const char 
 
 
 
-static void render_modebar(RECT view)
+static void render_modebar(Rect view)
 {
-	RECT button;
+	Rect button;
 
 	// mode buttons
 	{
@@ -2055,9 +2055,9 @@ static void render_modebar(RECT view)
 	//ui_vsplit_l(&view, 10.0f, 0, &view);
 }
 
-static void render_statusbar(RECT view)
+static void render_statusbar(Rect view)
 {
-	RECT button;
+	Rect button;
 	ui_vsplit_r(&view, 60.0f, &view, &button);
 	static int envelope_button = 0;
 	if(do_editor_button(&envelope_button, _t("Envelopes"), editor.show_envelope_editor, &button, draw_editor_button, 0, _t("Toggles the envelope editor.")))
@@ -2076,7 +2076,7 @@ static void render_statusbar(RECT view)
 	}
 }
 
-static void render_envelopeeditor(RECT view)
+static void render_envelopeeditor(Rect view)
 {
 	if(editor.selected_envelope < 0) editor.selected_envelope = 0;
 	if(editor.selected_envelope >= editor.map.envelopes.len()) editor.selected_envelope--;
@@ -2089,7 +2089,7 @@ static void render_envelopeeditor(RECT view)
 	if(envelope && envelope->channels == 4)
 		show_colorbar = true;
 
-	RECT toolbar, curvebar, colorbar;
+	Rect toolbar, curvebar, colorbar;
 	ui_hsplit_t(&view, 15.0f, &toolbar, &view);
 	ui_hsplit_t(&view, 15.0f, &curvebar, &view);
 	ui_margin(&toolbar, 2.0f, &toolbar);
@@ -2106,7 +2106,7 @@ static void render_envelopeeditor(RECT view)
 
 	// do the toolbar
 	{
-		RECT button;
+		Rect button;
 		ENVELOPE *new_env = 0;
 		
 		ui_vsplit_r(&toolbar, 50.0f, &toolbar, &button);
@@ -2174,7 +2174,7 @@ static void render_envelopeeditor(RECT view)
 			}
 		}
 		
-		RECT shifter, inc, dec;
+		Rect shifter, inc, dec;
 		ui_vsplit_l(&toolbar, 60.0f, &shifter, &toolbar);
 		ui_vsplit_r(&shifter, 15.0f, &shifter, &inc);
 		ui_vsplit_l(&shifter, 15.0f, &dec, &shifter);
@@ -2212,7 +2212,7 @@ static void render_envelopeeditor(RECT view)
 		
 		if(envelope)
 		{
-			RECT button;	
+			Rect button;	
 			
 			ui_vsplit_l(&toolbar, 15.0f, &button, &toolbar);
 
@@ -2338,7 +2338,7 @@ static void render_envelopeeditor(RECT view)
 
 				//dbg_msg("", "%f", end_time);
 				
-				RECT v;
+				Rect v;
 				v.x = curvebar.x + (t0+(t1-t0)*0.5f) * curvebar.w;
 				v.y = curvebar.y;
 				v.h = curvebar.h;
@@ -2379,7 +2379,7 @@ static void render_envelopeeditor(RECT view)
 //				float y0 = (fx2f(envelope->points[i].values[c])-bottom)/(top-bottom);
 				float x1 = envelope->points[i+1].time/1000.0f/end_time;
 				//float y1 = (fx2f(envelope->points[i+1].values[c])-bottom)/(top-bottom);
-				RECT v;
+				Rect v;
 				v.x = colorbar.x + x0*colorbar.w;
 				v.y = colorbar.y;
 				v.w = (x1-x0)*colorbar.w;
@@ -2407,7 +2407,7 @@ static void render_envelopeeditor(RECT view)
 				{
 					float x0 = envelope->points[i].time/1000.0f/end_time;
 					float y0 = (fx2f(envelope->points[i].values[c])-bottom)/(top-bottom);
-					RECT final;
+					Rect final;
 					final.x = view.x + x0*view.w;
 					final.y = view.y+view.h - y0*view.h;
 					final.x -= 2.0f;
@@ -2492,7 +2492,7 @@ static void render_envelopeeditor(RECT view)
 	}
 }
 
-static int popup_menu_file(RECT view)
+static int popup_menu_file(Rect view)
 {
 	static int new_map_button = 0;
 	static int save_button = 0;
@@ -2501,7 +2501,7 @@ static int popup_menu_file(RECT view)
 	static int append_button = 0;
 	static int exit_button = 0;
 
-	RECT slot;
+	Rect slot;
 	ui_hsplit_t(&view, 2.0f, &slot, &view);
 	ui_hsplit_t(&view, 12.0f, &slot, &view);
 	if(do_editor_button(&new_map_button, _t("New"), 0, &slot, draw_editor_button_menuitem, 0, _t("Creates a new map")))
@@ -2552,9 +2552,9 @@ static int popup_menu_file(RECT view)
 	return 0;
 }
 
-static void render_menubar(RECT menubar)
+static void render_menubar(Rect menubar)
 {
-	static RECT file /*, view, help*/;
+	static Rect file /*, view, help*/;
 
 	ui_vsplit_l(&menubar, 60.0f, &file, &menubar);
 	if(do_editor_button(&file, _t("File"), 0, &file, draw_editor_button_menu, 0, 0))
@@ -2577,7 +2577,7 @@ void EDITOR::render()
 {
 	// basic start
 	gfx_clear(1.0f,0.0f,1.0f);
-	RECT view = *ui_screen();
+	Rect view = *ui_screen();
 	gfx_mapscreen(ui_screen()->x, ui_screen()->y, ui_screen()->w, ui_screen()->h);
 	
 	// reset tip
@@ -2586,7 +2586,7 @@ void EDITOR::render()
 	// render checker
 	render_background(view, checker_texture, 32.0f, 1.0f);
 	
-	RECT menubar, modebar, toolbar, statusbar, envelope_editor, toolbox;
+	Rect menubar, modebar, toolbar, statusbar, envelope_editor, toolbox;
 	
 	if(editor.gui_active)
 	{

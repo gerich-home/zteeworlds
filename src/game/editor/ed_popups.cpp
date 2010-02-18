@@ -5,16 +5,16 @@
 // popup menu handling
 static struct
 {
-	RECT rect;
+	Rect rect;
 	void *id;
-	int (*func)(RECT rect);
+	int (*func)(Rect rect);
 	int is_menu;
 	void *extra;
 } ui_popups[8];
 
 static int ui_num_popups = 0;
 
-void ui_invoke_popup_menu(void *id, int flags, float x, float y, float w, float h, int (*func)(RECT rect), void *extra)
+void ui_invoke_popup_menu(void *id, int flags, float x, float y, float w, float h, int (*func)(Rect rect), void *extra)
 {
 	dbg_msg("", "invoked");
 	ui_popups[ui_num_popups].id = id;
@@ -54,7 +54,7 @@ void ui_do_popup_menu()
 		if(ui_popups[i].is_menu)
 			corners = CORNER_R|CORNER_B;
 		
-		RECT r = ui_popups[i].rect;
+		Rect r = ui_popups[i].rect;
 		ui_draw_rect(&r, vec4(0.5f,0.5f,0.5f,0.75f), corners, 3.0f);
 		ui_margin(&r, 1.0f, &r);
 		ui_draw_rect(&r, vec4(0,0,0,0.75f), corners, 3.0f);
@@ -69,10 +69,10 @@ void ui_do_popup_menu()
 }
 
 
-int popup_group(RECT view)
+int popup_group(Rect view)
 {
 	// remove group button
-	RECT button;
+	Rect button;
 	ui_hsplit_b(&view, 12.0f, &view, &button);
 	static int delete_button = 0;
 	
@@ -176,10 +176,10 @@ int popup_group(RECT view)
 	return 0;
 }
 
-int popup_layer(RECT view)
+int popup_layer(Rect view)
 {
 	// remove layer button
-	RECT button;
+	Rect button;
 	ui_hsplit_b(&view, 12.0f, &view, &button);
 	static int delete_button = 0;
 	
@@ -237,11 +237,11 @@ int popup_layer(RECT view)
 	return current_layer->render_properties(&view);
 }
 
-int popup_quad(RECT view)
+int popup_quad(Rect view)
 {
 	QUAD *quad = editor.get_selected_quad();
 
-	RECT button;
+	Rect button;
 	
 	// delete button
 	ui_hsplit_b(&view, 12.0f, &view, &button);
@@ -381,7 +381,7 @@ int popup_quad(RECT view)
 	return 0;
 }
 
-int popup_point(RECT view)
+int popup_point(Rect view)
 {
 	QUAD *quad = editor.get_selected_quad();
 	
@@ -473,9 +473,9 @@ int popup_point(RECT view)
 static int select_image_selected = -100;
 static int select_image_current = -100;
 
-int popup_select_image(RECT view)
+int popup_select_image(Rect view)
 {
-	RECT buttonbar, imageview;
+	Rect buttonbar, imageview;
 	ui_vsplit_l(&view, 80.0f, &buttonbar, &view);
 	ui_margin(&view, 10.0f, &imageview);
 	
@@ -483,7 +483,7 @@ int popup_select_image(RECT view)
 	
 	for(int i = -1; i < editor.map.images.len(); i++)
 	{
-		RECT button;
+		Rect button;
 		ui_hsplit_t(&buttonbar, 12.0f, &button, &buttonbar);
 		ui_hsplit_t(&buttonbar, 2.0f, 0, &buttonbar);
 		

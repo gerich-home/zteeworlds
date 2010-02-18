@@ -14,10 +14,10 @@
 #include "menus.hpp"
 #include <game/version.hpp>
 
-void MENUS::render_serverbrowser_serverlist(RECT view)
+void MENUS::render_serverbrowser_serverlist(Rect view)
 {
-	RECT headers;
-	RECT status;
+	Rect headers;
+	Rect status;
 	
 	ui_hsplit_t(&view, listheader_height, &headers, &view);
 	ui_hsplit_b(&view, 28.0f, &view, &status);
@@ -34,8 +34,8 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 		int direction;
 		float width;
 		int flags;
-		RECT rect;
-		RECT spacer;
+		Rect rect;
+		Rect spacer;
 	};
 	
 	enum
@@ -123,7 +123,7 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 	
 	ui_draw_rect(&view, vec4(0,0,0,0.15f), 0, 0);
 	
-	RECT scroll;
+	Rect scroll;
 	ui_vsplit_r(&view, 15, &view, &scroll);
 	
 	int num_servers = client_serverbrowse_sorted_num();
@@ -131,7 +131,7 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 	// display important messages in the middle of the screen so no
 	// users misses it
 	{
-		RECT msgbox = view;
+		Rect msgbox = view;
 		msgbox.y += view.h/3;
 		
 		if(active_page == PAGE_INTERNET && client_serverbrowse_refreshingmasters())
@@ -170,7 +170,7 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 	if(start < 0)
 		start = 0;
 	
-	RECT original_view = view;
+	Rect original_view = view;
 	view.y -= scrollvalue*scrollnum*cols[0].rect.h;
 	
 	int new_selected = -1;
@@ -188,8 +188,8 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 	{
 		int item_index = i;
 		SERVER_INFO *item = client_serverbrowse_sorted_get(item_index);
-		RECT row;
-        RECT select_hit_box;
+		Rect row;
+        Rect select_hit_box;
 		
 		int selected = strcmp(item->address, config.ui_server_address) == 0; //selected_index==item_index;
 		
@@ -199,7 +199,7 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 		if(selected)
 		{
 			selected_index = i;
-			RECT r = row;
+			Rect r = row;
 			ui_margin(&r, 1.5f, &r);
 			ui_draw_rect(&r, vec4(1,1,1,0.5f), CORNER_ALL, 4.0f);
 		}
@@ -228,7 +228,7 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 
 		for(int c = 0; c < num_cols; c++)
 		{
-			RECT button;
+			Rect button;
 			char temp[64];
 			button.x = cols[c].rect.x;
 			button.y = row.y;
@@ -349,7 +349,7 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 	ui_margin(&status, 5.0f, &status);
 	
 	// render quick search
-	RECT quicksearch, button;
+	Rect quicksearch, button;
 	ui_vsplit_l(&status, 250.0f, &quicksearch, &status);
 	ui_do_label(&quicksearch, _t("Quick search: "), 14.0f, -1);
 	ui_vsplit_l(&quicksearch, gfx_text_width(0, 14.0f, _t("Quick search: "), -1), 0, &quicksearch);
@@ -367,10 +367,10 @@ void MENUS::render_serverbrowser_serverlist(RECT view)
 	ui_do_label(&status, buf, 14.0f, -1);
 }
 
-void MENUS::render_serverbrowser_filters(RECT view)
+void MENUS::render_serverbrowser_filters(Rect view)
 {
 	// filters
-	RECT button;
+	Rect button;
 
 	ui_hsplit_t(&view, 5.0f, 0, &view);
 	ui_vsplit_l(&view, 5.0f, 0, &view);
@@ -411,7 +411,7 @@ void MENUS::render_serverbrowser_filters(RECT view)
 
 	{
 		ui_hsplit_t(&view, 20.0f, &button, &view);
-		RECT editbox;
+		Rect editbox;
 		ui_vsplit_l(&button, 40.0f, &editbox, &button);
 		ui_vsplit_l(&button, 5.0f, &button, &button);
 		
@@ -438,10 +438,10 @@ void MENUS::render_serverbrowser_filters(RECT view)
 	}
 }
 
-void MENUS::render_serverbrowser_serverdetail(RECT view)
+void MENUS::render_serverbrowser_serverdetail(Rect view)
 {
-	RECT server_details = view;
-	RECT server_scoreboard, server_header;
+	Rect server_details = view;
+	Rect server_scoreboard, server_header;
 	
 	SERVER_INFO *selected_server = client_serverbrowse_sorted_get(selected_index);
 	
@@ -465,19 +465,19 @@ void MENUS::render_serverbrowser_serverdetail(RECT view)
 
 	if (selected_server)
 	{
-		RECT row;
+		Rect row;
 		static const char *labels[] = { "Version:", "Game Type:", "Progression:", "Ping:" };
 		labels[0] = _t("Version:");
 		labels[1] = _t("Game Type:");
 		labels[2] = _t("Progression:");
 		labels[3] = _t("Ping:");
 
-		RECT left_column;
-		RECT right_column;
+		Rect left_column;
+		Rect right_column;
 
 		// 
 		{
-			RECT button;
+			Rect button;
 			ui_hsplit_b(&server_details, 20.0f, &server_details, &button);
 			static int add_fav_button = 0;
 			if (ui_do_button(&add_fav_button, _t("Favorite"), selected_server->favorite, &button, ui_draw_checkbox, 0))
@@ -537,7 +537,7 @@ void MENUS::render_serverbrowser_serverdetail(RECT view)
 	{
 		for (int i = 0; i < selected_server->num_players; i++)
 		{
-			RECT row;
+			Rect row;
 			char temp[16];
 			ui_hsplit_t(&server_scoreboard, 16.0f, &row, &server_scoreboard);
 
@@ -572,11 +572,11 @@ void MENUS::render_serverbrowser_serverdetail(RECT view)
 	}
 }
 
-void MENUS::render_serverbrowser(RECT main_view)
+void MENUS::render_serverbrowser(Rect main_view)
 {
 	ui_draw_rect(&main_view, color_tabbar_active, CORNER_ALL, 10.0f);
 	
-	RECT view;
+	Rect view;
 	ui_margin(&main_view, 10.0f, &view);
 	
 	/*
@@ -592,9 +592,9 @@ void MENUS::render_serverbrowser(RECT main_view)
 	
 	
 	//RECT filters;
-	RECT status_toolbar;
-	RECT toolbox;
-	RECT button_box;
+	Rect status_toolbar;
+	Rect toolbox;
+	Rect button_box;
 
 	// split off a piece for filters, details and scoreboard
 	ui_vsplit_r(&view, 200.0f, &view, &toolbox);
@@ -609,8 +609,8 @@ void MENUS::render_serverbrowser(RECT main_view)
 
 	// do tabbar
 	{
-		RECT tab_bar;
-		RECT tabbutton0, tabbutton1;
+		Rect tab_bar;
+		Rect tabbutton0, tabbutton1;
 		ui_hsplit_t(&toolbox, 22.0f, &tab_bar, &toolbox);
 	
 		ui_vsplit_mid(&tab_bar, &tabbutton0, &tabbutton1);
@@ -640,7 +640,7 @@ void MENUS::render_serverbrowser(RECT main_view)
 	{
 		ui_hsplit_t(&status_toolbar, 5.0f, 0, &status_toolbar);
 		
-		RECT button;
+		Rect button;
 		//ui_vsplit_r(&buttons, 20.0f, &buttons, &button);
 		ui_vsplit_r(&status_toolbar, 100.0f, &status_toolbar, &button);
 		ui_vmargin(&button, 2.0f, &button);
@@ -669,7 +669,7 @@ void MENUS::render_serverbrowser(RECT main_view)
 		ui_vsplit_l(&button_box, 5.0f, 0, &button_box);
 		ui_vsplit_r(&button_box, 5.0f, &button_box, 0);
 		
-		RECT button;
+		Rect button;
 		ui_hsplit_b(&button_box, button_height, &button_box, &button);
 		ui_vsplit_r(&button, 170.0f, 0, &button);
 		ui_vmargin(&button, 2.0f, &button);

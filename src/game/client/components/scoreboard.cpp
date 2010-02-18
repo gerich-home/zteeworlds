@@ -299,13 +299,13 @@ void SCOREBOARD::render_new()
 	for (int j = 0; j < NUM_WEAPONS; j++) if (active_weapons[j]) weapons++;
 	
 	{
-		RECT main_view_t;
+		Rect main_view_t;
 		main_view_t.x = (width - w) / 2;
 		main_view_t.y = (height - h) / 2;
 		main_view_t.w = w;
 		main_view_t.h = h;
 		
-		RECT header_t;
+		Rect header_t;
 
 		ui_hsplit_t(&main_view_t, 40.0f, &header_t, &main_view_t);
 
@@ -333,7 +333,7 @@ void SCOREBOARD::render_new()
 
 	gfx_mapscreen(0, 0, width, height);
 
-	RECT main_view;
+	Rect main_view;
 	main_view.x = x;
 	main_view.y = y;
 	main_view.w = w;
@@ -341,7 +341,7 @@ void SCOREBOARD::render_new()
 
 	ui_draw_rect(&main_view, vec4(0.0f, 0.0f, 0.0f, 0.5f), CORNER_ALL, 10.0f);
 
-	RECT header, footer;
+	Rect header, footer;
 
 	ui_hsplit_t(&main_view, 40.0f, &header, &main_view);
 	ui_draw_rect(&header, vec4(1.0f, 1.0f, 1.0f, 0.25f), CORNER_T, 10.0f);
@@ -396,7 +396,7 @@ void SCOREBOARD::render_new()
 	ui_vsplit_l(&header, 330.0f, 0, &header);
 
 	{
-		RECT line_t = header;
+		Rect line_t = header;
 		line_t.x += abs(125.0f - gfx_text_width(0, header.h * 0.8f, _t("Score"), -1)) / 2.0f;
 		ui_do_label(&line_t, _t("Score"), header.h * 0.8f, -1);
 	}
@@ -404,7 +404,7 @@ void SCOREBOARD::render_new()
 	ui_vsplit_l(&header, 125.0f, 0, &header);
 
 	{
-		RECT line_t = header;
+		Rect line_t = header;
 		line_t.x += abs(75.0f - gfx_text_width(0, header.h * 0.8f, _t("Ping"), -1)) / 2.0f;
 		ui_do_label(&line_t, _t("Ping"), header.h * 0.8f, -1);
 	}
@@ -504,7 +504,7 @@ void SCOREBOARD::render_new()
 		{
 			if (team == 0 || team == 1)
 			{
-				RECT line = main_view;
+				Rect line = main_view;
 
 				ui_vsplit_l(&line, (header_width / 2) / 5, 0, &line);
 
@@ -517,7 +517,7 @@ void SCOREBOARD::render_new()
 				line.w = 500.0f;
 				line.x -= line.w;
 
-				RECT line2 = line;
+				Rect line2 = line;
 
 				char buf[128];
 				int score = team ? gameclient.snap.gameobj->teamscore_blue : gameclient.snap.gameobj->teamscore_red;
@@ -542,7 +542,7 @@ void SCOREBOARD::render_new()
 		} else {
 			if (team == 0)
 			{
-				RECT line = main_view;
+				Rect line = main_view;
 				ui_vsplit_l(&line, (header_width / 2) / 5, 0, &line);
 				ui_do_label(&line, _t("Players"), line_height * 0.8f * 2.0f, -1);
 
@@ -550,7 +550,7 @@ void SCOREBOARD::render_new()
 				line.w = 500.0f;
 				line.x -= line.w * 1.5f;
 
-				RECT line2 = line;
+				Rect line2 = line;
 
 				line2 = line;
 				char buf[128];
@@ -571,7 +571,7 @@ void SCOREBOARD::render_new()
 			main_view.h = line_height * 2.0f + line_height * num_players;
 			main_view.y -= main_view.h;
 
-			RECT line = main_view;
+			Rect line = main_view;
 			ui_vsplit_l(&line, (header_width / 2) / 5, 0, &line);
 			ui_do_label(&line, _t("Spectators"), line_height * 0.8f * 2.0f, -1);
 
@@ -579,7 +579,7 @@ void SCOREBOARD::render_new()
 			line.w = 500.0f;
 			line.x -= line.w * 1.5f;
 
-			RECT line2 = line;
+			Rect line2 = line;
 
 			line2 = line;
 			char buf[128];
@@ -599,7 +599,7 @@ void SCOREBOARD::render_new()
 
 			const NETOBJ_PLAYER_INFO *info = players[i];
 
-			RECT line = main_view;
+			Rect line = main_view;
 			line.h = line_height;
 
 			if (info->local)
@@ -634,7 +634,7 @@ void SCOREBOARD::render_new()
 
 			if (team != 2)
 			{
-				RECT line_t = line;
+				Rect line_t = line;
 				str_format(buf, sizeof(buf), "%d", info->score);
 				line_t.x += abs(125.0f - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 				ui_do_label(&line_t, buf, line_height * 0.8f, -1);
@@ -643,7 +643,7 @@ void SCOREBOARD::render_new()
 			ui_vsplit_l(&line, 125.0f, 0, &line);
 
 			{
-				RECT line_t = line;
+				Rect line_t = line;
 				str_format(buf, sizeof(buf), "%d", info->latency);
 				line_t.x += abs(75.0f - gfx_text_width(0, line_height * 0.8f, buf, -1)) * 0.5f;
 				ui_do_label(&line_t, buf, line_height * 0.8f, -1);
@@ -654,7 +654,7 @@ void SCOREBOARD::render_new()
 				ui_vsplit_l(&line, 75.0f, 0, &line);
 
 				{
-					RECT line_t = line;
+					Rect line_t = line;
 					
 					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
 						str_format(buf, sizeof(buf), _t("---"));
@@ -666,7 +666,7 @@ void SCOREBOARD::render_new()
 
 				ui_vsplit_l(&line, spacing, 0, &line);
 				{
-					RECT line_t = line;
+					Rect line_t = line;
 					if (gameclient.clients[info->cid].stats.total_kills == 0 && gameclient.clients[info->cid].stats.total_killed == 0)
 						str_format(buf, sizeof(buf), _t("---"));
 					else
@@ -680,7 +680,7 @@ void SCOREBOARD::render_new()
 				for (int i = 0; i < NUM_WEAPONS; i++)
 				{
 					if (!active_weapons[i]) continue;
-					RECT line_t = line;
+					Rect line_t = line;
 					if (gameclient.clients[info->cid].stats.kills[i] == 0 && gameclient.clients[info->cid].stats.killed[i] == 0)
 						str_format(buf, sizeof(buf), _t("---"));
 					else
@@ -693,7 +693,7 @@ void SCOREBOARD::render_new()
 
 				if (gameclient.snap.gameobj->flags&GAMEFLAG_FLAGS)
 				{
-					RECT line_t = line;
+					Rect line_t = line;
 					if (gameclient.clients[info->cid].stats.flag_carried == 0 && gameclient.clients[info->cid].stats.flag_lost == 0 && gameclient.clients[info->cid].stats.flag_killed == 0)
 						str_format(buf, sizeof(buf), _t("---"));
 					else

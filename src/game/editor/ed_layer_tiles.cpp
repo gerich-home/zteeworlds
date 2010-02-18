@@ -55,7 +55,7 @@ void LAYER_TILES::render()
 int LAYER_TILES::convert_x(float x) const { return (int)(x/32.0f); }
 int LAYER_TILES::convert_y(float y) const { return (int)(y/32.0f); }
 
-void LAYER_TILES::convert(RECT rect, RECTi *out)
+void LAYER_TILES::convert(Rect rect, RECTi *out)
 {
 	out->x = convert_x(rect.x);
 	out->y = convert_y(rect.y);
@@ -63,7 +63,7 @@ void LAYER_TILES::convert(RECT rect, RECTi *out)
 	out->h = convert_y(rect.y+rect.h+31) - out->y;
 }
 
-void LAYER_TILES::snap(RECT *rect)
+void LAYER_TILES::snap(Rect *rect)
 {
 	RECTi out;
 	convert(*rect, &out);
@@ -99,7 +99,7 @@ void LAYER_TILES::clamp(RECTi *rect)
 		rect->w = 0;
 }
 
-void LAYER_TILES::brush_selecting(RECT rect)
+void LAYER_TILES::brush_selecting(Rect rect)
 {
 	gfx_texture_set(-1);
 	gfx_quads_begin();
@@ -112,7 +112,7 @@ void LAYER_TILES::brush_selecting(RECT rect)
 	gfx_text(0, rect.x+3.0f, rect.y+3.0f, 15.0f*editor.world_zoom, buf, -1);
 }
 
-int LAYER_TILES::brush_grab(LAYERGROUP *brush, RECT rect)
+int LAYER_TILES::brush_grab(LAYERGROUP *brush, Rect rect)
 {
 	RECTi r;
 	convert(rect, &r);
@@ -204,9 +204,9 @@ void LAYER_TILES::resize(int new_w, int new_h)
 }
 
 
-int LAYER_TILES::render_properties(RECT *toolbox)
+int LAYER_TILES::render_properties(Rect *toolbox)
 {
-	RECT button;
+	Rect button;
 	ui_hsplit_b(toolbox, 12.0f, toolbox, &button);
 	bool in_gamegroup = editor.map.game_group->layers.find(this) != -1;
 	if(editor.map.game_layer == this)

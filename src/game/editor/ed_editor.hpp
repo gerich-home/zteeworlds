@@ -37,7 +37,7 @@ enum
 
 typedef struct
 {
-	POINT position;
+	Point position;
 	int type;
 } ENTITY;
 
@@ -141,8 +141,8 @@ public:
 	}
 	
 	
-	virtual void brush_selecting(RECT rect) {}
-	virtual int brush_grab(LAYERGROUP *brush, RECT rect) { return 0; }
+	virtual void brush_selecting(Rect rect) {}
+	virtual int brush_grab(LAYERGROUP *brush, Rect rect) { return 0; }
 	virtual void brush_draw(LAYER *brush, float x, float y) {}
 	virtual void brush_place(LAYER *brush, float x, float y) {}
 	virtual void brush_flip_x() {}
@@ -150,7 +150,7 @@ public:
 	virtual void brush_rotate(float amount) {}
 	
 	virtual void render() {}
-	virtual int render_properties(RECT *toolbox) { return 0; }
+	virtual int render_properties(Rect *toolbox) { return 0; }
 	
 	virtual void modify_image_index(INDEX_MODIFY_FUNC func) {}
 	virtual void modify_envelope_index(INDEX_MODIFY_FUNC func) {}
@@ -189,7 +189,7 @@ public:
 	LAYERGROUP();
 	~LAYERGROUP();
 	
-	void convert(RECT *rect);
+	void convert(Rect *rect);
 	void render();
 	void mapscreen();
 	void mapping(float *points);
@@ -388,7 +388,7 @@ public:
 	LAYER *get_selected_layer(int index);
 	LAYERGROUP *get_selected_group();
 	
-	int do_properties(RECT *toolbox, PROPERTY *props, int *ids, int *new_val);
+	int do_properties(Rect *toolbox, PROPERTY *props, int *ids, int *new_val);
 	
 	int mode;
 	int dialog;
@@ -448,17 +448,17 @@ public:
 
 	int convert_x(float x) const;
 	int convert_y(float y) const;
-	void convert(RECT rect, RECTi *out);
-	void snap(RECT *rect);
+	void convert(Rect rect, RECTi *out);
+	void snap(Rect *rect);
 	void clamp(RECTi *rect);
 
-	virtual void brush_selecting(RECT rect);
-	virtual int brush_grab(LAYERGROUP *brush, RECT rect);
+	virtual void brush_selecting(Rect rect);
+	virtual int brush_grab(LAYERGROUP *brush, Rect rect);
 	virtual void brush_draw(LAYER *brush, float wx, float wy);
 	virtual void brush_flip_x();
 	virtual void brush_flip_y();
 	
-	virtual int render_properties(RECT *toolbox);
+	virtual int render_properties(Rect *toolbox);
 
 	virtual void modify_image_index(INDEX_MODIFY_FUNC func);
 	virtual void modify_envelope_index(INDEX_MODIFY_FUNC func);
@@ -484,14 +484,14 @@ public:
 	virtual void render();
 	QUAD *new_quad();
 
-	virtual void brush_selecting(RECT rect);
-	virtual int brush_grab(LAYERGROUP *brush, RECT rect);
+	virtual void brush_selecting(Rect rect);
+	virtual int brush_grab(LAYERGROUP *brush, Rect rect);
 	virtual void brush_place(LAYER *brush, float wx, float wy);
 	virtual void brush_flip_x();
 	virtual void brush_flip_y();
 	virtual void brush_rotate(float amount);
 	
-	virtual int render_properties(RECT *toolbox);
+	virtual int render_properties(Rect *toolbox);
 
 	virtual void modify_image_index(INDEX_MODIFY_FUNC func);
 	virtual void modify_envelope_index(INDEX_MODIFY_FUNC func);
@@ -508,20 +508,20 @@ public:
 	LAYER_GAME(int w, int h);
 	~LAYER_GAME();
 
-	virtual int render_properties(RECT *toolbox);
+	virtual int render_properties(Rect *toolbox);
 };
 
-int do_editor_button(const void *id, const char *text, int checked, const RECT *r, ui_draw_button_func draw_func, int flags, const char *tooltip);
-void draw_editor_button(const void *id, const char *text, int checked, const RECT *r, const void *extra);
-void draw_editor_button_menuitem(const void *id, const char *text, int checked, const RECT *r, const void *extra);
+int do_editor_button(const void *id, const char *text, int checked, const Rect *r, ui_draw_button_func draw_func, int flags, const char *tooltip);
+void draw_editor_button(const void *id, const char *text, int checked, const Rect *r, const void *extra);
+void draw_editor_button_menuitem(const void *id, const char *text, int checked, const Rect *r, const void *extra);
 
-void ui_invoke_popup_menu(void *id, int flags, float x, float y, float w, float h, int (*func)(RECT rect), void *extra=0);
+void ui_invoke_popup_menu(void *id, int flags, float x, float y, float w, float h, int (*func)(Rect rect), void *extra=0);
 void ui_do_popup_menu();
 
-int popup_group(RECT view);
-int popup_layer(RECT view);
-int popup_quad(RECT view);
-int popup_point(RECT view);
+int popup_group(Rect view);
+int popup_layer(Rect view);
+int popup_quad(Rect view);
+int popup_point(Rect view);
 
 void popup_select_image_invoke(int current, float x, float y);
 int popup_select_image_result();

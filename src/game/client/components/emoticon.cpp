@@ -134,7 +134,7 @@ void EMOTICON::on_render()
 	if (length(selector_mouse) > 100)
 		selected_emote = (int)(selected_angle / (2*pi) * 12.0f);
 
-    RECT screen = *ui_screen();
+    Rect screen = *ui_screen();
 
 	gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
 

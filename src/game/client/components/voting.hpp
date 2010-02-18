@@ -36,7 +36,7 @@ public:
 	
 	void callvote(const char *type, const char *value);
 	
-	void render_bars(RECT bars, bool text);
+	void render_bars(Rect bars, bool text);
 	
 	void callvote_kick(int client_id);
 	void callvote_option(int option);
