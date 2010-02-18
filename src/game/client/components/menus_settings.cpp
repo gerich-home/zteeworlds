@@ -714,8 +714,15 @@ void MENUS::render_settings_graphics(RECT main_view)
 	}
 	
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
-	if (ui_do_button(&config.gfx_freetype_font, _t("Use FreeType for displaying text"), config.gfx_freetype_font, &button, ui_draw_checkbox, 0))
-		config.gfx_freetype_font ^= 1;
+	if (ui_do_button(&config.gfx_disable_freetype, _t("Disable FreeType text rendering"), config.gfx_disable_freetype, &button, ui_draw_checkbox, 0))
+		config.gfx_disable_freetype ^= 1;
+
+	if (!config.gfx_disable_freetype)
+	{
+		ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
+		if (ui_do_button(&config.gfx_freetype_font, _t("Use FreeType for displaying text"), config.gfx_freetype_font, &button, ui_draw_checkbox, 0))
+			config.gfx_freetype_font ^= 1;
+	}
 		
 	ui_hsplit_t(&main_view, 20.0f, &button, &main_view);
 	if (ui_do_button(&config.gfx_smileys, _t("Smileys"), config.gfx_smileys, &button, ui_draw_checkbox, 0))

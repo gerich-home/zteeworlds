@@ -62,6 +62,7 @@ MACRO_CONFIG_INT(gfx_outlines, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Render til
 MACRO_CONFIG_INT(music_volume, 25, 0, 100, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Music volume")
 MACRO_CONFIG_INT(music_ingame_volume, 25, 0, 100, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Music volume in game")
 MACRO_CONFIG_STR(language, 256, "", CFGFLAG_SAVE|CFGFLAG_CLIENT|CFGFLAG_SERVER, "Language name")
+MACRO_CONFIG_INT(gfx_disable_freetype, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Disable FreeType rendering")
 
 MACRO_CONFIG_INT(inp_mousesens, 100, 5, 100000, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Mouse sensitivity")
 

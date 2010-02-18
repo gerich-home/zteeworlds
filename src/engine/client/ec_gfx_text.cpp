@@ -170,20 +170,29 @@ void gfx_text_ex(TEXT_CURSOR *cursor, const char *text, int length)
 				
 				const char * prev_ptr = (const char *)current;
 
-				character = str_utf8_decode((const char **)(&current));
-				if ((void *)prev_ptr == (void *)current)
+				if (!config.gfx_disable_freetype)
 				{
+					character = str_utf8_decode((const char **)(&current));
+					if ((void *)prev_ptr == (void *)current)
+					{
+						current++;
+						this_batch--;
+						continue;
+					}
+
+					this_batch -= str_utf8_char_length(character);
+					if (str_utf8_char_length(character) == 0) this_batch -= 1;
+					isUtf8Char = config.gfx_freetype_font ? true : str_utf8_char_length(character) > 1;
+
+					tmp = current;
+					nextcharacter = str_utf8_decode((const char **)(&tmp));
+				} else {
+					character = (int)(*current);
 					current++;
 					this_batch--;
-					continue;
+					nextcharacter = (int)(*(current+1));
+					isUtf8Char = false;
 				}
-				
-				this_batch -= str_utf8_char_length(character);
-				if (str_utf8_char_length(character) == 0) this_batch -= 1;
-				isUtf8Char = config.gfx_freetype_font ? true : str_utf8_char_length(character) > 1;
-			
-				tmp = current;
-				nextcharacter = str_utf8_decode((const char **)(&tmp));
 				
 				if(character == '\n')
 				{
