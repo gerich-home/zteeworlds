@@ -401,6 +401,8 @@ int snap_num_items(int snapid)
 	return snapshots[snapid]->snap->num_items;
 }
 
+const char *client_mapdownload_name() { return mapdownload_name; }
+
 /* ------ time functions ------ */
 float client_intratick() { return intratick; }
 float client_predintratick() { return predintratick; }

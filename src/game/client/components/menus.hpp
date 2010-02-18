@@ -193,4 +193,15 @@ public:
 	virtual void on_render();
 	virtual bool on_input(INPUT_EVENT e);
 	virtual bool on_mousemove(float x, float y);
+
+	//DownloadExtension
+	struct
+	{
+		int elapsedsec;
+		int elapsedtick;
+		float speed;
+		float timeneeded;
+		int lastsize;
+		float timeremaining;
+	} download;
 };

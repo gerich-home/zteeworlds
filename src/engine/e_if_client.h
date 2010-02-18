@@ -578,4 +578,5 @@ const char *client_user_directory();
 void client_serverinfo(SERVER_INFO *serverinfo);
 void client_serverinfo_request();
 void client_serverbrowse_request(NETADDR *addr);
+const char *client_mapdownload_name();
 #endif
