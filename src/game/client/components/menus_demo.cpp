@@ -444,10 +444,12 @@ void MENUS::render_demolist(RECT main_view)
 		client_demoplayer_play(demos[selected_item].filename);
 	}
 	
-	RECT refresh_rect, play_rect;
+	RECT refresh_rect, play_rect, delete_rect;
 	ui_vsplit_r(&buttonbar, 250.0f, &buttonbar, &refresh_rect);
 	ui_vsplit_r(&refresh_rect, 130.0f, &refresh_rect, &play_rect);
 	ui_vsplit_r(&play_rect, 120.0f, 0x0, &play_rect);
+	delete_rect = play_rect;
+	delete_rect.x = buttonbar.x;
 	
 	static int refresh_button = 0;
 	if(ui_do_button(&refresh_button, _t("Refresh"), 0, &refresh_rect, ui_draw_menu_button, 0))
@@ -472,5 +474,17 @@ void MENUS::render_demolist(RECT main_view)
 		}
 	}
 	
+	static int delete_button = 0;
+	if(ui_do_button(&delete_button, _t("Delete"), 0, &delete_rect, ui_draw_menu_button, 0))
+	{
+		if(selected_item >= 0 && selected_item < num_demos)
+		{
+			fs_remove(demos[selected_item].filename);
+			num_demos--;
+			selected_item = clamp(selected_item, -1, num_demos - 1);
+			demolist_populate();
+		}
+	}
+
 }
 
