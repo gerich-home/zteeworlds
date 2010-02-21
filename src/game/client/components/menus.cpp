@@ -599,8 +599,8 @@ int MENUS::render_menubar(RECT r)
 		if (ui_do_button(&callvote_button, _t("Call Vote"), active_page==PAGE_CALLVOTE, &button, ui_draw_menu_tab_button, 0))
 			new_page = PAGE_CALLVOTE;
 			
-		ui_vsplit_l(&box, 4.0f*5, 0, &box);
-		ui_vsplit_l(&box, 100.0f, &button, &box);
+		ui_vsplit_l(&box, 4.0f, 0, &box);
+		ui_vsplit_l(&box, min(140.0f, box.x - 80.0f - 10.0f - 120.0f - 4.0f), &button, &box);
 		static int ingame_browser_button=0;
 		if (ui_do_button(&ingame_browser_button, _t("Browser"), active_page==PAGE_BROWSER, &button, ui_draw_menu_tab_button, 0))
 			new_page = PAGE_BROWSER;
@@ -617,7 +617,7 @@ int MENUS::render_menubar(RECT r)
 	ui_vsplit_r(&box, 30.0f, &box, 0);
 	*/
 	
-	ui_vsplit_r(&box, 90.0f, &box, &button);
+	ui_vsplit_r(&box, 80.0f, &box, &button);
 	static int quit_button=0;
 	if (ui_do_button(&quit_button, _t("Quit"), 0, &button, ui_draw_menu_tab_button, 0))
 		popup = POPUP_QUIT;
