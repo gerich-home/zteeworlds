@@ -384,7 +384,7 @@ void SCOREBOARD::render_new()
 	{
 		char buf[64];
 		str_format(buf, sizeof(buf), _t("Round: %d/%d"), gameclient.snap.gameobj->round_current, gameclient.snap.gameobj->round_num);
-		ui_do_label(&footer, buf, footer.h * 0.8f, -1);
+		ui_do_label(&footer, buf, footer.h * 0.8f, 1, -1);
 	}
 
 	float header_width = header.w;
