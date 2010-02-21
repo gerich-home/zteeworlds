@@ -57,6 +57,7 @@ MACRO_CONFIG_INT(player_color_feet, 65408, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "P
 MACRO_CONFIG_STR(player_skin, 64, "default", CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player skin")
 MACRO_CONFIG_INT(cl_default_skin_only, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Default skin only")
 MACRO_CONFIG_INT(cl_showduelscores, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show small scoreboard in 1on1 game")
+MACRO_CONFIG_INT(gfx_effects, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Graphic effects")
 MACRO_CONFIG_INT(gfx_eyecandy, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Advanced graphic effects")
 MACRO_CONFIG_INT(cl_anti_rainbow, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Anti-rainbow")
 MACRO_CONFIG_INT(cl_inair_walk_animation, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Walk animation in air")
