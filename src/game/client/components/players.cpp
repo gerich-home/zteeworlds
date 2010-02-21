@@ -200,7 +200,7 @@ void PLAYERS::render_player(
 	ANIMSTATE state;
 	state.set(&data->animations[ANIM_BASE], 0);
 
-	if(inair)
+	if(inair && !config.cl_inair_walk_animation)
 		state.add(&data->animations[ANIM_INAIR], 0, 1.0f); // TODO: some sort of time here
 	else if(stationary)
 		state.add(&data->animations[ANIM_IDLE], 0, 1.0f); // TODO: some sort of time here
