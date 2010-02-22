@@ -908,8 +908,8 @@ void sys_parse_arguments(const char * appname, int argc, char ** argv)
 				snprintf(StoragePath, sizeof(StoragePath), "%s/Library/Application Support/%s", home, appname);
 			#else
 				snprintf(StoragePath, sizeof(StoragePath), "%s/.%s", home, appname);
-				for(i = strlen(home)+2; path[i]; i++)
-					path[i] = tolower(path[i]);
+				for(i = strlen(home)+2; StoragePath[i]; i++)
+					StoragePath[i] = tolower(StoragePath[i]);
 			#endif
 
 			#endif
