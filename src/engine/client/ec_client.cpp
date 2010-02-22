@@ -1524,7 +1524,7 @@ static void client_update()
 			
 			if(new_pred_tick < snapshots[SNAP_PREV]->tick-SERVER_TICK_SPEED || new_pred_tick > snapshots[SNAP_PREV]->tick+SERVER_TICK_SPEED)
 			{
-				dbg_msg("client", "prediction time reset!");
+				//dbg_msg("client", "prediction time reset!");
 				st_init(&predicted_time, snapshots[SNAP_CURRENT]->tick*time_freq()/50);
 			}
 			
