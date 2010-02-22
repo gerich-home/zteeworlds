@@ -41,7 +41,7 @@ MACRO_CONFIG_INT(snd_nonactive_mute, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "")
 
 MACRO_CONFIG_INT(gfx_screen_width, 800, 0, 0, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Screen resolution width")
 MACRO_CONFIG_INT(gfx_screen_height, 600, 0, 0, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Screen resolution height")
-MACRO_CONFIG_INT(gfx_fullscreen, 1, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Fullscreen")
+MACRO_CONFIG_INT(gfx_fullscreen, 0, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Fullscreen")
 MACRO_CONFIG_INT(gfx_alphabits, 0, 0, 0, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Alpha bits for framebuffer  (fullscreen only)")
 MACRO_CONFIG_INT(gfx_color_depth, 24, 16, 24, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Colors bits for framebuffer (fullscreen only)")
 MACRO_CONFIG_INT(gfx_clear, 1, 0, 1, CFGFLAG_SAVE|CFGFLAG_CLIENT, "Clear screen before rendering")
