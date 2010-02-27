@@ -85,6 +85,11 @@ void BINDS::set_defaults()
 {
 	// set default key bindings
 	unbindall();
+
+	bind(KEY_RETURN, "chat all");
+	bind(KEY_F12, "quit");
+	bind(KEY_F11, "disconnect");
+
 	bind(KEY_F1, "toggle_local_console");
 	bind(KEY_F2, "toggle_remote_console");
 	bind(KEY_TAB, "+scoreboard");
