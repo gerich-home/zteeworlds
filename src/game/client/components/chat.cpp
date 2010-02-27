@@ -44,6 +44,7 @@ void CHAT::on_statechange(int new_state, int old_state)
 		for(int i = 0; i < MAX_LINES; i++)
 			lines[i].time = 0;
 		current_line = 0;
+		initial_mode = mode;
 	}
 }
 
@@ -129,8 +130,23 @@ bool CHAT::on_input(INPUT_EVENT e)
 		return false;
 	}
 
+	if(e.flags&INPFLAG_PRESS && (e.key == KEY_LCTRL || e.key == KEY_RCTRL))
+	{
+		if (mode == MODE_ALL)
+			mode = MODE_TEAM;
+		else
+			mode = MODE_ALL;
+	}
+	else if(e.flags&INPFLAG_RELEASE && (e.key == KEY_LCTRL || e.key == KEY_RCTRL))
+	{
+		mode = initial_mode;
+	}
+
 	if(e.flags&INPFLAG_PRESS && e.key == KEY_ESCAPE)
+	{
 		mode = MODE_NONE;
+		initial_mode = mode;
+	}
 	else if(e.flags&INPFLAG_PRESS && (e.key == KEY_RETURN || e.key == KEY_KP_ENTER))
 	{
 		if(input.get_string()[0])
@@ -144,6 +160,7 @@ bool CHAT::on_input(INPUT_EVENT e)
 			}
 		}
 		mode = MODE_NONE;
+		initial_mode = mode;
 	}
 	else if (e.flags&INPFLAG_PRESS && e.key == KEY_UP)
 	{
@@ -255,6 +272,8 @@ void CHAT::enable_mode(int team)
 		
 		input.clear();
 		inp_clear_events();
+
+		initial_mode = mode;
 	}
 }
 

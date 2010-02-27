@@ -43,6 +43,7 @@ class CHAT : public COMPONENT
 		MODE_TEAM,
 	};
 
+	int initial_mode;
 	int mode;
 	
 	bool contains_name;
