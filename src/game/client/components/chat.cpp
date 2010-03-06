@@ -432,8 +432,11 @@ void CHAT::add_line(int client_id, int team, const char *line)
 		str_copy(lines[current_line].name, gameclient.clients[client_id].name, sizeof(lines[current_line].name));
 		str_format(lines[current_line].text, sizeof(lines[current_line].text), ": %s", line);
 	}
-	
-	dbg_msg("chat", "%s%s", lines[current_line].name, lines[current_line].text);
+
+	if (!team)
+		dbg_msg("chat", "%s%s", lines[current_line].name, lines[current_line].text);
+	else
+		dbg_msg("teamchat", "%s%s", lines[current_line].name, lines[current_line].text);
 }
 
 void CHAT::on_render()
