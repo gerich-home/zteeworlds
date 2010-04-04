@@ -48,10 +48,250 @@ static void envelope_eval(float time_offset, int env, float *channels)
 	render_eval_envelope(points+item->start_point, item->num_points, 4, client_localtime()+time_offset, channels);
 }
 
+void MAPLAYERS::render_game_layer()
+{	
+	RECT screen;
+	gfx_getscreen(&screen.x, &screen.y, &screen.w, &screen.h);
+	
+	vec2 center = gameclient.camera->center;
+	//float center_x = gameclient.camera->center.x;
+	//float center_y = gameclient.camera->center.y;
+	
+	bool passed_gamelayer = false;
+
+	passed_gamelayer = false;
+
+	for(int g = 0; g < layers_num_groups(); g++)
+	{
+		MAPITEM_GROUP *group = layers_get_group(g);
+		
+		if(!config.gfx_noclip && group->version >= 2 && group->use_clipping)
+		{
+			// set clipping
+			float points[4];
+			mapscreen_to_group(center.x, center.y, layers_game_group());
+			gfx_getscreen(&points[0], &points[1], &points[2], &points[3]);
+			float x0 = (group->clip_x - points[0]) / (points[2]-points[0]);
+			float y0 = (group->clip_y - points[1]) / (points[3]-points[1]);
+			float x1 = ((group->clip_x+group->clip_w) - points[0]) / (points[2]-points[0]);
+			float y1 = ((group->clip_y+group->clip_h) - points[1]) / (points[3]-points[1]);
+
+			gfx_clip_enable((int)(x0*gfx_screenwidth()), (int)(y0*gfx_screenheight()),
+				(int)((x1-x0)*gfx_screenwidth()), (int)((y1-y0)*gfx_screenheight()));
+		}
+
+		mapscreen_to_group(center.x, center.y, group);
+
+		for(int l = 0; l < group->num_layers; l++)
+		{
+			MAPITEM_LAYER *layer = layers_get_layer(group->start_layer+l);
+			bool render = false;
+			bool is_game_layer = false;
+			
+			if(layer == (MAPITEM_LAYER*)layers_game_layer())
+			{
+				is_game_layer = true;
+				passed_gamelayer = 1;
+			}
+			
+			// skip rendering if detail layers if not wanted
+			if(layer->flags&LAYERFLAG_DETAIL && !config.gfx_high_detail && !is_game_layer)
+				continue;
+				
+			if(type == -1)
+				render = true;
+			else if(type == 0)
+			{
+				if(passed_gamelayer)
+					return;
+				render = true;
+			}
+			else
+			{
+				if(passed_gamelayer && !is_game_layer)
+					render = true;
+			}
+			
+			if(render && !is_game_layer)
+			{
+				//layershot_begin();
+				
+				if(layer->type == LAYERTYPE_QUADS)
+				{
+					MAPITEM_LAYER_QUADS *qlayer = (MAPITEM_LAYER_QUADS *)layer;
+					
+					if(qlayer->image == -1)
+						gfx_texture_set(-1);
+					else
+						gfx_texture_set(gameclient.mapimages->get(qlayer->image));
+
+					QUAD *quads = (QUAD *)map_get_data_swapped(qlayer->data);
+					
+					gfx_blend_none();
+					render_quads(quads, qlayer->num_quads, envelope_eval, LAYERRENDERFLAG_OPAQUE);
+					//gfx_blend_normal();
+					//render_quads(quads, qlayer->num_quads, envelope_eval, LAYERRENDERFLAG_TRANSPARENT);
+				}
+				
+				//layershot_end();	
+			}
+		}
+		if(!config.gfx_noclip)
+			gfx_clip_disable();
+	}
+	
+	{
+		MAPITEM_GROUP *group = layers_game_group();
+		if(!config.gfx_noclip && group->version >= 2 && group->use_clipping)
+		{
+			// set clipping
+			float points[4];
+			mapscreen_to_group(center.x, center.y, layers_game_group());
+			gfx_getscreen(&points[0], &points[1], &points[2], &points[3]);
+			float x0 = (group->clip_x - points[0]) / (points[2]-points[0]);
+			float y0 = (group->clip_y - points[1]) / (points[3]-points[1]);
+			float x1 = ((group->clip_x+group->clip_w) - points[0]) / (points[2]-points[0]);
+			float y1 = ((group->clip_y+group->clip_h) - points[1]) / (points[3]-points[1]);
+
+			gfx_clip_enable((int)(x0*gfx_screenwidth()), (int)(y0*gfx_screenheight()),
+				(int)((x1-x0)*gfx_screenwidth()), (int)((y1-y0)*gfx_screenheight()));
+		}
+		
+		MAPITEM_LAYER_TILEMAP *layer = layers_game_layer();
+		
+		{
+			MAPITEM_LAYER_TILEMAP *tmap = (MAPITEM_LAYER_TILEMAP *)layer;
+			
+			static int entities_tex = -1;
+			if(entities_tex == -1)
+				entities_tex = gfx_load_texture("editor/entities.png", IMG_AUTO, 0);
+			
+			gfx_texture_set(entities_tex);
+			
+			TILE *tiles = (TILE *)map_get_data(tmap->data);
+			if (config.gfx_shadows)
+			{
+				gfx_blend_normal();
+				render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_OPAQUE|LAYERRENDERFLAG_TRANSPARENT|TILERENDERFLAG_SHADOW);
+			}
+			if (config.gfx_outlines)
+			{
+				gfx_blend_normal();
+				render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_OPAQUE|LAYERRENDERFLAG_TRANSPARENT|TILERENDERFLAG_OUTLINE);
+			}
+			gfx_blend_none();
+			render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_OPAQUE);
+			gfx_blend_normal();
+			render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_TRANSPARENT);
+		}
+		
+		if(!config.gfx_noclip)
+			gfx_clip_disable();
+	}
+	
+	/*passed_gamelayer = false;
+
+	for(int g = 0; g < layers_num_groups(); g++)
+	{
+		MAPITEM_GROUP *group = layers_get_group(g);
+		
+		if(!config.gfx_noclip && group->version >= 2 && group->use_clipping)
+		{
+			// set clipping
+			float points[4];
+			mapscreen_to_group(center.x, center.y, layers_game_group());
+			gfx_getscreen(&points[0], &points[1], &points[2], &points[3]);
+			float x0 = (group->clip_x - points[0]) / (points[2]-points[0]);
+			float y0 = (group->clip_y - points[1]) / (points[3]-points[1]);
+			float x1 = ((group->clip_x+group->clip_w) - points[0]) / (points[2]-points[0]);
+			float y1 = ((group->clip_y+group->clip_h) - points[1]) / (points[3]-points[1]);
+
+			gfx_clip_enable((int)(x0*gfx_screenwidth()), (int)(y0*gfx_screenheight()),
+				(int)((x1-x0)*gfx_screenwidth()), (int)((y1-y0)*gfx_screenheight()));
+		}
+
+		mapscreen_to_group(center.x, center.y, group);
+
+		for(int l = 0; l < group->num_layers; l++)
+		{
+			MAPITEM_LAYER *layer = layers_get_layer(group->start_layer+l);
+			bool render = false;
+			bool is_game_layer = false;
+			
+			if(layer == (MAPITEM_LAYER*)layers_game_layer())
+			{
+				is_game_layer = true;
+				passed_gamelayer = 1;
+			}
+			
+			if(!is_game_layer)
+				continue;
+				
+			if(type == -1)
+				render = true;
+			else if(type == 0)
+			{
+				render = true;
+			}
+			else
+			{
+				if(passed_gamelayer)
+					return;
+			}
+			
+			if(render)
+			{
+				//layershot_begin();
+				
+				{
+					MAPITEM_LAYER_TILEMAP *tmap = (MAPITEM_LAYER_TILEMAP *)layer;
+					static int entities_tex = -1;
+					if(entities_tex == -1)
+						entities_tex = gfx_load_texture("editor/entities.png", IMG_AUTO, 0);
+					
+					gfx_texture_set(entities_tex);
+					
+					TILE *tiles = (TILE *)map_get_data(tmap->data);
+					if (config.gfx_shadows)
+					{
+						gfx_blend_normal();
+						render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_OPAQUE|LAYERRENDERFLAG_TRANSPARENT|TILERENDERFLAG_SHADOW);
+					}
+					if (config.gfx_outlines)
+					{
+						gfx_blend_normal();
+						render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_OPAQUE|LAYERRENDERFLAG_TRANSPARENT|TILERENDERFLAG_OUTLINE);
+					}
+					gfx_blend_none();
+					render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_OPAQUE);
+					gfx_blend_normal();
+					render_tilemap(tiles, tmap->width, tmap->height, 32.0f, vec4(1,1,1,1), TILERENDERFLAG_EXTEND|LAYERRENDERFLAG_TRANSPARENT);
+				}
+				
+				//layershot_end();	
+			}
+		}
+		if(!config.gfx_noclip)
+			gfx_clip_disable();
+	}*/
+	
+	if(!config.gfx_noclip)
+		gfx_clip_disable();
+	
+	// reset the screen like it was before
+	gfx_mapscreen(screen.x, screen.y, screen.w, screen.h);
+}
+
 void MAPLAYERS::on_render()
 {
 	if(client_state() != CLIENTSTATE_ONLINE && client_state() != CLIENTSTATE_DEMOPLAYBACK)
 		return;
+		
+	if (config.gfx_rawmap)
+	{
+		render_game_layer();
+		return;
+	}
 	
 	RECT screen;
 	gfx_getscreen(&screen.x, &screen.y, &screen.w, &screen.h);

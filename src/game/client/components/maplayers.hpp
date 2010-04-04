@@ -3,6 +3,7 @@
 class MAPLAYERS : public COMPONENT
 {	
 	int type;
+	void render_game_layer();
 public:
 	enum
 	{

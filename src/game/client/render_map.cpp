@@ -255,6 +255,13 @@ void render_tilemap(TILE *tiles, int w, int h, float scale, vec4 color, int rend
 			int c = mx + my*w;
 				
 			unsigned char index = tiles[c].index;
+			if (config.gfx_rawmap)
+			{
+				if (index < 16)
+					gfx_setcolor(color.r, color.g, color.b, color.a);
+				else
+					gfx_setcolor(color.r, color.g, color.b, color.a * 0.3f);
+			}
 			if(index)
 			{
 				unsigned char flags = tiles[c].flags;

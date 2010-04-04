@@ -89,6 +89,7 @@ MACRO_CONFIG_INT(cl_autorecord_time, 10, 0, 10000, CFGFLAG_CLIENT|CFGFLAG_SAVE, 
 MACRO_CONFIG_INT(cl_new_scoreboard, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "New detailed scoreboard")
 
 MACRO_CONFIG_INT(gfx_noclip, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Disable clipping")
+MACRO_CONFIG_INT(gfx_rawmap, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Show only game layer")
 
 /* server */
 MACRO_CONFIG_INT(sv_warmup, 0, 0, 0, CFGFLAG_SERVER, "Number of seconds to do warpup before round starts")
