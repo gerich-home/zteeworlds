@@ -539,8 +539,8 @@ static int _lua_set_team(lua_State * L)
 	int count = lua_gettop(L);
 	if (count > 1 && lua_isnumber(L, 1) && lua_isnumber(L, 2))
 	{
-		int client_id = clamp(lua_tointeger(L, 1), 0, (int)MAX_CLIENTS);
-		int team = clamp(lua_tointeger(L, 2), -1, 1);
+		int client_id = clamp<int>(lua_tointeger(L, 1), 0, MAX_CLIENTS);
+		int team = clamp<int>(lua_tointeger(L, 2), -1, 1);
 	
 		dbg_msg("", "%d %d", client_id, team);
 	
@@ -555,7 +555,7 @@ static int _lua_set_team(lua_State * L)
 
 static void con_set_team(void *result, void *user_data)
 {
-	int client_id = clamp(console_arg_int(result, 0), 0, (int)MAX_CLIENTS - 1);
+	int client_id = clamp(console_arg_int(result, 0), 0, MAX_CLIENTS - 1);
 	int team = clamp(console_arg_int(result, 1), -1, 1);
 	
 	dbg_msg("", "%d %d", client_id, team);

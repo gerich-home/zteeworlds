@@ -100,7 +100,11 @@ client_link_other = {}
 client_depends = {}
 
 if family == "windows" then
-	table.insert(client_depends, Copy(".", "other\\sdl\\vc2005libs\\SDL.dll"))
+	if sdl.use_win64lib == 1 then
+		table.insert(client_depends, Copy(".", "other\\sdl\\x64\\SDL.dll"))
+	else
+		table.insert(client_depends, Copy(".", "other\\sdl\\vc2005libs\\SDL.dll"))
+	end
 end
 	
 
