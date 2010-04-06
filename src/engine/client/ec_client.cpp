@@ -1807,10 +1807,11 @@ static void client_run()
 		}
 		
 		#ifndef CONF_TRUNC
-		lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "client_event_tick");
+		lua_getglobal(GetLuaState(), "client_event_tick");
 		if(lua_isfunction(GetLuaState(), -1))
-			lua_pcall(GetLuaState(), 0, 0, 0);
-		lua_pop(GetLuaState(), 1);
+			lua_call(GetLuaState(), 0, 0);
+		else
+			lua_pop(GetLuaState(), 1);
 		#endif
 
 		perf_end();
@@ -1855,10 +1856,11 @@ static void client_run()
 		if (second_time < time_get())
 		{
 			#ifndef CONF_TRUNC
-			lua_getfield(GetLuaState(), LUA_GLOBALSINDEX, "client_event_second");
+			lua_getglobal(GetLuaState(), "client_event_second");
 			if(lua_isfunction(GetLuaState(), -1))
-				lua_pcall(GetLuaState(), 0, 0, 0);
-			lua_pop(GetLuaState(), 1);
+				lua_call(GetLuaState(), 0, 0);
+			else
+				lua_pop(GetLuaState(), 1);
 			#endif
 			second_time = time_get() + time_freq();
 		}
