@@ -69,6 +69,20 @@ void CHAT::con_chat(void *result, void *user_data)
 		dbg_msg("console", _t("expected all or team as mode"));
 }
 
+void CHAT::translated(TranslateTextThreadData * Data)
+{
+	dbg_msg("translation", "%s -> %s", Data->Text, Data->Translated);
+	char * Text = (char *)Data->Param;
+	//if (strcmp(Text, Data->Text) == 0)
+	{
+		str_format(Text, 512, ": %s", Data->Translated);
+	}
+
+	//free((void *)Data->Text);
+	//mem_free((void *)Data->Translated);
+	//mem_free((void *)Data);
+}
+
 static int _lua_say(lua_State * L)
 {
 	int count = lua_gettop(L);
@@ -431,6 +445,9 @@ void CHAT::add_line(int client_id, int team, const char *line)
 		
 		str_copy(lines[current_line].name, gameclient.clients[client_id].name, sizeof(lines[current_line].name));
 		str_format(lines[current_line].text, sizeof(lines[current_line].text), ": %s", line);
+		
+		if (client_id != gameclient.snap.local_cid && config.cl_translate_language != 0)
+			TranslateText(line, config.cl_translate_language - 1, translated, (void *)lines[current_line].text);
 	}
 
 	if (!team)

@@ -174,6 +174,7 @@ class MENUS : public COMPONENT
 	void render_settings_sound(RECT main_view);
 	void render_settings_beep(RECT main_view);
 	void render_settings_hudmod(RECT main_view);
+	void render_settings_translator(RECT main_view);
 	void render_settings_about(RECT main_view);
 	void render_settings(RECT main_view);
 	

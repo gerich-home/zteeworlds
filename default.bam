@@ -9,6 +9,7 @@ end
 
 Import("other/sdl/sdl.bam")
 Import("other/freetype/freetype.bam")
+Import("other/libcurl/libcurl.bam")
 
 --- Setup Config --------
 config = NewConfig()
@@ -17,6 +18,7 @@ config:Add(OptTestCompileC("stackprotector", "int main(){return 0;}", "-fstack-p
 config:Add(OptFindLibrary("zlib", "zlib.h", false))
 config:Add(SDL.OptFind("sdl", true))
 config:Add(FreeType.OptFind("freetype", true))
+config:Add(libcurl.OptFind("libcurl", true))
 config:Finalize("config.bam")
 
 -- data compiler
@@ -106,7 +108,8 @@ if family == "windows" then
 		table.insert(client_depends, Copy(".", "other\\sdl\\vc2005libs\\SDL.dll"))
 	end
 end
-	
+
+table.insert(client_depends, Copy(".", "other\\libcurl\\lib\\libcurl.dll"))	
 
 if config.compiler.value == "cl" then
 	client_link_other = {ResCompile("other/icons/teeworlds.rc")}
@@ -174,6 +177,9 @@ function build(settings)
 	
 	-- apply freetype settings
 	config.freetype:Apply(settings)
+
+	-- apply curl settings
+	config.libcurl:Apply(settings)
 	
 	-- build game components
 	engine_settings = settings:Copy()

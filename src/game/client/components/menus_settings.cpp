@@ -5,6 +5,7 @@
 #include <stdlib.h> // atoi
 
 #include <engine/e_client_interface.h>
+#include <engine/e_translate.h>
 
 #include <game/generated/g_protocol.hpp>
 #include <game/generated/gc_data.hpp>
@@ -994,6 +995,85 @@ void MENUS::render_settings_hudmod(RECT main_view)
 }
 
 
+void MENUS::render_settings_translator(RECT main_view)
+{
+	RECT langlist = main_view;
+	RECT button;
+	
+	ui_vmargin(&langlist, 5.0f, &langlist);
+	
+	ui_do_label(&langlist, _t("Chat translation language:"), 16.0f, -1);
+	
+	RECT header, footer;
+	ui_hsplit_t(&langlist, 30, &button, &langlist);
+	
+	ui_do_label(&button, _t("Powered by Google"), 16.0f, 1);
+	
+	// draw header
+	ui_hsplit_t(&langlist, 20, &header, &langlist);
+	ui_draw_rect(&header, vec4(1,1,1,0.25f), CORNER_T, 5.0f); 
+	
+	char buf[1024];
+
+	// draw footers	
+	ui_hsplit_b(&langlist, 20, &langlist, &footer);
+	str_format(buf, sizeof(buf), _t("Current: %s"), config.cl_translate_language == 0 ? _t("none") : TranslatorLanguages[config.cl_translate_language - 1]);
+
+	ui_draw_rect(&footer, vec4(1,1,1,0.25f), CORNER_B, 5.0f); 
+	ui_vsplit_l(&footer, 10.0f, 0, &footer);
+	ui_do_label(&footer, buf, 14.0f, -1);
+				
+	ui_draw_rect(&langlist, vec4(0,0,0,0.15f), 0, 0);
+
+	RECT scroll;
+	ui_vsplit_r(&langlist, 15, &langlist, &scroll);
+
+	RECT list = langlist;
+	ui_hsplit_t(&list, 20, &button, &list);
+	
+	int num = (int)(langlist.h/button.h);
+	int num_langs = TranslatorLanguagesCount + 1;
+	static float scrollvalue = 0;
+	static int scrollbar = 0;
+	ui_hmargin(&scroll, 5.0f, &scroll);
+	
+	int scrollnum = num_langs-num+10;
+	if(inp_key_presses(KEY_MOUSE_WHEEL_UP))
+		scrollvalue -= 1.0f/scrollnum;
+	if(inp_key_presses(KEY_MOUSE_WHEEL_DOWN))
+		scrollvalue += 1.0f/scrollnum;
+	scrollvalue = clamp(scrollvalue, 0.0f, 1.0f);
+	
+	scrollvalue = ui_do_scrollbar_v(&scrollbar, &scroll, scrollvalue);
+	
+	int start = (int)((num_langs-num)*scrollvalue);
+	if(start < 0)
+		start = 0;
+		
+	for(int i = start; i < start+num && i < num_langs; i++)
+	{
+		int selected = config.cl_translate_language == i;
+		
+		char LanguageName[512];
+		
+		if (i == 0)
+			str_format(LanguageName, sizeof(LanguageName), "%s", _t("Disable chat translation"));
+		else
+			str_format(LanguageName, sizeof(LanguageName), "%s", TranslatorLanguages[i - 1]);
+		
+		RECT button2;
+		ui_vmargin(&button, 5.0f, &button2);
+		ui_do_label(&button2, (const char *)LanguageName, 14.0f, -1);
+		
+		if(ui_do_button(i == 0 ? LanguageName : TranslatorLanguages[i - 1], "", selected, &button, ui_draw_list_row, 0))
+		{
+			config.cl_translate_language = i;
+		}
+			
+		ui_hsplit_t(&list, 20, &button, &list);
+	}
+}
+
 void MENUS::render_settings_about(RECT main_view)
 {
 	RECT button;
@@ -1058,14 +1138,15 @@ void MENUS::render_settings(RECT main_view)
 	
 	RECT button;
 	
-	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Beep", "Hud-Mod", "About"};
+	const char *tabs[] = {"Player", "Controls", "Graphics", "Sound", "Beep", "Hud-Mod", "Translator", "About"};
 	tabs[0] = _t("Player");
 	tabs[1] = _t("Controls");
 	tabs[2] = _t("Graphics");
 	tabs[3] = _t("Sound");
 	tabs[4] = _t("Beep");
 	tabs[5] = _t("Hud-Mod");
-	tabs[6] = _t("About");
+	tabs[6] = _t("Translator");
+	tabs[7] = _t("About");
 	int num_tabs = (int)(sizeof(tabs)/sizeof(*tabs));
 
 	for(int i = 0; i < num_tabs; i++)
@@ -1091,6 +1172,8 @@ void MENUS::render_settings(RECT main_view)
 	else if(settings_page == 5)
 		render_settings_hudmod(main_view);
 	else if(settings_page == 6)
+		render_settings_translator(main_view);
+	else if(settings_page == 7)
 		render_settings_about(main_view);
 
 	if(need_restart)

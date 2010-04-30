@@ -51,6 +51,8 @@ MACRO_CONFIG_INT(cl_clear_all, 0, 0, 1, CFGFLAG_CLIENT, "Cleans the whole screen
 MACRO_CONFIG_INT(cl_servermsgsound, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turnes servermessage sound on or off")
 MACRO_CONFIG_INT(cl_chatsound, 1, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Turnes chat sound on or off")
 
+MACRO_CONFIG_INT(cl_translate_language, 0, 0, 87, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Chat translation language (0 - disabled)")
+
 MACRO_CONFIG_INT(player_use_custom_color, 0, 0, 1, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Toggles usage of custom colors")
 MACRO_CONFIG_INT(player_color_body, 65408, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player body color")
 MACRO_CONFIG_INT(player_color_feet, 65408, 0, 0, CFGFLAG_CLIENT|CFGFLAG_SAVE, "Player feet color")

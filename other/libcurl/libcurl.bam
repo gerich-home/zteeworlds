@@ -1,0 +1,52 @@
+libcurl = {
+	basepath = PathPath(ModuleFilename()),
+
+	OptFind = function (name, required)
+		local check = function(option, settings)
+			option.value = nil            
+			option.use_win32libcurl = nil
+     			option.lib_path = nil
+			
+			option.value = 1
+			if platform == "win32" then
+				option.value = 1
+				option.use_win32libcurl = 1
+			end
+		end
+		
+		local apply = function(option, settings)
+			if option.use_win32libcurl then
+				settings.link.libpath:Add(libcurl.basepath .. "/lib")
+				settings.link.libs:Add("curllib")
+			end                             
+			if option.value then
+				settings.cc.includes:Add(libcurl.basepath .. "/include")
+			end
+		end
+		
+		local save = function(option, output)
+			output:option(option, "value")
+			output:option(option, "use_win32libcurl")
+		end
+		
+		local display = function(option)
+			if option.value then
+				if option.use_win32libcurl then return "using supplied win32 libraries" end
+				return "using unknown method"
+			else
+				if option.required then
+					return "not found (required)"
+				else
+					return "not found (optional)"
+				end
+			end
+		end
+		
+		local o = MakeOption(name, 0, check, save, display)
+		o.Apply = apply
+		o.include_path = nil
+		o.lib_path = nil
+		o.required = required
+		return o
+	end
+}

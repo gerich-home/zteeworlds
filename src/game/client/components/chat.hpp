@@ -1,5 +1,6 @@
 #include <game/client/component.hpp>
 #include <game/client/lineinput.hpp>
+#include <engine/e_translate.h>
 
 class CHAT : public COMPONENT
 {
@@ -55,6 +56,9 @@ class CHAT : public COMPONENT
 	static void con_say(void *result, void *user_data);
 	static void con_sayteam(void *result, void *user_data);
 	static void con_chat(void *result, void *user_data);
+	
+	static void translated(TranslateTextThreadData * Data);
+	
 public:
 	struct split
 	{
