@@ -1,0 +1,1017 @@
+Русский
+-1 Перевели на Русский язык: vit и Lite. Дата: 29.03.2010
+-1 ----------------------------
+-1 ===== Браузер Серверов =====
+-1 ----------------------------
+63411 Loading
+Загрузка
+63411 Welcome to Teeworlds
+Добро пожаловать в Teeworlds!
+63411 As this is the first time you launch the game, please enter your nick name below. It's recommended that you check the settings to adjust them to your liking before joining a server.
+Вы запустили Teeworlds первый раз. Пожалуйста, введите свой ник ниже. Также рекомендуется настроить игру в меню настроек.
+63411 Internet
+Интернет
+63411 LAN
+Сеть
+63411 Favorites
+Избранные
+63411 Demos
+Демки
+63411 Quit
+Выход
+31685 Name
+Название
+31685 Type
+Тип
+31685 Map
+Карта
+31685 Players
+Игроки
+31685 Ping
+Пинг
+31685 No servers found
+Серверы не найдены
+31685 Quick search:
+Быстрый поиск:
+31685 %d of %d servers, %d players
+%d из %d серверов, %d игроков
+31685 Filter
+Фильтр
+31685 Info
+Инфо
+31685 Has people playing
+С игроками
+31685 Server not full
+Не полные
+31685 No password
+Без пароля
+31685 Compatible Version
+Совместимая версия
+31685 Standard gametype
+Стандартный тип игры
+31685 Standard map
+Стандартные карты
+31685 Game types:
+Тип игры:
+31685 Maximum ping
+Максимальный пинг
+31685 Reset Filter
+Сбросить Фильтр
+31685 Refresh
+Обновить
+31685 Current version: %s
+Текущая версия: %s
+31685 Connect
+Подключиться
+31685 Host address:
+Адрес сервера:
+31685 No servers match your filter criteria
+Нет серверов, удовлетворяющих критериям вашего фильтра
+31685 Teeworlds %s is out! Download it at www.teeworlds.com!\nCurrent version: %s
+Вышла Teeworlds %s! Скачайте её на www.teeworlds.com!\nТекущая версия: %s
+17305 Play
+Просмотр
+17305 Rewrite
+Перезап.
+31685 Server Details:
+Информация о сервере:
+31685 Version:
+Версия:
+31685 Game Type:
+Тип игры:
+31685 Progression:
+Прогресс:
+31685 Ping:
+Пинг:
+31685 Favorite
+Избранный
+31685 N/A
+Н/Д
+31685 Scoreboard:
+Табло:
+31685 %d%%
+%d%%
+63411 Downloading map
+Загрузка карты
+63411 %d/%d KiB
+%d/%d Килобайт
+63411 Are you sure that you want to quit?
+Вы уверены, что хотите выйти?
+63411 No
+Нет
+63411 Yes
+Да
+63411 Connecting to
+Соединение с
+63411 Abort
+Отмена
+-1 ---------------------
+-1 ===== Настройки =====
+-1 ---------------------
+63411 Settings
+Настройки
+36383 Player
+Игрок
+36383 Controls
+Управление
+36383 Graphics
+Графика
+36383 Beep
+Чат-мод
+36383 Hud-Mod
+Отображение
+36383 About
+О игре
+36383 Sound
+Звук
+36383 Name:
+Ник:
+36383 Dynamic Camera
+Динамическая камера
+36383 Switch weapon on pickup
+Переключать оружие при подборе
+36383 Show name plates
+Показывать ники игроков
+36383 Always show name plates
+Всегда показывать ники игроков
+36383 Show ghost
+Отображать призрака
+36383 Anti-rainbow
+Блокировать частую смену цвета игроков
+36383 Body
+Тело
+36383 Feet
+Ноги
+36383 Language
+Язык
+36383 Current: %s
+Текущий: %s
+36383 Custom colors
+Нестандартные цвета
+36383 Default skin only
+Только скин по умолчанию
+36383 Z-Team Pack 2 compatible cyrillic
+Z-Team Pack 2 совместимая кириллица
+36383 Auto demo recording
+Автоматическая запись демок
+36383 Make screenshot after game over
+Автоматическое снятие скриншота после окончания игры
+36383 New detailed scoreboard
+Новое расширенное игровое табло
+36383 Skins
+Скины
+36383 Movement
+Перемещение
+36383 Mouse sens.
+Чувствит. мыши
+36383 Move Left:
+Идти влево:
+36383 Move Right:
+Идти вправо:
+36383 Jump:
+Прыжок:
+36383 Fire:
+Выстрел:
+36383 Hook:
+Веревка:
+36383 Weapon
+Оружие
+36383 Hammer:
+Молоток:
+36383 Pistol:
+Пистолет:
+36383 Shotgun:
+Дробовик:
+36383 Grenade:
+Гранатомет:
+36383 Rifle:
+Лазер:
+36383 Next Weapon:
+След. Оружие:
+36383 Prev. Weapon:
+Пред. Оружие:
+36383 Voting
+Голосование
+36383 Vote Yes:
+За:
+36383 Vote No:
+Против:
+36383 Chat
+Чат
+36383 Chat:
+Чат:
+36383 Team Chat:
+Командный чат:
+36383 Miscellaneous
+Дополнительно
+36383 Emoticon:
+Эмоции:
+36383 Console:
+Консоль:
+36383 Remote Console:
+Удаленная консоль:
+36383 Screenshot:
+Скриншот:
+36383 Scoreboard:
+Табло:
+36383 Fast menu:
+Быстрое меню:
+36383 Reset to defaults
+Сброс настроек
+36383 Show only supported
+Только поддерживаемые режимы
+36383 You must restart the game for all settings to take effect.
+Чтобы настройки вступили в силу, вы должны перезапустить игру.
+36383 Display Modes
+Режимы Экрана
+36383 Current: %dx%d %d bit
+Текущий: %dx%d %d bit
+36383 Fullscreen
+Полноэкранный режим
+36383 V-Sync
+Вертикальная синхронизация
+36383 FSAA samples
+FSAA сэмплы
+-1 Настройки графики
+36383 Quality Textures
+Качественные Текстуры
+36383 Texture Compression
+Сжатие Текстур
+36383 High Detail
+Высокая Детализация
+36383 UI Color
+Цвет Интерфейса
+-1 Ну не влезают они, поэтому не переводил.
+36383 Hue
+Hue
+36383 Sat.
+Sat.
+36383 Lht.
+Lht.
+36383 Alpha
+Alpha
+36383 New background
+Новый анимированный фон
+36383 New background type
+Тип нового фона
+36383 Use FreeType for displaying text
+Использовать FreeType для отображения текста
+36383 Smileys
+Смайлы
+36383 Shadows for text
+Тени для текста
+36383 Shadows
+Тени
+36383 Outlines
+Обводка
+36383 Use sounds
+Включить Звуки
+36383 Mute when not active
+Выключать звук при простое
+36383 Sample rate
+Частота
+36383 Sound Volume
+Громкость Звуков
+36383 Music Volume
+Громкость Музыки
+36383 Music volume in game
+Громкость Музыки в Игре
+36383 Eye candy
+Дополнительные визуальные эффекты
+-1 Beep-mod
+36383 Change chat sound
+Изменить звук чата
+36383 Change color of chat messages
+Изменить цвет сообщений чата
+36383 Block all messages from spaming people
+Блокировать все сообщения от спамеров
+36383 Block spam
+Блокировать спам
+36383 Search for names:
+Искать ники:
+36383 Spammer names:
+Имена спамеров:
+36383 Enter the names u want to look for.\nSeperate them with a simple space.
+Введите имена, для которых будет выполняться поиск.\nРазделяйте их пробелом.
+-1 Hud-mod
+36383 by Sushi :)
+сделал Sushi :)
+36383 General settings
+Общие настройки
+36383 Clear hud
+Очистить экран
+36383 Clear all
+Очистить всё
+36383 Special settings
+Специальные настройки
+36383 Server time
+Время сервера
+36383 Health
+Здоровье
+36383 Ammunition
+Броня
+36383 Crosshair
+Прицел
+36383 Team score
+Командный счет
+36383 Viewmode
+Режим наблюдения
+36383 Info messages
+Инфо сообщения
+36383 FPS
+FPS
+36383 Scoreboard
+Табло
+36383 Warmup
+Разминка
+36383 Broadcast
+Вещание
+36383 Server messages
+Серверные сообщения
+36383 Kill messages
+Сообщения об убийстве
+36383 Votes
+Голоса
+36383 Team balance warning
+Предупреждение о балансе команд
+36383 Sound settings
+Настройки звука
+36383 Activate server message sound
+Включить звук серверных сообщений
+36383 Activate chat message sound
+Включить звук сообщений чата
+-1 About
+36383 Based on the Teeworlds 0.5.2
+Основан на Teeworlds 0.5.2
+36383 Developers:
+Разработчики:
+36383 coding
+написание кода
+36383 sounds and music
+звуки и музыка
+36383 art
+рисунки
+36383 Thanks to:
+Благодарности:
+36383 for this amazing game
+за эту замечательную игру
+36383 Teeworlds developers
+Разработчикам Teeworlds
+36383 for TeeComp mod
+за мод TeeComp
+36383 for his pack, HUD and Beep mods
+за его пак, HUD и Beep моды
+36383 for TDTW
+за TDTW
+36383 for DownloadExtension
+за DownloadExtension
+36383 Thank you! Good game!
+Спасибо вам! Приятной игры!
+-1 ----------------
+-1 ===== Игра =====
+-1 ----------------
+-1 Пошире бы кнопочку...
+63411 Server Info
+Инфо сервера
+63411 Call Vote
+Голосовать
+63411 Browser
+Сервера
+63411 Disconnected
+Отсоединено
+63411 Ok
+Ок
+63411 Ok (%d)
+Ок (%d)
+25671 Disconnect
+Отключиться
+25671 Record
+Запись
+25671 Screenshot
+Скриншот
+25671 Spectate
+Наблюдать
+25671 Stop record
+Остановить
+17018 Score limit: %d
+Лимит очков: %d
+17018 Round: %d/%d
+Раунд: %d/%d
+17018 Score
+Счет
+17018 ---
+---
+25671 Server info
+Инфо сервера
+25671 MOTD
+Приветствие
+25671 Options
+Опции
+25671 Kick
+Кикнуть
+25671 Call vote
+Голосовать
+17305 Exit
+Выход
+17305 Error
+Ошибка
+55621 Freeview
+Свободный обзор
+55621 Following: %s
+Слежение за: %s
+17018 Red
+Красные
+17018 Blue
+Синие
+17018 Spectators
+Наблюдатели
+25671 Join Red
+За Красных
+25671 Join Blue
+За синих
+25671 Join Game
+Войти
+17018 Time limit: %d
+Лимит времени: %d
+25671 %s\n\nAddress: %s\nPing: %d\nVersion: %s\nPassword: %s\n
+%s\n\nАдрес: %s\nПинг: %d\nВерсия: %s\nПароль: %s\n
+25671 Game info
+Инфо об игре
+63411 Game
+Игра
+63411 Map: %s\n\n%d/%d KiB (%.1f KiB/sec)\n\nPlease wait %d seconds...
+Карта: %s\n\n%d/%d Кб (%.1f Кб/с)\n\nПожалуйста, подождите %d секунд...
+62716 Spectator zoom: %d
+Масштаб для наблюдателя: %d
+55621 Please balance teams!
+Пожалуйста, сбалансируйте команды!
+55621 %ds left
+%dс осталось
+55621 %s - Vote Yes
+%s - За
+55621 Vote No - %s
+Против - %s
+43036 %s is on a killing spree with %d kills!
+от %s запахло смертью после %d убийств!
+43036 %s is on a rampage with %d kills!
+%s в дикой ярости после %d убийств!
+43036 %s is dominating with %d kills!
+%s доминирует с %d-ю убийствами!
+43036 %s is unstoppable with %d kills!
+%s непобедим с %d-ю убийствами!
+43036 %s is godlike with %d kills!
+%s божественен от %d убийств!
+43036 %s is Wicked SICK with %d kills!
+%s нереально крут после %d убийств!
+43036 %s's %d-kills killing spree ended by %s
+%s после %d убийств был убит %s
+-1 -------------------------
+-1 ===== Редактор Карт =====
+-1 -------------------------
+40162 [ctrl+h] Toggle High Detail
+[ctrl+h] Включить/Отключить Высокую Детализацию
+40162 Detail
+Детал.
+40162 [ctrl+m] Toggle animation
+Включить/Отключить анимацию
+40162 Anim
+Аним.
+40162 [ctrl-p] Toggles proof borders. These borders represent what a player maximum can see.
+Включить/Отключить рамки границ экрана. Эти рамки показывают, как далеко может видеть игрок.
+40162 Proof
+Рамки
+40162 [NumPad-] Zoom out
+[NumPad-] Уменьшить Масштаб
+40162 ZO
+ZO
+40162 [NumPad*] Zoom to normal and remove editor offset
+[NumPad*] Сбросить масштаб на 100%
+40162 1:1
+1:1
+40162 [NumPad+] Zoom in
+Увеличить Масштаб
+40162 ZI
+ZI
+40162 Increase animation speed
+Увеличить скорость анимации
+40162 A+
+А+
+40162 Normal animation speed
+Нормальная скорость анимации
+40162 1
+1
+40162 Decrease animation speed
+Уменьшить скорость анимации
+40162 A-
+А-
+40162 [N] Flip brush horizontal
+[N] Отразить кисть по горизонтали
+40162 ^X
+^X
+40162 [M] Flip brush vertical
+[M] Отразить кисть по вертикали
+40162 ^Y
+^Y
+40162 [R] Rotates the brush counter clockwise
+[R] Повернуть кисть против часовой стрелки
+40162 CCW
+CCW
+40162 [T] Rotates the brush clockwise
+[T] Повернуть кисть по часовой стрелке
+40162 CW
+CW
+40807 Fixes coordinates of the quads points
+Исправляет координаты точек квадов
+40807 Fix Coordinates
+Исправить Кординаты
+40807 X
+X
+40807 Y
+Y
+40807 Color TO
+Color TO
+40162 Adds a new quad
+Добавить новый квад
+40162 Deletes the current Envelope
+Удалить текущую Огибающую
+40162 Press right mouse button to create a new point.  Additionally press shift to create the point with value 0 or ctrl to create with value 1.
+Для создания новой точки нажмите правой кнопкой мыши. Дополнительно удерживайте Shift чтобы создать точку со значением 0 или Ctrl для создания точки с значением 1.
+40162 Left mouse to alter value, hold shift to alter time point. Right click to delete.
+Левой кнопкой мыши вы можете изменять значение, удерживайте Shift для изменения времени точки.
+40162 Add Quad
+Добав. Квад
+40162 Toggle group visibility
+Включить/Отключить выдимость группы
+40162 Select group. Right click for properties.
+Выбор группы. Используйте правую кнопку мыши для изменения свойств.
+40162 Toggle layer visibility
+Включить/Отключить видимость слоя
+40162 Select layer. Right click for properties.
+Выбор слоя. Используйте правую кнопку мыши для изменения свойств.
+40162 Adds a new group
+Добавить новую группу
+40162 Add Group
+Добав. Группу
+40162 File
+Файл
+40162 Switch to edit layers.
+Переключиться на редактирование слоев.
+40162 Layers
+Слои
+40162 Switch to manage images.
+Переключиться на менеджер изображений.
+40162 Images
+Изобр.
+40162 Toggles the envelope editor.
+Включить/Отключить редактор огибающих
+40162 Envelopes
+Огибающие
+40162 Use left mouse button to drag and create a brush.
+Используйте левую кнопку мыши для перетаскивания и для создания кисти.
+40162 %s Right click for context menu.
+%s Щелкните правой кнопкой мыши для вызова контекстного меню.
+40162 Creates a new map
+Создает новую карту
+40162 New
+Новая Карта
+40162 Opens a map for editing
+Открывает карты для редактирования
+40162 Open
+Открыть
+40162 Opens a map and adds everything from that map to the current one
+Открывает карту и добавить все слои игруппы из неё на текущую карту
+40162 Append
+Присоединить
+40162 Saves the current map
+Сохраняет текущую карту
+40162 Save (NOT IMPL)
+Сохранить (Не пашет)
+40162 Saves the current map under a new name
+Сохраняет текущую карту под новым именем
+40162 Save As
+Сохранить Как
+40162 Exits from the editor
+Выйти из редактора
+40162 Open Map
+Открыть Карту
+40162 Filename:
+Файл:
+40162 Cancel
+Отмена
+40807 Delete group
+Удалить группу
+40807 Delete Group
+Удалить Группу
+40162 Embedded
+Встроенные
+40162 External
+Внешние
+40162 Load a new image to use in the map
+Загрузить новое изображение для использования в этой карте
+40162 Add
+Добавить
+40162 Left mouse button to move. Hold shift to move the texture.
+Используйте левую кнопку мыши для перемещения. Удерживайте Shift для перемещения текстуры.
+40162 Left mouse button to move. Hold shift to move pivot. Hold ctrl to rotate
+Используйте левую кнопку мыши для перемещения. Удерживайте Shift для перемещения стержня. Удерживайте Ctrl для поворота
+40807 Deletes the current quad
+Удаляет текущий квад
+40807 Delete
+Удалить
+40807 Squares the current quad
+Сделает прямоугольным текущий квад
+40807 Square
+Сделать прямоугольным
+40807 Pos. Env
+Pos. Env
+40807 Pos. TO
+Pos. TO
+40807 Color Env
+Color Env
+40807 Creates a new quad layer
+Создает новый квадовый слой
+40807 Add Quads Layer
+Добав. Квадовый Слой
+40807 Creates a new tile layer
+Создает новый тайловый слой
+40807 Add Tile Layer
+Добав. Тайловый Слой
+40807 Order
+Порядок
+40807 Pos X
+Pos X
+40807 Pos Y
+Pos Y
+40807 Para X
+Para X
+40807 Para Y
+Para Y
+40807 Use Clipping
+Обрезка
+40807 Clip X
+Clip X
+40807 Clip Y
+Clip Y
+40807 Clip W
+Clip W
+40807 Clip H
+Clip H
+40162 Decrease
+Уменьшить
+40162 Increase
+Увеличить
+56408 Removes collision from this layer
+Удалит коллизии из этого слоя
+56408 Clear Collision
+Очистить Коллизии
+56408 Constructs collision from this layer
+Создаст коллизии из этого слоя
+56408 Make Collision
+Сделать Коллизии
+56408 Width
+Ширина
+56408 Height
+Высота
+56408 Image
+Изобр.
+40162 Embedds the image into the map file.
+Встраивает изображение в файл карты.
+40162 Embedd
+Встроить
+40162 Replaces the image with a new one
+Заменяет изображение новым
+40162 Replace
+Заменить
+40162 Removes the image from the map
+Удаляет изображение из карты
+40162 Remove
+Удалить
+40162 None
+Нету
+40162 Creates a new color envelope
+Создает новую цветовую огибающую
+40162 Color+
+Цвет+
+40162 Creates a new pos envelope
+Создает новую огибающую позиций
+40162 Pos.+
+Поз.+
+40162 Previous Envelope
+Предыдущая Огибающая
+40162 Next Envelope
+Следующая Огибающая
+40162 Press right mouse button to create a new point
+Нажмите правую кнопку мыши для создания новой точки
+40162 Add Image
+Добавить Изображение
+40162 Select image
+Выбрать изображение
+40162 Use left mouse button to paint with the brush. Right button clears the brush.
+Чтобы рисовать кистью используйте левую кнопку мыши. Правая кнопка мыши очищает кисть.
+40162 Left mouse to drag. Hold shift to alter time point aswell. Right click to delete.
+Перетаскивайте левой кнопкой мыши. Удерживайте Shift чтобы изменить время точки. Правая кнопка мыши удаляет точку.
+-1 ---------------------------------------
+-1 ===== Хелп по консольным командам =====
+-1 ---------------------------------------
+5228 Toggle remote console
+Включить/Отключить удаленную консоль
+5228 Help: %s
+Помощь: %s
+5228 Syntax: %s %s
+Синтаксис: %s %s
+5228 Toggle local console
+Включить/Отключить локальную консоль
+5228 Show scoreboard
+Показывать табло
+5228 Enable chat with all/team mode
+Включить чат в режиме общий/командный
+5228 Say in team chat
+Сказать в командный чат
+5228 Say in chat
+Сказать в обший чат
+5228 Info message
+Информационное сообщение
+5228 List fastmenu commands
+Список команд быстрого меню
+5228 Delete fastmenu command
+Удалить команду быстрого меню
+5228 Clear fastmenu
+Очистить быстрое меню
+5228 Add fastmenu command (title, command)
+Добавить команду быстрого меню (название, комманда)
+5228 Use fastmenu command
+Использовать команду быстрого меню
+5228 Open fastmenu command selector
+Открыть окошко с быстрым меню
+5228 Use emote
+Использовать эмоции
+5228 Open emote selector
+Открыть окошко с эмоциями
+5228 Vote yes/no
+Голосовать за/против
+5228 Switch to previous weapon
+Переключить на предыдущее оружие
+5228 Switch to next weapon
+Переключить на следующее оружие
+5228 Switch to rifle
+Переключить на лазер
+5228 Switch to grenade
+Переключить на гранатомет
+5228 Switch to shotgun
+Переключить на дробовик
+5228 Switch to gun
+Переключить на пистолет
+5228 Switch to hammer
+Переключить на молоток
+5228 Fire
+Огонь
+5228 Hook
+Веревка (хук)
+5228 Jump
+Прыжок
+5228 Move right
+Двигаться вправо
+5228 Move left
+Двигаться влево
+5228 Increase spectator zoom
+Увеличить масштаб для наблюдателя
+5228 Dump binds
+Дамп биндов
+5228 Unbind all keys
+Разбиндить все кнопки
+5228 Bind key to execute the command
+Забиндить на клавишу выполнение команды
+5228 Unbind key
+Разбиндить кнопку
+5228 Resend information about player name, skin etc.
+Отправить информацию о имени игрока, скине, и т. д.
+5228 Kill yourself
+Убить себя
+5228 Switch team
+Сменить команду
+5228 Add a server as a favorite
+Добавить сервер в избранные
+5228 Purge record
+Очистить рекорд
+5228 Stop recording
+Остановить запись
+5228 Record to the file
+Начать запись в файл
+5228 Play the file specified
+Проиграть указанный файл
+5228 Authenticate to rcon
+Залогиниться в rcon
+5228 Send specified command to rcon
+Отправить указанную команду в rcon
+5228 Take a screenshot
+Сделать скриншот
+5228 Ping the current server
+Пинг текущего сервера
+5228 Disconnect from the server
+Отсоединиться от сервера
+5228 Connect to the specified host/ip
+Подключиться в указанному хосту/IP
+5228 Quit Teeworlds
+Выйти из Teeworlds
+5228 Log the network
+Вести лог сети
+5228 Dump the memory
+Дамп памяти
+5228 Enables window resizing
+Включить изменение размера окна
+5228 Server to stress
+Server to stress
+5228 Performance graphs
+Performance graphs
+5228 Stress network
+Стресс-тест сети
+5228 Stress systems
+Стресс-тест системы
+5228 Debug mode
+Режим отладки
+5228 Mouse sensitivity
+Чувствительность мыши
+5228 Music volume
+Громкость музыки
+5228 Render tiles with outlines
+Отображать обводку для тайлов
+5228 Render game objects with shadows
+Отображать тени к объектам
+5228 Render text with shadows
+Отображать текст с тенями
+5228 Use FreeType font
+Использовать шрифт FreeType
+5228 Screen refresh rate
+Частота обновления экрана
+5228 FSAA Samples
+FSAA Сэмплы
+5228 High detail
+Высокая детализация
+5228 Use texture compression
+Использовать сжатие текстур
+5228 Vertical sync
+Вертикальная синхронизация
+5228 Clear screen before rendering
+Очищать экран перед отображением
+5228 Colors bits for framebuffer (fullscreen only)
+Colors bits for framebuffer (только полноэкранный режим)
+5228 Alpha bits for framebuffer  (fullscreen only)
+Alpha bits for framebuffer  (только полноэкранный режим)
+5228 Screen resolution height
+Разрешение экрана по вертикали
+5228 Screen resolution width
+Разрешение экрана по горизонтали
+5228 (deprecated) Sound device to use
+(устарело) Использовать указанное звуковое устройство
+5228 Sound volume
+Громкость звуков
+5228 Sound enable
+Включить звуки
+5228 Sound mixing rate
+Sound mixing rate
+5228 Sound buffer size
+Размер буфера звука
+5228 Number of requests to use when refreshing server browser
+Число запросов, используемых для обновления списка серверов
+5228 Filter out non-compatible servers in browser
+Отфильтровать несовместимые сервера
+5228 Filter out non-standard maps in browser
+Отфильтровать сервера с нестандартными картами
+5228 Filter out non-standard servers in browser
+Отфильтровать сервера с нестандартными типами игр
+5228 Game types to filter
+Фильтр типа игр
+5228 Ping to filter by in the server browser
+Фильтр пинга для браузера серверов
+5228 Filter out password protected servers in browser
+Отфильтровать сервера, защищенные паролем
+5228 Filter out empty server in browser
+Отфильтровать пустые сервера
+5228 Filter out full server in browser
+Отфильтровать полные сервера в списке
+5228 Server browser filtering string
+Строка фильтра браузера серверов
+5228 Use forceful input grabbing method
+Use forceful input grabbing method
+5228 Enables the usage of a thread to pump the events
+Enables the usage of a thread to pump the events
+5228 Minimal demo length for saving automatical recorded demo
+Минимальная длительность демки для сохранения автоматически записанной демки
+5228 Automatical demo recording
+Автоматическая запись демок
+5228 Zoom in spectator mode
+Масштаб для наблюдателя
+5228 Auto reconnection if disconnected
+Авто-реконнект к серверу при дисконнекте
+5228 Show small scoreboard in 1on1 game
+Отображать маленькое табло в 1на1 играх
+5228 Server to use to check for new versions
+Сервер, используемый для проверки на наличие новой версии
+5228 How long to show the server message of the day
+Как долго отображать серверное приветственное сообщение
+5228 Warn about team balance
+Предупреждать о балансе команд
+5228 Show ingame FPS counter
+Показывать счетчик FPS в игре
+5228 Auto switch weapon on pickup
+Всегда переключать оружие при подборе
+5228 Always show nameplats disregarding of distance
+Всегда отображать неймплейты независимо от дистанции
+5228 Show nameplates
+Отображать неймплейты
+5228 Predict client movements
+Предсказывать перемещения клиента
+5228 Filename to log all output to
+Filename to log all output to
+5228 Password to the server
+Пароль сервера
+5228 (not used)
+(не используется)
+5228 Name of the player
+Ник игрока
+5228 Disable clipping
+Отключить обрезку
+5228 Smileys in chat
+Смайлики в чате
+5228 Type of new background (grass, jungle, desert, winter)
+Тип нового анимированного фона (трава, джунгли, пустыня, зима)
+5228 New animated background
+Новый анимированный фон
+5228 Interface alpha
+Прозрачность интерфейса
+5228 Interface color lightness
+Яркость цвета интерфейса
+5228 Interface color saturation
+Насыщенность цвета интерфейса
+5228 Interface color hue
+Оттенок цвета интерфейса
+5228 Interface scale
+Масштаб интерфейса
+5228 Interface server address
+Отображаемый в интерфейсе адрес сервера
+5228 Toolbox page
+Страница инструментов
+5228 Interface page
+Страница интерфейса
+5228 Player skin
+Скин игрока
+5228 Player feet color
+Цвет ног скина игрока
+5228 Player body color
+Цвет тела скина игрока
+5228 Toggles usage of custom colors
+Включить/Отключить использование нестандартных цветов
+5228 Execute the specified Lua file
+Выполнить указанный Lua файл
+5228 Execute the Lua string
+Выполнить Lua строку
+5228 Execute the specified line
+Выполнить указанную строку
+5228 Execute the specified file
+Выполнить указанный файл
+5228 Echo the text
+Вывести текст в консоль
+27390 failed to open '%s'
+Ошибка ри открытии '%s'
+27390 executing '%s'
+Выполнение '%s'
+-1 Beep мод
+5228 Turns special chat sound on or off
+Включает/Отключает специальных звука чата
+5228 Names to search for in chat messages
+Ники для поискоа в сообщениях чата
+5228 Disables multiple messages
+Отображать повторяющиеся сообщения
+5228 Disables chat messages for player you want to ignore
+Отключить сообщения чата игрока, которого вы хотите  игнорировать
+5228 Names of players you want to ignore
+Имена игроков, котрых вы хотите игнорировать
+-1 Hud мод
+5228 Names of players you want to ignore
+Имена игроков, которых вы хотите игнорировать
+5228 Turnes Vote messages on or off
+Включает/Отключает сообщения о Голосовании
+5228 Turnes kill messages on or off
+Включает/Отключает сообщения о смертях
+5228 Turnes in game chat on or off
+Включает/Отключает чат в игре
+5228 Turnes in game server messages on or off
+Включает/Отключает в игре сообщения сервера
+5228 Turnes info messages display on or off
+Включает/Отключает показ информационных сообщений
+5228 Turnes viewmode display on or off
+Включает/Отключает отображение статуса режима наблюдателя
+5228 Turnes the small score board on or off
+Включает/Отключает отображение маленького табло очков
+5228 Turnes the ammo display on or off
+Включает/Отключает отображение маленького табло патронов
+5228 Turnes the hp display on or off
+Включает/Отключает отображение маленького табло жизней
+5228 Turnes broadcast on or off
+Включает/Отключает бродкаст
+5228 Turnes warmup timer on or off
+Включает/Отключает отображение таймера разминки
+5228 Turnes the game over scoreboard on or off
+Включает/Отключает отображение табло в конце игры
+5228 Turnes the Server time on or off
+Включает/Отключает отображение серверного времени
