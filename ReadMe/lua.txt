@@ -1,0 +1,41 @@
+¬ игру добавлена возможность использовать скрипты на €зыке Lua. „тобы строка была обработана интерпретатором Lua, нужно в консоли перед ней написать ! (например, "!echo(123)"). ¬се команды консоли были портированы на Lua, так что теперь можно смело писать полноценные скрипты. ƒоступ к конфигу возможен через команду config(name[, value]).
+
+ роме того, можно задать несколько функций, которые будут обрабатывать происход€щие в игре событи€. client_event_tick и server_event_tick выполн€ютс€ в каждом игровом цикле, client_event_second и server_event_second - каждую секунду, а client_event_chat и server_event_chat вызываютс€ при сообщени€х чата и передают в качестве параметров id игрока, его команду и текст сообщени€.
+
+“акже на клиентской стороне можно узнавать информацию об игроках с помощью функций пакета gameclient:
+
+    * gameclient.player_info(id, s) - возвращает информацию о игроке с идентификатором id (если -1, то имеем в виду локального игрока):
+          Х ingame - передаетс€ информаци€ о игроке или нет
+          Х active - активен ли игрок
+          Х name - им€ игрока
+          Х skin_name - скин игрока
+          Х team - команда игрока
+          Х health - количество здоровь€ (только дл€ локального игрока)
+          Х armor - количество брони (только дл€ локального игрока)
+          Х ammocount - количество патронов (только дл€ локального игрока)
+          Х weapon - выбранное оружие (только дл€ локального игрока)
+    * gameclient.connected(id) - подключен игрок или нет
+    * gameclient.local_cid() - идентификатор локального игрока
+    * gameclient.num_players() - количество игроков на сервере
+	
+--------------------------------------------------------------------------------
+	
+The game added ability to use scripting language Lua. To row has been processed by the interpreter Lua, to the console in front of her to write! (For example, "! Echo (123)"). All console commands have been ported to Lua, so now you can safely write full scripts. Access to the configuration is possible through the command config (name [, value]). 
+
+In addition, you can specify multiple functions that will handle the events taking place in the game. client_event_tick and server_event_tick run in each game loop, client_event_second and server_event_second - every second, and client_event_chat and server_event_chat called when an instant message, and passed as a parameter id the player, his team and the message text. 
+
+Also on the client side, you can find out information about the players with the functions package gameclient: 
+
+    * Gameclient.player_info (id, s) - returns information about the player with id id (if -1, then we have in mind a local player): 
+          Х ingame - passed information about the player or not 
+          Х active - whether active player 
+          Х name - name of the player 
+          Х skin_name - skin player 
+          Х team - a team player 
+          Х health - the number of health (only for local players) 
+          Х armor - armor (only for local players) 
+          Х ammocount - the number of rounds (only for local players) 
+          Х weapon - selected weapon (only for local players) 
+    * Gameclient.connected (id) - the player is connected or not 
+    * Gameclient.local_cid () - ID of a local player 
+    * Gameclient.num_players () - number of players on the server
