@@ -76,6 +76,59 @@ void ITEMS::render_projectile(const NETOBJ_PROJECTILE *current, int itemid)
 	
 
 	draw_sprite3(pos.x, pos.y, 32);
+	
+	// Calculate average prediction offset, because client_predtick() gets varial values
+	static int average_prediction_offset;
+	static int prediction_offset_summ;
+	static int prediction_offset_count;
+	
+	bool local_player_in_game = gameclient.clients[gameclient.snap.local_cid].team != -1;
+	if(config.cl_antiping && local_player_in_game)
+	{
+		prediction_offset_summ += client_predtick() - client_tick();
+		prediction_offset_count++;
+		
+		if(prediction_offset_count >= 100)
+		{
+			average_prediction_offset = 
+			(prediction_offset_summ / prediction_offset_count + average_prediction_offset) / 2;
+			prediction_offset_summ = 0;
+			prediction_offset_count = 0;
+		}
+	}
+	
+	// Draw shadows of grenades
+	if(config.cl_antiping && current->type == WEAPON_GRENADE && local_player_in_game)
+	{
+		// Draw shadow only if grenade directed to local player
+		int local_cid = gameclient.snap.local_cid;
+		NETOBJ_CHARACTER& cur_char = gameclient.snap.characters[local_cid].cur;
+		NETOBJ_CHARACTER& prev_char = gameclient.snap.characters[local_cid].prev;
+		vec2 server_pos = mix(vec2(prev_char.x, prev_char.y), vec2(cur_char.x, cur_char.y), client_intratick());
+
+		float d1 = distance(pos, server_pos);
+		float d2 = distance(prevpos, server_pos);
+		if (d1 < 0) d1 *= -1;
+		if (d2 < 0) d2 *= -1;
+		bool grenade_directed_to_local_player = d1 < d2;
+
+		if ((average_prediction_offset > 0) && (average_prediction_offset < 1000) && grenade_directed_to_local_player)
+		{
+			int predicted_tick = client_prevtick() + average_prediction_offset;
+			float predicted_ct = (predicted_tick - current->start_tick)/(float)SERVER_TICK_SPEED + client_ticktime();
+		
+			if (predicted_ct >= 0)
+			{
+				int shadow_type = WEAPON_GUN; // For marker of shadow used pistol bullet sprite. TODO: use something custom.
+				select_sprite(data->weapons.id[clamp(shadow_type, 0, NUM_WEAPONS-1)].sprite_proj);
+
+				vec2 predicted_pos = calc_pos(startpos, startvel, curvature, speed, predicted_ct);
+				gfx_quads_draw(predicted_pos.x, predicted_pos.y, 32, 32);
+			}
+		}
+	}
+	///---
+	
 	gfx_quads_setrotation(0);
 	gfx_quads_end();
 }

@@ -411,6 +411,59 @@ void PLAYERS::render_player(
 		render_tee(&state, &ghost, player.emote, direction, ghost_position); // render ghost
 	}
 
+	// Draw shadows of enemy players
+	vec2 previous_prediction[16];
+	bool local_player_in_game = gameclient.clients[gameclient.snap.local_cid].team != -1;
+	bool cur_player_is_enemy = 
+		is_teamplay == false ||
+		(is_teamplay && gameclient.clients[gameclient.snap.local_cid].team != gameclient.clients[player_info->cid].team);
+	
+	if (config.cl_antiping && 
+		config.cl_antiping != 2 && // if == 2, than we should show only grenage shadows
+		local_player_in_game && info.local == false && cur_player_is_enemy &&
+		player_char && player_char->player_state == PLAYERSTATE_PLAYING && (client_tick() < gameclient.tick_to_screenshot || gameclient.tick_to_screenshot < 0))
+	{	
+		CHARACTER_CORE shadow_player;
+		
+		NETOBJ_CHARACTER_CORE buf;
+		gameclient.clients[player_info->cid].predicted.write(&buf);
+		WORLD_CORE world;
+		shadow_player.world = &world;
+		shadow_player.reset(); 
+		shadow_player.read(&buf);
+
+		NETOBJ_CHARACTER_CORE next;
+		shadow_player.write(&next);
+
+		vec2 prev = previous_prediction[player_info->cid];
+		vec2 next_vec = vec2(next.x, next.y);
+		vec2 shadow_position = next_vec;
+
+		float dist = distance(next_vec, prev);
+		if (dist < 0) dist *= -1;
+		if (dist < 300) // like it should be
+			shadow_position = mix(prev, next_vec, client_predintratick());
+
+		previous_prediction[player_info->cid] = shadow_position;
+
+		TEE_RENDER_INFO shadow = render_info;
+		float color_body_mix = (shadow.color_body.r + shadow.color_body.g + shadow.color_body.b) / 2.5f; // 2.5 makes shadow little lighter
+		float color_feet_mix = (shadow.color_feet.r + shadow.color_feet.g + shadow.color_feet.b) / 2.5f;
+		shadow.color_body.a = 0.25f;
+		shadow.color_feet.a = 0.25f;
+		shadow.color_body.r = color_body_mix;
+		shadow.color_body.g = color_body_mix;
+		shadow.color_body.b = color_body_mix;
+		shadow.color_feet.r = color_feet_mix;
+		shadow.color_feet.g = color_feet_mix;
+		shadow.color_feet.b = color_feet_mix;
+
+		shadow.texture = gameclient.skins->get(gameclient.clients[player_info->cid].skin_id)->color_texture;
+
+		// Render shadow
+		render_tee(&state, &shadow, player.emote, direction, shadow_position); 
+	}
+
 	render_info.size = 64.0f; // force some settings
 	render_info.color_body.a = 1.0f;
 	render_info.color_feet.a = 1.0f;
